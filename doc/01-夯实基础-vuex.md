@@ -28,7 +28,7 @@
     </div>
     ```
 
-- 非父子之间：EventBus
+- 非父子之间：EventBus(事件总线)
 
   - $on
 
@@ -36,7 +36,7 @@
 
     <img src="asset/image-20200403100907902.png" alt="image-20200403100907902" style="zoom: 50%;" />
 
-如果某个状态需要在很多个组件来使用，或者要实现多个组件共同维护一份数据又应该怎么做呢？
+如果某个状态需要在很多个组件来使用，或者要实现**多个组件共同维护一份数据**又应该怎么做呢？
 
 这里就要引入Vuex了。
 
@@ -58,7 +58,7 @@
 
 ## Vuex概述
 
-- [vuex](https://vuex.vuejs.org/zh/) 是vue官方专为 Vue.js 应用程序开发的一种**状态管理模式**。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
+- [vuex](https://vuex.vuejs.org/zh/) 是vue官方专为 Vue.js 应用程序开发的一种**状态管理模式**。它采用**集中**式存储管理应用的**所有组件**的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
 
 - vuex是vue的一个插件（vue-router也是一个插件）。它提供多组件之间共享数据的解决方案。
 
@@ -423,7 +423,7 @@ export default {
 与vue-router类似，vuex是一个独立存在的插件，初始并没有集成在vue中，要额外来安装。vuex必须使用生产依赖（项目上线之后，还需要用到它）来安装。
 
 ```bash
-npm install vuex --save
+npm install vuex
 -------------------------
 + vuex@3.5.1
 added 1 package from 1 contributor in 18.905s
@@ -439,35 +439,42 @@ added 1 package from 1 contributor in 18.905s
 
 为了维护项目目录的整洁，在src目录下新建一个store目录其下放置一个index.js文件。当然， 这个步骤并不是必需的。
 
-<img src="asset/image-20200106121534112.png" alt="image-20200106121534112" style="zoom: 67%;" />
+<img src="asset/image-20200106121534112.png" alt="image-20200106121534112" style="zoom: 80%;" />
 
 
 
 src/store/index.js中的内容如下：
 
 ```javascript
-// 引入Vue
-import Vue from 'vue'
-// 引入vuex插件
-import Vuex from 'vuex'
+// 用来创建vuex的地方
 
-// 由于它一个vuex插件，所以，还要以插件的方式挂载在vue上。
-// 1. 插件的方式挂载在vue
+import Vue from 'vue'
+
+import Vuex from 'vuex'
+// 由于Vuex是vue插件，还要以vue插件的方式挂载在vue上
+// 1. 以插件的方式挂载在vue上
+//    Vue.use(vue的插件)  ---- Vue.use(vueRouter)
 Vue.use(Vuex)
 
-// 2.创建Vuex.Store实例
-// Vuex是一个对象，其中有一个属性名是Store,属性值是一个函数
-// 这在这里充当一个构造器
+// 2. 创建Vuex.Store的实例
+// Vuex是一个对象，其中有一个属性名是Store.
+// Vuex.Store在这里当作构造器
 const store = new Vuex.Store({
-    // 各种配置项
-    // state 就相当于vue组件中的data。它用来存放整个vue项目中公共的数据
-    //       这个数据，在所有的vue组件中都可以访问到
-    state: {
-        num: 1
-    }
+  // 各种配置项
+  //  state就是数据。用它来保存当前整个vue项目中，所有
+  //  需要在组件之间共享的数据。这个数据，在所有的组件中
+  //  都可以访问到.
+
+  //  --- 对比理解vue组件中的data
+  state: {
+    num: 1,
+    msg: 'hello,vuex'
+  }
 })
-// 3.导出
+
+// 3. 导出store
 export default store
+
 ```
 
 说明：
@@ -491,17 +498,24 @@ main.js
 ```diff
 import Vue from 'vue'
 import App from './App.vue'
-// 1. 用es6的模块化，引入vuex
-+ import store from './store/index.js'
+// 1. 用es6模块化引入vuex中的store
+import store from './store/index.js'
 Vue.config.productionTip = false
-// 2. 添加到vue实例的配置项中
+
+// 2. 给Vue配置项中添加一个特殊的配置，
+// 名是：store,值是上面的引入的 store
 new Vue({
-+  'store': store, 
+  store, // store: store
   render: h => h(App),
 }).$mount('#app')
+
 ```
 
 请再次回顾一下vue-router的用法，是不是很像？
+
+#### 在调试工具中查看
+
+![image-20200801104856995](asset/image-20200801104856995.png)
 
 
 
@@ -599,29 +613,41 @@ State提供唯一的公共数据源，所有共享的数据都要统一放到Sto
 ### 在vuex中设置
 
 ```javascript
-// 引入Vue
-import Vue from 'vue'
-// 引入vuex插件
-import Vuex from 'vuex'
+// 用来创建vuex的地方
 
-// 由于它一个vuex插件，所以，还要以插件的方式挂载在vue上。
-// 1. 插件的方式挂载在vue
+import Vue from 'vue'
+
+import Vuex from 'vuex'
+// 由于Vuex是vue插件，还要以vue插件的方式挂载在vue上
+// 1. 以插件的方式挂载在vue上
+//    Vue.use(vue的插件)  ---- Vue.use(vueRouter)
 Vue.use(Vuex)
 
-// 2.创建Vuex.Store实例
-// Vuex是一个对象，其中有一个属性名是Store,属性值是一个函数
-// 这在这里充当一个构造器
+// 2. 创建Vuex.Store的实例
+// Vuex是一个对象，其中有一个属性名是Store.
+// Vuex.Store在这里当作构造器
 const store = new Vuex.Store({
-    // 各种配置项
-    // （1）state。 就相当于vue组件中的data。它用来存放整个vue项目中公共的数据
-    //       这个数据，在所有的vue组件中都可以访问到
-    state: {
-        num: 101
-    }
+  // 各种配置项
+  //  state就是数据。用它来保存当前整个vue项目中，所有
+  //  需要在组件之间共享的数据。这个数据，在所有的组件中
+  //  都可以访问到.
+
+  //  --- 对比理解vue组件中的data
+  //  state的定义， state的定义
+  state: {
+    num: 1,
+    msg: 'hello,vuex'
+  }
 })
+
+// 3. 导出store
+export default store
+
 ```
 
-它的设置方式类似于组件中data数据项的设置方式。
+state是固定的名字。它的值是一个对象，用来装所有的公共数据。
+
+> 它的设置方式类似于组件中data数据项的设置方式。
 
 ### 在组件内使用state    
 
