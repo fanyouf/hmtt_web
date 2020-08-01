@@ -980,7 +980,7 @@ this.$store.commit('mAddN',{n:100,m:200})
 
 ## vuex小结
 
-- 作用：当你需要管理组件之间的公共数据时，就可以使用vuex。
+- 作用：当你需要管理组件之间的公共数据时，就可以使用vuex。(例如：当前用户登陆本系统时**用户名**)
 - 是：vue官方提供的插件，类似于vue-router，专门用来进行公共状态管理。
 - 步骤：
   - 1. 安装。 它是一个独立的npm包，要去下载安装。
@@ -991,7 +991,41 @@ this.$store.commit('mAddN',{n:100,m:200})
   
        或者：在通过脚手架工具创建项目就去选中vuex。
   - 2. 创建Vuex.Store的实例，导出。
+  
+       ```
+       # src/store/index.js
+       
+       import vue
+       import vuex
+       vue.use(Vuex)
+       const store = new Vuex.store({
+        // 配置项
+        state: {
+            xxxx :
+        }
+       }})
+       export default store
+       ```
+  
+       
   - 3. 初始化vue 实例时，设置store。
+  
+       ```
+       # main.js
+       import store from './store/index.js'
+       new Vue({
+       	store,
+       })
+       ```
+
+
+
+
+
+![image-20200801141717231](asset/image-20200801141717231.png)
+
+
+
 - 核心概念：
   - state ： 所有的公共数据放在state中。
     - 获取
