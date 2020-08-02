@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import Login from '@/views/login' // index.vue是可以省略的
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  }
   // {
   //   path: '/about',
   //   name: 'About',

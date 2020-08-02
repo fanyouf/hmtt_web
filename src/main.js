@@ -9,6 +9,9 @@ import 'vant/lib/index.css'
 
 // 它会根据的手机尺寸来调整rem的基准值：html标签上的font-size。
 import 'amfe-flexible'
+
+import '@/styles/index.less'
+// 全局导入，全部的vant可以直接使用
 Vue.use(Vant)
 
 Vue.config.productionTip = false
