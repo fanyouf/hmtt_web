@@ -28,11 +28,14 @@
     <div class="btn-wrap">
       <van-button type="info" class="btn" @click="hLogin">登陆</van-button>
     </div>
+
+    <van-button type="info" class="btn" @click="hGetProfile">测试去获取用户个人信息</van-button>
+
   </div>
 </template>
 
 <script>
-import { login } from '@/api/user'
+import { login, getProfile } from '@/api/user'
 export default {
   name: 'Login',
   data () {
@@ -45,6 +48,10 @@ export default {
     }
   },
   methods: {
+    async hGetProfile () {
+      // 调用接口，获取用户个人信息
+      await getProfile()
+    },
     check () {
       // 如果验证不通过，返回false
       // 规则：不能为空
@@ -82,7 +89,14 @@ export default {
       // 2. 发请求.根据接口文档说明
       try {
         const result = await login(this.mobile, this.code)
-        console.log(result)
+        // 登陆成功之后，后端返回的数据
+        // 1. 保存token 到vuex (所有的组件都可以访问这个数据)
+        //    在组件中如何去调用mutation?(1) mapMutations,(2)$store.commit
+        // console.log(result.data.data)
+        this.$store.commit('mSetTokenInfo', result.data.data)
+
+        // 2. 后续再发请求时，把token加入到请求头中。
+
         // 覆盖上一个toast提示
         // 会在3s之后关闭
         this.$toast.success('登陆成功')

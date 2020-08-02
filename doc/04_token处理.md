@@ -27,7 +27,7 @@ token就是你家小区的门禁卡。
 
 ## 演示token的作用
 
-接着上面的操作去做：当用户登陆成功之后，再去发请求，去求 接口：获取用户个人信息。要注意这个接口是明确约定了必须要传递token值的。
+接着上面的操作去做：当用户登陆成功之后，再去发请求，去求 **接口：获取用户个人信息**。要注意这个接口是明确约定了必须要传递token值的。
 
 ![image-20200607143539178](asset/image-20200607143539178.png)
 
@@ -120,21 +120,13 @@ export const getProfile = () => {
 在 `store/index.js` 中：
 
 ```javascript
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
-
 export default new Vuex.Store({
   // 保存公共数据
   state: {
-    // 设置tokenInfo
-    tokenInfo: {
-
-    }
+    tokenInfo: {}
   },
   mutations: {
-    // 设置mutations来修改tokenInfo
+    // 设置mutation来更新tokenInfo
     mSetTokenInfo (state, tokenObj) {
       state.tokenInfo = tokenObj
     }
@@ -142,27 +134,30 @@ export default new Vuex.Store({
 })
 ```
 
-### 调用mutaion保存
+### 调用mutaion保存token信息
 
 登录成功以后将数据存储到容器中
 
 在login/index.vue中，修改hLogin的代码：在登陆成功之后，把token保存到vuex中
 
 ```diff
-// 2. 向接口发请求，传递参数
-      //  1)引入axios 2)根据接口要求，调用axios
+// 2. 发请求.根据接口文档说明
       try {
         const result = await login(this.mobile, this.code)
-
-        // 一个页面上只有一个toast，它会把上面的Loading状态覆盖掉
-        // 它自已是3秒之后消失
-        this.$toast.success('登陆成功')
-        // 3. 根据接口返回值，做后续处理
-        // 登陆成功：1） 保存token到vuex
-        // 如何在组件中调用mutations?
+        // 登陆成功之后，后端返回的数据
+        // 1. 保存token 到vuex (所有的组件都可以访问这个数据)
+        //    在组件中如何去调用mutation?(1) mapMutations,(2)$store.commit
+        // console.log(result.data.data)
 +        this.$store.commit('mSetTokenInfo', result.data.data)
-        // console.log(result)
+
+        // 2. 后续再发请求时，把token加入到请求头中。
+
+        // 覆盖上一个toast提示
+        // 会在3s之后关闭
+        this.$toast.success('登陆成功')
+        // todo 登陆成功，跳转
       } catch (err) {
+        console.log(err)
         this.$toast.fail('登陆失败')
       }
 ```
