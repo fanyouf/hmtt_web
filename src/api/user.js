@@ -20,9 +20,6 @@ export const login = (mobile, code) => {
 export const getProfile = () => {
   return ajax({
     method: 'GET',
-    url: '/app/v1_0/user/profile',
-    headers: {
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTYzNTgyMDYsInVzZXJfaWQiOjExMDI0OTA1MjI4Mjk3MTc1MDQsInJlZnJlc2giOmZhbHNlfQ.vQ4JPJHR0f4nEctYLwEW3Fah-9J76QQnIzrVtdY6sWY'
-    }
+    url: '/app/v1_0/user/profile'
   })
 }

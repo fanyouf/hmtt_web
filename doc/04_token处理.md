@@ -168,7 +168,7 @@ export default new Vuex.Store({
 
 
 
-## 通过axios拦截器添加token
+## 通过axios请求拦截器添加token
 
 思路：
 
@@ -182,52 +182,59 @@ export default new Vuex.Store({
 src\utils\request.js
 
 ```diff
-// 1. 引入axios对它进行二次的封装
-//  1) 设置基地址
-//    http://www.bxxx.com/xx/api/接口名1
-//    http://www.bxxx.com/xx/api/接口名2
-//    基地址可以约定成：http://www.bxxx.com/xx/api/
-//  2) 请求拦截器
-//  3) 响应拦截器
-
-// 2. 导出封装结果
+// 对axios进行二次封装
+//    axios本身是一个独立的库，是对ajax的封装。为了方便在项目中使用，我们对它再次封装
+// (1) 接口基地址
+// (2) 请求，响应拦截器
 
 import axios from 'axios'
 
-+// 在一个普通的.js模块中（不是某个.vue组件）如何去获取vuex中保存的token值？
-+import store from '@/store/index.js'
++ // 在一个普通的.js文件（不是.vue组件）中，如何去获取vuex中的数据？
++ import store from '@/store/index.js'
 // console.log('store', store)
-// 参考： https://www.npmjs.com/package/axios#axioscreateconfig
-// 在同一个项目中有可能需要向不同的服务器发请求，即需要设置不同的基地址
-// 这里通过axios.create来创建多个不同的axios的实例，以备不时之需
-const instance = axios.create({
+
+const instance1 = axios.create({
+  // 后端服务器1
   baseURL: 'http://ttapi.research.itcast.cn'
-  // baseURL: 'http://api-toutiao-web.itheima.net',
+  // baseURL: 'http://api-toutiao-web.itheima.net'
+  // timeout: 1000,
+  // headers: {'X-Custom-Header': 'foobar'}
 })
 
-// 通过请求拦截器，来添加token信息
-// 参考： https://www.npmjs.com/package/axios#interceptors
-// 在上面创建的instance上，添加一个请求拦截器
-+instance.interceptors.request.use(function (config) {
-  // 在每一个ajax请求发出之前，去vuex中取出token值
-  // 如果有token,补充到请求参数中去
-+  const token = store.state.tokenInfo.token
-+  if (token) {
-+    config.headers.Authorization = `Bearer ${token}`
-+  }
-+  return config
-+}, function (error) {
-+  // Do something with request error
-+  return Promise.reject(error)
-+})
++ // 添加请求拦截器 -- 所有的请求在发出去之前，都会到这里来
++ instance1.interceptors.request.use(function (config) {
+  // 在发送请求之前做些什么
+  // 向本次请求中添加headers,设置token值
+  // 从vuex中去获取token。
+  const token = store.state.tokenInfo.token
+  console.log('所有的请求在发出去之前，都会到这里来', store.state.tokenInfo, token)
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}` // Bearer空格token  这个格式是后端要求的
+  }
+  return config;
+}, function (error) {
+  // 对请求错误做些什么
+  return Promise.reject(error);
+});
 
-// const instance2 = axios.create({
-//   baseURL: 'https://snv-domain.com/api/',
-//   timeout: 1000,
-//   headers: {'X-Custom-Header': 'foobar'}
-// });
+const instance2 = axios.create({
+  // 后端服务器2
+  baseURL: 'http://api-toutiao-web.itheima.net'
+  // timeout: 1000,
+  // headers: {'X-Custom-Header': 'foobar'}
+})
 
-export default instance
+// const instance3 = axios.create({
+//   // 后端服务器3
+//   baseURL: 'http://api-toutiao-web.itheima.com'
+//   // timeout: 1000,
+//   // headers: {'X-Custom-Header': 'foobar'}
+// })
+
+export { instance1, instance2 }
+
+// 默认导出intance1
+export default instance1
 
 ```
 
