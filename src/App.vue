@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div class="div">
       黑马头条移动版
     </div>
     <van-button type="default">默认按钮</van-button>
@@ -12,3 +12,10 @@
     <router-view/>
   </div>
 </template>
+<style lang="less" scoped>
+  .div{
+    width: 75px;
+    height: 37.5px;
+    background-color: green;
+  }
+</style>
