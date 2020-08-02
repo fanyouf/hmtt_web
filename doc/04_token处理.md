@@ -278,20 +278,17 @@ vuex在刷新页面就消失了。就好像在程序中定义的变量一样，�
 并写入以下内容
 
 ```javascript
-// 封装模块，使用localstorage对vuex中的数据进行本地保存（持久化）
+// 对localstorage的操作进行封装
 
-// localStorage的三个api
-// - 设置
-// tokeninfo: {token:'xxxx', refresh_token: 'xxx' }
+// 保存到localStorage中的数据是对象
 export const setItem = (name, obj) => {
   localStorage.setItem(name, JSON.stringify(obj))
 }
 
-// - 获取
 export const getItem = name => {
   return JSON.parse(localStorage.getItem(name))
 }
-// - 清除
+
 export const removeItem = name => {
   localStorage.removeItem(name)
 }
@@ -326,7 +323,7 @@ export default new Vuex.Store({
       state.tokenInfo = tokenObj
 
       // 把token信息持久化到localstorage中
-+      setItem('tokenInfo', tokenObj)
++     setItem('tokenInfo', tokenObj)
     }
   },
   actions: {
@@ -359,7 +356,7 @@ export default new Vuex.Store({
     // 保存公共数据
     // 在tokenInfo中保存token和refresh_token
 
-    // 在设置vuex中的初值时，先从本地存储中取，如果取不到，则初始为空
+    // tokenInfo的值是先从本地存储中取，取不到就用{}
 +    tokenInfo: getItem('tokenInfo') || {}
   }
 ```

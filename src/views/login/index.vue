@@ -28,8 +28,8 @@
     <div class="btn-wrap">
       <van-button type="info" class="btn" @click="hLogin">登陆</van-button>
     </div>
-
-    <van-button type="info" class="btn" @click="hGetProfile">测试去获取用户个人信息</van-button>
+ <p>当前是否有登陆：{{$store.state.tokenInfo.token ? '登陆了': '没有登陆'}}</p>
+    <van-button type="info" class="btn" @click="hGetProfile">测试去获取用户个人信息{{$store.state.tokenInfo.token ? '登陆了': '没有登陆'}}</van-button>
 
   </div>
 </template>
