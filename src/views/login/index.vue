@@ -1,8 +1,11 @@
 <template>
   <div class="login">
+    <!-- 标题 -->
     <van-nav-bar
       title="登陆"
     />
+
+    <!-- 表单区域 -->
     <van-cell-group>
       <!-- 输入手机号，调起手机号键盘 -->
       <van-field type="tel"
@@ -21,6 +24,7 @@
       placeholder="请输入密码"/>
     </van-cell-group>
 
+    <!-- 按钮 -->
     <div class="btn-wrap">
       <van-button type="info" class="btn" @click="hLogin">登陆</van-button>
     </div>
@@ -28,14 +32,14 @@
 </template>
 
 <script>
-import ajax from '@/utils/request'
-console.log(ajax)
+import { login } from '@/api/user'
 export default {
   name: 'Login',
   data () {
     return {
       mobile: '13912345678',
       code: '246810',
+      // 验证错误提示
       mobile_errmsg: '',
       code_errmsg: ''
     }
@@ -77,26 +81,16 @@ export default {
       });
       // 2. 发请求.根据接口文档说明
       try {
-        await ajax({
-          method: 'POST', // 接口请求的方式
-          url: '/app/v1_0/authorizations', // 接口的地址
-          data: { // 如果接口约定是 Body传参-- 请求体， 要通过data去写数据
-            mobile: this.mobile,
-            code: this.code
-          }
-        })
+        const result = await login(this.mobile, this.code)
+        console.log(result)
         // 覆盖上一个toast提示
+        // 会在3s之后关闭
         this.$toast.success('登陆成功')
         // todo 登陆成功，跳转
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')
       }
-
-      // ajax.post('/app/v1_0/authorizations', {
-      //   mobile: this.mobile,
-      //   code: this.code
-      // })
     }
   }
 }
