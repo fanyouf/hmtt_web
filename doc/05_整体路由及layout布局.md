@@ -154,7 +154,6 @@ export default {
   }
 }
 
-
 #app{
   position: absolute;
   left: 0;
@@ -185,42 +184,42 @@ export default {
 .index {
   height: 100%;
   // 让出顶部导航条的距离
+  // 顶部在导航条是固定定位的
   padding-top:46px;
 
-  .van-tabs__wrap {
-    position:fixed;
-    top:46px;
-    left:0px;
-    right:30px; 
-  }
-  // 让出van-tabs的高度
-  .van-tabs--line{
-    padding-top:50px; 
-  }
-  
+  // #app >.container >.index > .van-tabs > van-tabs__wrap + van-tabs__content
   .van-tabs {
+    padding-top:50px; 
     display: flex;
     flex-direction: column;
     height: 100%;
+    .van-tabs__wrap {
+      position:fixed;
+      top:46px; // 跟在顶部固定导航条的下方
+      left:0px;
+      right:30px; 
+      // 标记当前选中频道的下划线
+      .van-tabs__line {
+        width: 30px !important;
+        background-color: #3296fa;
+        bottom: 20px;
+      }
+    }
+    
     .van-tabs__content {
       flex:1;
       overflow: hidden;
-      // 能看到文章列表中的loading效果
-      padding-bottom: 4rem; 
+      
+      padding-bottom: 4rem;  // 能看到文章列表中的loading效果
+      .van-tab__pane{ 
+        height: 100%;
+        // .scroll-wrapper 是home/ArticleList.vue组件的根元素的类名
+        .scroll-wrapper{
+          overflow:auto;
+          height: 100%;
+        }
+      }
     }
-    .van-tabs__line {
-      width: 30px !important;
-      background-color: #3296fa;
-      bottom: 20px;
-    }
-  }
-  .van-tab__pane{
-      height: 100%;
-  }
-  // .scroll-wrapper是home/ArticleList.vue组件的根元素的类名
-  .scroll-wrapper{
-    overflow:auto;
-    height: 100%;
   }
 
   // 频道管理的开关按钮
@@ -243,6 +242,8 @@ export default {
 
 
 ## 功能组件的基本架子
+
+下面的组件内容只是基本架子，后面在具体做页面功能时，都会重写的
 
 views/home/index.vue 组件
 
