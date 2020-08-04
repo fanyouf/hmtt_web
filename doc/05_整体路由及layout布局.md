@@ -498,7 +498,6 @@ src/styles/index.less
   // 让出顶部导航条的距离
   // 顶部在导航条是固定定位的
   padding-top:46px;
-​
   // #app >.container >.index > .van-tabs > van-tabs__wrap + van-tabs__content
   .van-tabs {
     padding-top:50px; 
@@ -517,7 +516,6 @@ src/styles/index.less
         bottom: 20px;
       }
     }
-    
     .van-tabs__content {
       flex:1;
       overflow: hidden;
@@ -533,7 +531,6 @@ src/styles/index.less
       }
     }
   }
-
   // 频道管理的开关按钮
   .bar-btn {
     position: fixed;
