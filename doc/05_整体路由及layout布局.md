@@ -9,9 +9,7 @@
 
 ## 主页整体结构分析
 
-从login页登陆，成功后进入主页。
-
-当然，用户也可以直接访问主页，只不过此时是未登陆状态。
+从login页登陆，成功后进入主页。(当然，用户也可以直接访问主页，只不过此时是未登陆状态。)
 
 主页从上到下由三部分组成：
 
@@ -23,9 +21,81 @@
 
 <img src="asset/image-20200408214018053.png" alt="image-20200408214018053" style="zoom:50%;" />
 
+## layout基本布局和路由配置
+
+**创建组件**
+
+src/view/layout/index.vue
+
+```
+<template>
+  <div>
+    <!-- logo导航 -->
+    <div>
+      logo + 按钮
+    </div>
+
+    <!-- 主体区域 -->
+    <router-view></router-view>
+
+    <!-- 底部的tabbar -->
+    <div>
+      底部的tabbar
+    </div>
+
+  </div>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
+
+```
+
+**路由配置**
 
 
 
+```
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Login from '@/views/login' // index.vue是可以省略的
+import Layout from '@/views/layout' // index.vue是可以省略的
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/',
+    name: 'layout',
+    component: Layout
+  }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router
+
+```
+
+
+
+**测试**
+
+![image-20200804094358089](asset/image-20200804094358089.png)
 
 ## Layout组件布局
 
