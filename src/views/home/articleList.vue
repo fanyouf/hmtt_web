@@ -12,7 +12,7 @@
             <!-- 图片 当前文章有几张图 就用几个宫格 -->
             <van-grid :column-num="item.cover.images.length">
               <van-grid-item v-for="(img,idx) in item.cover.images" :key="idx">
-                <van-image :src="img" />
+                <van-image :src="img" lazy-load />
               </van-grid-item>
             </van-grid>
             <!-- 文字说明 -->

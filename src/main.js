@@ -5,7 +5,7 @@ import router from './router'
 import store from './store'
 // 引入vant组件库
 // 全局导入，全部的vant可以直接使用
-import Vant from 'vant'
+import Vant, { Lazyload } from 'vant'
 import 'vant/lib/index.css'
 
 // 它会根据的手机尺寸来调整rem的基准值：html标签上的font-size。
@@ -29,6 +29,7 @@ Vue.filter('relativeTime', function (val) {
 })
 
 Vue.use(Vant)
+Vue.use(Lazyload)
 
 Vue.config.productionTip = false
 
