@@ -4,6 +4,7 @@ import router from './router'
 // 脚手架自动创建的vuex.store
 import store from './store'
 // 引入vant组件库
+// 全局导入，全部的vant可以直接使用
 import Vant from 'vant'
 import 'vant/lib/index.css'
 
@@ -11,7 +12,20 @@ import 'vant/lib/index.css'
 import 'amfe-flexible'
 
 import '@/styles/index.less'
-// 全局导入，全部的vant可以直接使用
+
+import { formatTime } from '@/utils/date-time.js'
+console.log(formatTime(1596527178513))
+
+// 定义全局过滤器（这个过滤器需要在其它的组件中使用）
+// Vue.filter('过滤器名', function(过滤前的值){
+//   .....
+//   return 过滤之后的值
+// })
+// Vue.filter('formatTime', formatTime)
+Vue.filter('formatTime', function (val) {
+  return formatTime(val)
+})
+
 Vue.use(Vant)
 
 Vue.config.productionTip = false
