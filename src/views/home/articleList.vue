@@ -20,9 +20,7 @@
               <span>{{item.aut_name}}</span>
               <span>{{item.comm_count}}评论</span>
               <!-- 使用过滤器 -->
-              <span>{{item.pubdate | formatTime}}</span>
-
-              <span>{{item.pubdate}}</span>
+              <span>{{item.pubdate | relativeTime}}</span>
             </div>
 
           </div>

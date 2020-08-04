@@ -13,8 +13,7 @@ import 'amfe-flexible'
 
 import '@/styles/index.less'
 
-import { formatTime } from '@/utils/date-time.js'
-console.log(formatTime(1596527178513))
+import { formatTime, relativeTime } from '@/utils/date-time.js'
 
 // 定义全局过滤器（这个过滤器需要在其它的组件中使用）
 // Vue.filter('过滤器名', function(过滤前的值){
@@ -24,6 +23,9 @@ console.log(formatTime(1596527178513))
 // Vue.filter('formatTime', formatTime)
 Vue.filter('formatTime', function (val) {
   return formatTime(val)
+})
+Vue.filter('relativeTime', function (val) {
+  return relativeTime(val)
 })
 
 Vue.use(Vant)
