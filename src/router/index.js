@@ -3,6 +3,11 @@ import VueRouter from 'vue-router'
 import Login from '@/views/login' // index.vue是可以省略的
 import Layout from '@/views/layout' // index.vue是可以省略的
 
+import Home from '@/views/home' // index.vue是可以省略的
+import Video from '@/views/video' // index.vue是可以省略的
+import Question from '@/views/question' // index.vue是可以省略的
+import User from '@/views/user' // index.vue是可以省略的
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -14,7 +19,13 @@ const routes = [
   {
     path: '/',
     name: 'layout',
-    component: Layout
+    component: Layout,
+    children: [
+      { path: '', component: Home }, // 默认显示的子路由
+      { path: '/video', component: Video },
+      { path: '/question', component: Question },
+      { path: '/user', component: User }
+    ]
   }
   // {
   //   path: '/about',

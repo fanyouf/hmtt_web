@@ -109,20 +109,17 @@ views/layout/index.vue
 
 ```html
 <template>
-  <div class='container'>
-    <!-- 顶部logo搜索导航区域 -->
+  <div class="container">
+    <!-- logo导航  logo + 按钮 -->
     <van-nav-bar>
-      <div slot="left" class="logo">logo</div>
-      <van-button
-        slot="right"
-        class="search-btn"
+      <!-- 注意插槽的问题 -->
+      <div slot="left" class="logo"></div>
+      <van-button slot="right"
         round
         type="info"
         size="small"
         icon="search"
-        >
-        圆形按钮
-      </van-button>
+      >搜索</van-button>
     </van-nav-bar>
 
     <!-- 二级路由出口
@@ -133,16 +130,22 @@ views/layout/index.vue
     -->
     <router-view></router-view>
 
-    <!-- 底部：导航工具条 -->
-    <!--
-      开启路由模式：route
-      to: 类似于router-link
+    <!-- 底部的tabbar -->
+    <!-- 启用路由导航功能
+      -route : 启用路由导航
+      -to : 导航路由的path
     -->
     <van-tabbar route>
-      <van-tabbar-item icon="home-o" to='/'>首页</van-tabbar-item>
-      <van-tabbar-item icon="chat-o" to='/question'>问答</van-tabbar-item>
-      <van-tabbar-item icon="video-o" to='/video'>视频</van-tabbar-item>
-      <van-tabbar-item icon="user-o" to='/user'>
+      <van-tabbar-item to="/" icon="home-o">
+        首页
+      </van-tabbar-item>
+      <van-tabbar-item to="/question" icon="chat-o">
+        问答
+      </van-tabbar-item>
+      <van-tabbar-item to="/video" icon="video-o">
+        视频
+      </van-tabbar-item>
+      <van-tabbar-item to="/user" icon="search">
         我的/未登陆
       </van-tabbar-item>
     </van-tabbar>
@@ -151,23 +154,22 @@ views/layout/index.vue
 
 <script>
 export default {
-  name: 'Layout'
+
 }
 </script>
 
-<style scoped lang='less'>
-.logo {
-    background: url("../assets/logo.png") no-repeat;
+<style lang="less" scoped>
+  .logo {
+    background: url("../../assets/logo.png") no-repeat;
     background-size: cover;
     width: 100px;
     height: 30px;
   }
-  // 搜索按钮
-  .search-btn {
-    background-color: #5babfb;
-    width: 80px;
+  .van-nav-bar .van-icon{
+    color: #fff;
   }
 </style>
+
 ```
 
 - #left 是 slot="left"的简写
@@ -179,30 +181,33 @@ export default {
 ```js
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/views/login' // /index.vue是可以省略的
-import LayoutIndex from '@/views/layout' // /index.vue是可以省略的
-import HomeIndex from '@/views/home'
-import VideoIndex from '@/views/video'
+import Login from '@/views/login' // index.vue是可以省略的
+import Layout from '@/views/layout' // index.vue是可以省略的
+
+import Home from '@/views/home' // index.vue是可以省略的
+import Video from '@/views/video' // index.vue是可以省略的
+import Question from '@/views/question' // index.vue是可以省略的
+import User from '@/views/user' // index.vue是可以省略的
+
 Vue.use(VueRouter)
 
 const routes = [
-  // 用户登陆
-  { path: '/login', component: Login },
-  // 主页
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
   {
     path: '/',
-    component: LayoutIndex,
-    // 嵌套路由
-    // 当访问http://localhost:8080/#/user 时
-    //   把UserIndex组件放在 LayoutIndex组中的router-view中去
+    name: 'layout',
+    component: Layout,
     children: [
-      { path: '', component: HomeIndex },
-      { path: '/user', component: () => import('@/views/user/index') },
-      { path: '/video', component: VideoIndex }
+      { path: '', component: Home }, // 默认显示的子路由
+      { path: '/video', component: Video },
+      { path: '/question', component: Question },
+      { path: '/user', component: User }
     ]
-  },
-  // 路由懒加载
-  { path: '/search', component: () => import('@/views/search/index') }
+  }
 ]
 
 const router = new VueRouter({
@@ -210,13 +215,23 @@ const router = new VueRouter({
 })
 
 export default router
-
 ```
 
 - 根据约定的路由规则定义。
-- 且先定义规则对应的组件。
+
+- 先定义规则对应的组件。
+
+  ![image-20200804103838018](asset/image-20200804103838018.png)
 
 ## 整体路由设置
+
+排期：工作进度划化表。
+
+- 2020.8.4  - XXX功能
+- 2020.8.5  - XXX功能
+- 2020.8.6  - XXX功能
+
+前提是：你要对要实现的功能非常了解，才能做精准的判断。
 
 ### 约定路由规则
 
@@ -438,13 +453,12 @@ export default {
 
 ## 全局样式
 
-```
-
 全局样式
 此处是可选的，后面再回来写也是可以的。
 
 src/styles/index.less
 
+```
 // 项目的公共的样式
 // 覆盖vant自带导航栏的样式
 .van-nav-bar {
@@ -519,7 +533,7 @@ src/styles/index.less
       }
     }
   }
-​
+
   // 频道管理的开关按钮
   .bar-btn {
     position: fixed;

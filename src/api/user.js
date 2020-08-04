@@ -1,4 +1,4 @@
-// 封装与用户相差的操作
+// 封装与用户相关的操作
 import ajax from '@/utils/request'
 
 /**
