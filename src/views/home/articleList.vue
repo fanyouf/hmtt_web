@@ -1,14 +1,31 @@
 <template>
 <!-- 它的目标：显示它对应的那个频道下的文章信息 -->
   <div class="scroll-wrapper">
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-    >
-      <van-cell v-for="(item, idx) in list" :key="idx" :title="item.title" />
-    </van-list>
+    <van-pull-refresh v-model="isLoadingNew" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        @load="onLoad"
+        >
+        <van-cell v-for="(item, idx) in list" :key="idx" :title="item.title">
+          <div slot="label">
+            <!-- 图片 当前文章有几张图 就用几个宫格 -->
+            <van-grid :column-num="item.cover.images.length">
+              <van-grid-item v-for="(img,idx) in item.cover.images" :key="idx">
+                <van-image :src="img" />
+              </van-grid-item>
+            </van-grid>
+            <!-- 文字说明 -->
+            <div class="meta">
+              <span>{{item.aut_name}}</span>
+              <span>{{item.comm_count}}评论</span>
+              <span>{{item.pubdate}}</span>
+            </div>
+
+          </div>
+        </van-cell>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -22,11 +39,26 @@ export default {
     return {
       list: [], // 数据,每一项就是一篇文章
       timestamp: null,
+      isLoadingNew: false, // 是否是 下拉刷新中....
       loading: false, // 是否正在加载
       finished: false // 是否所有的数据全部加载完成
-    };
+    }
   },
   methods: {
+    // 下拉刷新
+    async onRefresh () {
+      // 1. 去取回最新的文章 .传入最新的时间戳
+      const result = await getArticles(this.channel.id, Date.now())
+      // 2. 把文章追加到 list 的 头部
+      const arr = result.data.data.results;
+      this.list.unshift(...arr)
+      // this.list = [...arr, ...this.list]
+      // this.list = arr.concat(this.list)
+      // 3. 提示更新结果
+      this.$toast.success('刷新成功' + arr.length + '条')
+      // 4. 结束loading状态
+      this.isLoadingNew = false
+    },
     // List 组件通过loading和finished两个变量控制加载状态，
     // 当组件滚动到底部时，会触发load事件并将loading设置成true。
     // 此时可以发起异步操作并更新数据，数据更新完毕后，将loading设置成false即可。
@@ -64,6 +96,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped lang='less'>
+  .meta {
+    span {
+      margin-right: 10px;
+    }
+  }
 </style>
