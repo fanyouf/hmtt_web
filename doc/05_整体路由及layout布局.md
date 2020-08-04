@@ -5,83 +5,35 @@
 - 完成整体路由规划(要搞清楚要做几个页面，它们分别在哪个路由下面，是怎么跳转的.....)
 - 完成Layout布局
 
+
+
+## 主页整体结构分析
+
+从login页登陆，成功后进入主页。
+
+当然，用户也可以直接访问主页，只不过此时是未登陆状态。
+
+主页从上到下由三部分组成：
+
+- 顶部logo导航区
+- 中间部分
+  - 二级路由的出口
+- 底部tabbar
+  - 点击不同的图标，会显示不同的内容到中间的二级路由出口。
+
 <img src="asset/image-20200408214018053.png" alt="image-20200408214018053" style="zoom:50%;" />
 
-## 整体路由设置
-
-目标：
-
-- 把项目中所有用到的组件及路由表定下来
-
-### 约定路由规则
-
-| path           | 文件                     | 功能                     | 组件名       | 路由级别 |
-| -------------- | ------------------------ | ------------------------ | ------------ | -------- |
-| /login         | views/login/index.vue    | 登录页                   | Login        | 一级路由 |
-| /              | views/layout/index.vue   | 布局                     | Layout       | 一级路由 |
-| ├─ /           | views/home/index.vue     | 主页（不登陆也能访问的） | Home         | 二级路由 |
-| ├─ /question   | views/question/index.vue | 问答                     | Question     | 二级路由 |
-| ├─ /video      | views/video/index.vue    | 视频                     | Video        | 二级路由 |
-| ├─ /user       | views/user/index.vue     | 个人中心                 | User         | 二级路由 |
-| /user/profile  | views/user/profile.vue   | 编辑资料                 | UserProfile  | 一级路由 |
-| /user/chat     | views/user/chat.vue      | 小智同学                 | UserChat     | 一级路由 |
-| /search        | views/search/index.vue   | 搜索中心                 | Search       | 一级路由 |
-| /search/result | views/search/result.vue  | 搜索结果                 | SearchResult | 一级路由 |
-| /article       | views/article/index.vue  | 文章详情                 | Article      | 一级路由 |
 
 
 
-### 实现路由配置
 
-```js
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Login from '@/views/login' // /index.vue是可以省略的
-import LayoutIndex from '@/views/layout' // /index.vue是可以省略的
-import HomeIndex from '@/views/home'
-import VideoIndex from '@/views/video'
-Vue.use(VueRouter)
-
-const routes = [
-  // 用户登陆
-  { path: '/login', component: Login },
-  // 主页
-  {
-    path: '/',
-    component: LayoutIndex,
-    // 嵌套路由
-    // 当访问http://localhost:8080/#/user 时
-    //   把UserIndex组件放在 LayoutIndex组中的router-view中去
-    children: [
-      { path: '', component: HomeIndex },
-      { path: '/user', component: () => import('@/views/user/index') },
-      { path: '/video', component: VideoIndex }
-    ]
-  },
-  // 路由懒加载
-  { path: '/search', component: () => import('@/views/search/index') }
-]
-
-const router = new VueRouter({
-  routes
-})
-
-export default router
-
-```
-
-- 根据约定的路由规则定义。
-- 且先定义规则对应的组件。
-
-## Layout布局
+## Layout组件布局
 
 ![image-20200707095703320](asset/image-20200707095703320.png)
 
 - 用到[van-nav-bar](https://youzan.github.io/vant/#/zh-CN/nav-bar#shi-yong-cha-cao) 和[van-tabber](https://youzan.github.io/vant/#/zh-CN/tabbar)
 
-> #left 是 slot="left"的简写
->
-> van-tabber的route属性可以开启路由模式，通过to来指定要跳转的路由地址。
+
 
 views/layout/index.vue
 
@@ -133,41 +85,8 @@ export default {
 }
 </script>
 
-<style scoped lang='less'></style>
-```
-
-
-
-## 全局样式
-
-此处是可选的，后面再回来写也是可以的。
-
-`src/styles/index.less`
-
-```less
-// 项目的公共的样式
-// 覆盖vant自带导航栏的样式
-.van-nav-bar {
-  background-color: #3196fa;
-  .van-nav-bar__title, .van-icon{
-    color: #fff;
-  }
-}
-
-#app{
-  position: absolute;
-  left: 0;
-  top: 0;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-}
-// .container是Layout.vue组件的根元素的类名
-.container{
-  width: 100%;
-  height: 100%;
-  // logo区域
-  .logo {
+<style scoped lang='less'>
+.logo {
     background: url("../assets/logo.png") no-repeat;
     background-size: cover;
     width: 100px;
@@ -178,72 +97,78 @@ export default {
     background-color: #5babfb;
     width: 80px;
   }
-}
-
-// .index 是home/index.vue组件的根元素的类名
-.index {
-  height: 100%;
-  // 让出顶部导航条的距离
-  // 顶部在导航条是固定定位的
-  padding-top:46px;
-
-  // #app >.container >.index > .van-tabs > van-tabs__wrap + van-tabs__content
-  .van-tabs {
-    padding-top:50px; 
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    .van-tabs__wrap {
-      position:fixed;
-      top:46px; // 跟在顶部固定导航条的下方
-      left:0px;
-      right:30px; 
-      // 标记当前选中频道的下划线
-      .van-tabs__line {
-        width: 30px !important;
-        background-color: #3296fa;
-        bottom: 20px;
-      }
-    }
-    
-    .van-tabs__content {
-      flex:1;
-      overflow: hidden;
-      
-      padding-bottom: 4rem;  // 能看到文章列表中的loading效果
-      .van-tab__pane{ 
-        height: 100%;
-        // .scroll-wrapper 是home/ArticleList.vue组件的根元素的类名
-        .scroll-wrapper{
-          overflow:auto;
-          height: 100%;
-        }
-      }
-    }
-  }
-
-  // 频道管理的开关按钮
-  .bar-btn {
-    position: fixed;
-    right: 5px;
-    top: 57px;
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    opacity: 0.8;
-    z-index:1;
-    .van-icon-wap-nav{
-      font-size: 20px;
-    }
-  }
-}
+</style>
 ```
+
+- #left 是 slot="left"的简写
+
+- van-tabber的route属性可以开启路由模式，通过to来指定要跳转的路由地址。
+
+## Layout路由配置
+
+```js
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Login from '@/views/login' // /index.vue是可以省略的
+import LayoutIndex from '@/views/layout' // /index.vue是可以省略的
+import HomeIndex from '@/views/home'
+import VideoIndex from '@/views/video'
+Vue.use(VueRouter)
+
+const routes = [
+  // 用户登陆
+  { path: '/login', component: Login },
+  // 主页
+  {
+    path: '/',
+    component: LayoutIndex,
+    // 嵌套路由
+    // 当访问http://localhost:8080/#/user 时
+    //   把UserIndex组件放在 LayoutIndex组中的router-view中去
+    children: [
+      { path: '', component: HomeIndex },
+      { path: '/user', component: () => import('@/views/user/index') },
+      { path: '/video', component: VideoIndex }
+    ]
+  },
+  // 路由懒加载
+  { path: '/search', component: () => import('@/views/search/index') }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router
+
+```
+
+- 根据约定的路由规则定义。
+- 且先定义规则对应的组件。
+
+## 整体路由设置
+
+### 约定路由规则
+
+| path           | 文件                     | 功能                     | 组件名       | 路由级别 |
+| -------------- | ------------------------ | ------------------------ | ------------ | -------- |
+| /login         | views/login/index.vue    | 登录页                   | Login        | 一级路由 |
+| /              | views/layout/index.vue   | 布局                     | Layout       | 一级路由 |
+| ├─ /           | views/home/index.vue     | 主页（不登陆也能访问的） | Home         | 二级路由 |
+| ├─ /question   | views/question/index.vue | 问答                     | Question     | 二级路由 |
+| ├─ /video      | views/video/index.vue    | 视频                     | Video        | 二级路由 |
+| ├─ /user       | views/user/index.vue     | 个人中心                 | User         | 二级路由 |
+| /user/profile  | views/user/profile.vue   | 编辑资料                 | UserProfile  | 一级路由 |
+| /user/chat     | views/user/chat.vue      | 小智同学                 | UserChat     | 一级路由 |
+| /search        | views/search/index.vue   | 搜索中心                 | Search       | 一级路由 |
+| /search/result | views/search/result.vue  | 搜索结果                 | SearchResult | 一级路由 |
+| /article       | views/article/index.vue  | 文章详情                 | Article      | 一级路由 |
 
 
 
 ## 功能组件的基本架子
 
-下面的组件内容只是基本架子，后面在具体做页面功能时，都会重写的
+下面的组件内容只是基本架子，后面在具体做页面功能时，都会重写的。
 
 views/home/index.vue 组件
 
@@ -438,6 +363,108 @@ export default {
 </script>
 
 <style scoped lang='less'></style>
+
+```
+
+## 全局样式
+
+```
+
+全局样式
+此处是可选的，后面再回来写也是可以的。
+
+src/styles/index.less
+
+// 项目的公共的样式
+// 覆盖vant自带导航栏的样式
+.van-nav-bar {
+  background-color: #3196fa;
+  .van-nav-bar__title, .van-icon{
+    color: #fff;
+  }
+}
+#app{
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+// .container是Layout.vue组件的根元素的类名
+.container{
+  width: 100%;
+  height: 100%;
+  // logo区域
+  .logo {
+    background: url("../assets/logo.png") no-repeat;
+    background-size: cover;
+    width: 100px;
+    height: 30px;
+  }
+  // 搜索按钮
+  .search-btn {
+    background-color: #5babfb;
+    width: 80px;
+  }
+}
+// .index 是home/index.vue组件的根元素的类名
+.index {
+  height: 100%;
+  // 让出顶部导航条的距离
+  // 顶部在导航条是固定定位的
+  padding-top:46px;
+​
+  // #app >.container >.index > .van-tabs > van-tabs__wrap + van-tabs__content
+  .van-tabs {
+    padding-top:50px; 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .van-tabs__wrap {
+      position:fixed;
+      top:46px; // 跟在顶部固定导航条的下方
+      left:0px;
+      right:30px; 
+      // 标记当前选中频道的下划线
+      .van-tabs__line {
+        width: 30px !important;
+        background-color: #3296fa;
+        bottom: 20px;
+      }
+    }
+    
+    .van-tabs__content {
+      flex:1;
+      overflow: hidden;
+      
+      padding-bottom: 4rem;  // 能看到文章列表中的loading效果
+      .van-tab__pane{ 
+        height: 100%;
+        // .scroll-wrapper 是home/ArticleList.vue组件的根元素的类名
+        .scroll-wrapper{
+          overflow:auto;
+          height: 100%;
+        }
+      }
+    }
+  }
+​
+  // 频道管理的开关按钮
+  .bar-btn {
+    position: fixed;
+    right: 5px;
+    top: 57px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    opacity: 0.8;
+    z-index:1;
+    .van-icon-wap-nav{
+      font-size: 20px;
+    }
+  }
+}
 
 ```
 
