@@ -36,6 +36,11 @@ export default {
       reportTypeList,
       isReport: false // 是否是处于状态二：反馈
     }
+  },
+  methods: {
+    abc () {
+      alert('abc')
+    }
   }
 }
 </script>

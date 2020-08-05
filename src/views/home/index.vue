@@ -28,12 +28,14 @@
     -->
     <van-popup  v-model="showMoreAction" :style="{ width: '80%' }">
       <!--
+        van-popup 在它没有弹出之前，moreAction组件不会创建
         @dislike="hDislike"： 处理不感兴趣
         @report="hReport": 处理举报
       -->
       <more-action
       @report="hReport"
-      @dislike="hDislike"></more-action>
+      @dislike="hDislike"
+      ref="refMoreAction"></more-action>
     </van-popup>
   </div>
 </template>
@@ -105,6 +107,15 @@ export default {
       this.articleId = articleId
       // 显示弹层
       this.showMoreAction = true
+
+      // 1.确保moreAction组件中的isReport为false
+      //    本质上就是：在父组件中去修改子组件中的数据项！
+      //  思路：在父组件中获取子组件的引用，并直接去修改子组件中的数据
+      console.log(this.$refs.refMoreAction)
+      if (this.$refs.refMoreAction) {
+        this.$refs.refMoreAction.isReport = false
+        this.$refs.refMoreAction.abc()
+      }
     }
   }
 }
