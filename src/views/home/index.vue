@@ -3,11 +3,14 @@
     <!-- 频道列表
     https://vant-contrib.gitee.io/vant/#/zh-CN/tab#biao-qian-lan-gun-dong
     -->
-    <van-tabs>
+
+    <!-- // v-model用来获取当前是哪一个频道id。它与van-tab中的name属性一起工作  -->
+    <van-tabs v-model="channelId">
       <van-tab
         v-for="channel in channels"
         :title="channel.name"
-        :key="channel.id">
+        :key="channel.id"
+        :name="channel.id">
         <!-- 频道与文章列表是一一对应的。每个频道都需要有一个文章列表组件。
           article-list写在了v-for中，则每次循环都会生成一个文章列表组件。
           van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才会去创建文章列表组件
@@ -42,6 +45,7 @@ export default {
   data () {
     return {
       channels: [],
+      channelId: '', // 表示当前选择中频道的编号
       articleId: null, // 本次要操作的文章编号
       showMoreAction: false // 是否显示更多操作的弹层
     }
@@ -65,7 +69,7 @@ export default {
       // 3. 通知文章列表去删除那个被点击的文章
       const obj = {
         articleId: this.articleId, // 当前的文章编号
-        channelId: -1 // 当前频道id
+        channelId: this.channelId // 当前频道id
       }
       this.$eventBus.$emit('delArticle', obj)
     },

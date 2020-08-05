@@ -52,8 +52,29 @@ export default {
   created () {
     console.log(this.channel, 'created,启动了监听')
     this.$eventBus.$on('delArticle', (obj) => {
+      // obj { articleId ,channelId}
+      const { articleId, channelId } = obj
       console.log('我这里是', this.channel, '收到了事件qhjpl', obj)
-      // todo: 是否需要在本文章列表中去删除对应的数据
+      // 是否是当前频道：
+      //   是：在list中找到编号是obj.articleId的数据，并删除
+      //   否：不处理
+      if (channelId !== this.channel.id) {
+        console.log('你要删除的文章不在我这个' + this.channel.name + '上')
+        return
+      }
+
+      console.log(`在list中找到编号是${articleId}的数据，并删除`)
+      // 在数组中找到一个元素，并删除
+      // 1. 找下标
+      // 2. 做删除
+      const idx = this.list.findIndex(article => {
+        return article.art_id.toString() === articleId
+      })
+      if (idx !== -1) {
+        // 找到了元素
+        // 如何在数组中，删除指定下标的元素？
+        this.list.splice(idx, 1)
+      }
     })
   },
   methods: {
