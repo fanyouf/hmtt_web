@@ -14,6 +14,8 @@ import 'amfe-flexible'
 import '@/styles/index.less'
 
 import { formatTime, relativeTime } from '@/utils/date-time.js'
+// 导入事件总线
+import EventBus from './utils/eventbus'
 
 // 定义全局过滤器（这个过滤器需要在其它的组件中使用）
 // Vue.filter('过滤器名', function(过滤前的值){
@@ -30,6 +32,10 @@ Vue.filter('relativeTime', function (val) {
 
 Vue.use(Vant)
 Vue.use(Lazyload)
+
+// 把事件总线挂在原型对象上
+// 则在组件内部，可以直接通过this.$eventBus来访问这个事件总线对象
+Vue.prototype.$eventBus = EventBus
 
 Vue.config.productionTip = false
 

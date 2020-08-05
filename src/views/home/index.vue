@@ -63,6 +63,11 @@ export default {
       // 2. 退出弹层
       this.showMoreAction = false
       // 3. 通知文章列表去删除那个被点击的文章
+      const obj = {
+        articleId: this.articleId, // 当前的文章编号
+        channelId: -1 // 当前频道id
+      }
+      this.$eventBus.$emit('delArticle', obj)
     },
     async loadChannels () {
       const result = await getChannels()

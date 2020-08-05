@@ -49,6 +49,13 @@ export default {
       finished: false // 是否所有的数据全部加载完成
     }
   },
+  created () {
+    console.log(this.channel, 'created,启动了监听')
+    this.$eventBus.$on('delArticle', (obj) => {
+      console.log('我这里是', this.channel, '收到了事件qhjpl', obj)
+      // todo: 是否需要在本文章列表中去删除对应的数据
+    })
+  },
   methods: {
     // 用户点击了关闭按钮
     hClose (article) {
