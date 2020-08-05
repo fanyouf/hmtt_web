@@ -15,7 +15,8 @@
 
         <!-- 把当前的频道信息传给子组件 -->
         <!-- 文章列表 -->
-        <article-list :channel="channel"></article-list>
+        <article-list :channel="channel"
+        @showMoreAction="hShowMoreAction"></article-list>
       </van-tab>
     </van-tabs>
 
@@ -23,13 +24,17 @@
       https://vant-contrib.gitee.io/vant/#/zh-CN/popup
     -->
     <van-popup  v-model="showMoreAction" :style="{ width: '80%' }">
-      <more-action></more-action>
+      <!--
+        @dislike="hDislike"： 处理不感兴趣 -->
+      <more-action
+      @dislike="hDislike"></more-action>
     </van-popup>
   </div>
 </template>
 
 <script>
 import { getChannels } from '@/api/channel.js'
+import { dislikeArticle } from '@/api/article.js'
 import ArticleList from './articleList.vue'
 import MoreAction from './moreAction.vue'
 export default {
@@ -37,7 +42,8 @@ export default {
   data () {
     return {
       channels: [],
-      showMoreAction: true // 是否显示更多操作的弹层
+      articleId: null, // 本次要操作的文章编号
+      showMoreAction: false // 是否显示更多操作的弹层
     }
   },
   components: {
@@ -48,10 +54,28 @@ export default {
     this.loadChannels()
   },
   methods: {
+    async hDislike () {
+      console.log('从子组件收到，不感兴趣！此时要操作的文章编号是', this.articleId)
+
+      // 1. 调用后端接口
+      const result = await dislikeArticle(this.articleId)
+      console.log(result)
+      // 2. 退出弹层
+      this.showMoreAction = false
+      // 3. 通知文章列表去删除那个被点击的文章
+    },
     async loadChannels () {
       const result = await getChannels()
       console.log(result)
       this.channels = result.data.data.channels
+    },
+    // 处理子组件articleLise中抛出的：关闭按钮
+    hShowMoreAction (articleId) {
+      console.log('收到从子组件中传递的文章编号', articleId)
+      // 保存文章编号
+      this.articleId = articleId
+      // 显示弹层
+      this.showMoreAction = true
     }
   }
 }

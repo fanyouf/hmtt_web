@@ -25,6 +25,20 @@ export const getArticles = (channelId, timestamp) => {
   })
 }
 
+/**
+ * 对指定的id的文章 不感兴趣
+ * @param {*} articleId 文章编号
+ */
+export const dislikeArticle = articleId => {
+  return ajax({
+    method: 'POST',
+    url: '/app/v1_0/article/dislikes',
+    data: {
+      target: articleId
+    }
+  })
+}
+
 // 对axios来说，
 // 如果要通过body去传参，就要写data      ---  post
 // 如果要通过query去传参，就要写params   ---  get

@@ -21,6 +21,11 @@
               <span>{{item.comm_count}}评论</span>
               <!-- 使用过滤器 -->
               <span>{{item.pubdate | relativeTime}}</span>
+
+              <!-- 如果是登陆用户(有没有token)，则显示x按钮 -->
+              <span class="close" @click="hClose(item)" v-if="$store.state.tokenInfo.token">
+                  <van-icon name="cross"></van-icon>
+              </span>
             </div>
           </div>
         </van-cell>
@@ -45,6 +50,13 @@ export default {
     }
   },
   methods: {
+    // 用户点击了关闭按钮
+    hClose (article) {
+      // 向父组件传递文章编号. 我们通过 大数处理，把文章编号转成了对象，这里要通过toString()恢复
+      const articleId = article.art_id.toString()
+      // 通知父组件index.vue去显示弹层
+      this.$emit('showMoreAction', articleId)
+    },
     // 下拉刷新
     async onRefresh () {
       // 1. 去取回最新的文章 .传入最新的时间戳
@@ -98,8 +110,15 @@ export default {
 
 <style scoped lang='less'>
   .meta {
+    display: flex;
     span {
       margin-right: 10px;
+    }
+    .close {
+      // 让关闭按钮 在最右边
+      // 它的父级容器是flex的，给当前元素设置左外边距为auto，会让这个元素在父级容器
+      // 的最右边
+      margin-left: auto;
     }
   }
 </style>

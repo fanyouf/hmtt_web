@@ -9,9 +9,20 @@ import axios from 'axios'
 import store from '@/store/index.js'
 // console.log('store', store)
 
+import JSONBig from 'json-bigint' // 引入大数字包
+
 const instance1 = axios.create({
   // 后端服务器1
-  baseURL: 'http://ttapi.research.itcast.cn'
+  baseURL: 'http://ttapi.research.itcast.cn',
+  transformResponse: [function (data) {
+    // 由于后端返回的数据有出现大数问题（文章编号）,这里使用json-bigint处理一下
+    // 优先使用JSONBig转一下
+    try {
+      return JSONBig.parse(data)
+    } catch (err) {
+      return data
+    }
+  }]
   // baseURL: 'http://api-toutiao-web.itheima.net'
   // timeout: 1000,
   // headers: {'X-Custom-Header': 'foobar'}
