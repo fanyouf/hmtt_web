@@ -18,7 +18,7 @@
       3. 视频
       4. 我的
     -->
-    <router-view></router-view>
+    <router-view />
 
     <!-- 底部的tabbar -->
     <!-- 启用路由导航功能

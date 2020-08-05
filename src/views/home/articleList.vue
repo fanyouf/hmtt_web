@@ -22,7 +22,6 @@
               <!-- 使用过滤器 -->
               <span>{{item.pubdate | relativeTime}}</span>
             </div>
-
           </div>
         </van-cell>
       </van-list>
