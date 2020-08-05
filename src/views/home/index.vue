@@ -28,8 +28,11 @@
     -->
     <van-popup  v-model="showMoreAction" :style="{ width: '80%' }">
       <!--
-        @dislike="hDislike"： 处理不感兴趣 -->
+        @dislike="hDislike"： 处理不感兴趣
+        @report="hReport": 处理举报
+      -->
       <more-action
+      @report="hReport"
       @dislike="hDislike"></more-action>
     </van-popup>
   </div>
@@ -37,7 +40,7 @@
 
 <script>
 import { getChannels } from '@/api/channel.js'
-import { dislikeArticle } from '@/api/article.js'
+import { dislikeArticle, reportArticle } from '@/api/article.js'
 import ArticleList from './articleList.vue'
 import MoreAction from './moreAction.vue'
 export default {
@@ -58,20 +61,37 @@ export default {
     this.loadChannels()
   },
   methods: {
-    async hDislike () {
-      console.log('从子组件收到，不感兴趣！此时要操作的文章编号是', this.articleId)
-
-      // 1. 调用后端接口
-      const result = await dislikeArticle(this.articleId)
-      console.log(result)
-      // 2. 退出弹层
-      this.showMoreAction = false
-      // 3. 通知文章列表去删除那个被点击的文章
+    delArticle () {
       const obj = {
         articleId: this.articleId, // 当前的文章编号
         channelId: this.channelId // 当前频道id
       }
       this.$eventBus.$emit('delArticle', obj)
+    },
+    async hReport (reportTypeId) {
+      console.log('父组件收到举报的类型是', reportTypeId)
+      // 1. 调用后端接口
+      const result = await reportArticle(this.articleId, reportTypeId)
+      console.log(result)
+      // 2. 退出弹层
+      this.showMoreAction = false
+      // 3. 通知文章列表去删除那个被点击的文章
+      this.delArticle()
+    },
+    async hDislike () {
+      console.log('从子组件收到，不感兴趣！此时要操作的文章编号是', this.articleId)
+      try {
+        // 1. 调用后端接口
+        const result = await dislikeArticle(this.articleId)
+        console.log(result)
+        // 2. 退出弹层
+        this.showMoreAction = false
+        // 3. 通知文章列表去删除那个被点击的文章
+        this.delArticle()
+        this.$toast.success('操作成功')
+      } catch (e) {
+        this.$toast.fail('操作失败')
+      }
     },
     async loadChannels () {
       const result = await getChannels()

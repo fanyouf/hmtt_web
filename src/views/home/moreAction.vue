@@ -10,22 +10,30 @@
     <!-- 状态二 反馈-->
     <van-cell-group v-else>
       <van-cell icon="arrow-left" @click="isReport=false">返回</van-cell>
-      <van-cell>侵权</van-cell>
-      <van-cell>色情</van-cell>
-      <van-cell>暴力</van-cell>
-      <van-cell>低俗</van-cell>
-      <van-cell>不适</van-cell>
-      <van-cell>错误</van-cell>
-      <van-cell>其他</van-cell>
+      <!--
+        @click="$emit('report', item.value)"
+        向父组件抛出事件，传递举报的具体类型（数值）
+       -->
+      <van-cell
+      v-for="item in reportTypeList"
+      :key="item.value"
+      @click="$emit('report', item.value)"
+      >
+        {{item.label}}
+      </van-cell>
     </van-cell-group>
   </div>
 </template>
 
 <script>
+import reportTypeList from '@/constant/report.js'
+console.log(reportTypeList)
 export default {
   name: 'MoreAction',
   data () {
     return {
+      // reportTypeList: reportTypeList,
+      reportTypeList,
       isReport: false // 是否是处于状态二：反馈
     }
   }

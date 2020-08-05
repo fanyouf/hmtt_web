@@ -39,6 +39,22 @@ export const dislikeArticle = articleId => {
   })
 }
 
+/**
+ * 举报指定文章
+ * @param {*} articleId 要举报的文章编号
+ * @param {*} typeId 举报类型
+ */
+export const reportArticle = (articleId, typeId) => {
+  return ajax({
+    method: 'POST',
+    url: '/app/v1_0/article/reports',
+    data: {
+      target: articleId,
+      type: typeId
+    }
+  })
+}
+
 // 对axios来说，
 // 如果要通过body去传参，就要写data      ---  post
 // 如果要通过query去传参，就要写params   ---  get
