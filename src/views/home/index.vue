@@ -48,9 +48,11 @@
       <!--
         1. 父传子。把当前订阅频道传给 频道编辑组件
         2. 监听子组件回传的事件
+        3. :channelId="channelId" 把当前频道id传入
       -->
       <channel-edit
         :channels="channels"
+        :channelId="channelId"
         @updateCurChannel="hUpdateCurChannel"
       ></channel-edit>
     </van-action-sheet>

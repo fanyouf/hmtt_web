@@ -1,6 +1,10 @@
 <template>
   <div class="channel-edit">
     <!-- 当前登陆用户已经订阅的频道 -->
+    <!--
+      :class="{'cur': 条件}"
+      如果条件成立，就会有cur类。
+    -->
     <div class="channel">
       <van-cell title="我的频道" :border="false">
         <van-button  size="mini" type="info">编辑</van-button>
@@ -10,6 +14,7 @@
         v-for="item in channels"
         :key="item.id"
         @click="hClickMyChannel(item)"
+        :class="{'cur': item.id === channelId}"
         >
           <span>{{item.name}}</span>
           <!-- <van-icon name="cross" class="btn"></van-icon> -->
@@ -33,7 +38,7 @@
 import { getAllChannels } from '@/api/channel.js'
 export default {
   name: 'ChannelEdit',
-  props: ['channels'],
+  props: ['channels', 'channelId'],
   data () {
     return {
       allChannels: [] // 所有的频道
@@ -59,7 +64,6 @@ export default {
           return false
         }
       })
-
       return result
     }
   },
@@ -88,5 +92,10 @@ export default {
     top: 0;
     right: 0;
     font-size: 24px;
-}
+  }
+  // 高亮显示当前频道
+  .cur {
+    color: red;
+    font-weight: bold;
+  }
 </style>
