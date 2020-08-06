@@ -23,6 +23,11 @@
       </van-tab>
     </van-tabs>
 
+    <!-- 频道列表 开关 通过定位 -->
+    <div class="bar-btn" @click="showChannelEdit=true">
+        <van-icon name="wap-nav"/>
+    </div>
+
     <!-- 文章---更多操作
       https://vant-contrib.gitee.io/vant/#/zh-CN/popup
     -->
@@ -37,14 +42,23 @@
       @dislike="hDislike"
       ref="refMoreAction"></more-action>
     </van-popup>
+
+    <!-- https://vant-contrib.gitee.io/vant/#/zh-CN/action-sheet -->
+    <van-action-sheet v-model="showChannelEdit" title="标题">
+      <channel-edit></channel-edit>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
 import { getChannels } from '@/api/channel.js'
-import { dislikeArticle, reportArticle } from '@/api/article.js'
+// import { dislikeArticle, reportArticle } from '@/api/article.js'
+import * as obj from '@/api/article.js'
 import ArticleList from './articleList.vue'
 import MoreAction from './moreAction.vue'
+import ChannelEdit from './channelEdit.vue'
+const { dislikeArticle, reportArticle } = obj
+console.log(obj)
 export default {
   name: 'Home',
   data () {
@@ -52,12 +66,14 @@ export default {
       channels: [],
       channelId: '', // 表示当前选择中频道的编号
       articleId: null, // 本次要操作的文章编号
+      showChannelEdit: false, // 是否显示频道编辑弹层
       showMoreAction: false // 是否显示更多操作的弹层
     }
   },
   components: {
     ArticleList,
-    MoreAction
+    MoreAction,
+    ChannelEdit
   },
   created () {
     this.loadChannels()
@@ -121,6 +137,19 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+// 频道管理的开关按钮
+  .bar-btn {
+    position: fixed;
+    right: 5px;
+    top: 57px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    opacity: 0.8;
+    z-index:1;
+    .van-icon-wap-nav{
+      font-size: 20px;
+    }
+  }
 </style>
