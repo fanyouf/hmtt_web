@@ -11,6 +11,16 @@ export const getChannels = () => {
   })
 }
 
+/**
+ * 获取系统中所有的频道
+ */
+export const getAllChannels = () => {
+  return ajax({
+    method: 'GET',
+    url: '/app/v1_0/channels'
+  })
+}
+
 // export const getChannels = () => {
 //   return ajax({
 //     method: ,

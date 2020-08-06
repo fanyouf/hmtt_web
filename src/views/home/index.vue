@@ -44,8 +44,9 @@
     </van-popup>
 
     <!-- https://vant-contrib.gitee.io/vant/#/zh-CN/action-sheet -->
-    <van-action-sheet v-model="showChannelEdit" title="标题">
-      <channel-edit></channel-edit>
+    <van-action-sheet v-model="showChannelEdit" title="频道管理">
+      <!-- 1. 父传子。把当前订阅频道传给 频道编辑组件 -->
+      <channel-edit :channels="channels"></channel-edit>
     </van-action-sheet>
   </div>
 </template>
@@ -63,7 +64,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      channels: [],
+      channels: [], // 当前订阅的频道
       channelId: '', // 表示当前选择中频道的编号
       articleId: null, // 本次要操作的文章编号
       showChannelEdit: false, // 是否显示频道编辑弹层
