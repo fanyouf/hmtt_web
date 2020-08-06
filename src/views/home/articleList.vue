@@ -6,6 +6,7 @@
         v-model="loading"
         :finished="finished"
         @load="onLoad"
+        finished-text="没有更多了"
         >
         <van-cell v-for="(item, idx) in list" :key="idx" :title="item.title">
           <div slot="label">
