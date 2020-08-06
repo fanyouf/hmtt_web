@@ -26,7 +26,10 @@
     <div class="channel">
       <van-cell title="可选频道" :border="false"></van-cell>
       <van-grid>
-        <van-grid-item v-for="item in recommendChannels" :key="item.id">
+        <van-grid-item
+        v-for="item in recommendChannels"
+        :key="item.id"
+        @click="hAddChannel(item)">
           <span>{{item.name}}</span>
         </van-grid-item>
       </van-grid>
@@ -35,7 +38,7 @@
 </template>
 
 <script>
-import { getAllChannels } from '@/api/channel.js'
+import { getAllChannels, addChannel } from '@/api/channel.js'
 export default {
   name: 'ChannelEdit',
   props: ['channels', 'channelId'],
@@ -50,6 +53,7 @@ export default {
   computed: {
     // 可选频道
     recommendChannels () {
+      console.log(Date.now(), '计算属性在工作..... recommendChannels')
       // 公式： this.allChannels - this.channels
       // 本质是：从一个数组中减去另一个数组
       //  对 所有频道进行过滤，只留下那些个 没有出现在 我的频道中的 数据
@@ -68,6 +72,30 @@ export default {
     }
   },
   methods: {
+    // 用户在可选频道上做一次点击
+    async hAddChannel (channel) {
+      // 1. 组装参数，改造 成api要的格式
+      //    在用户原来的订阅频道的基础上，添加这个频道
+      let curChannelList = [...this.channels, channel]
+      curChannelList = curChannelList.map((item, idx) => {
+        return {
+          id: item.id,
+          seq: idx
+        }
+      })
+      // 去掉推荐频道。 由于推荐频道总是第一个位置，所以这里直接删除它
+      curChannelList.splice(0, 1)
+      // console.log(curChannelList)
+      // 2. 调用接口 -- 通知后端服务器去更新频道
+      const result = await addChannel(curChannelList)
+      console.log(result)
+      // 3. 更新视图
+      // this.channels表示已订阅的频道，这是从父组件中传过来了。
+      this.channels.push(channel)
+      // 1) 修改了已经订阅的频道   多出一项
+      // 2) 会激活计算属性再次工作，修改可选频道会少一项
+      // 3) 它还会去修改父组件中的channels。原因是channels本身就是通过props从父组件传递过来的 数组
+    },
     // 用户点击了我的频道，要做频道跳转，通知父组件
     hClickMyChannel (channel) {
       // 抛出事件
