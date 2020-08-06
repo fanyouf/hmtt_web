@@ -30,7 +30,6 @@
     </div>
  <p>当前是否有登陆：{{$store.state.tokenInfo.token ? '登陆了': '没有登陆'}}</p>
     <van-button type="info" class="btn" @click="hGetProfile">测试去获取用户个人信息{{$store.state.tokenInfo.token ? '登陆了': '没有登陆'}}</van-button>
-
   </div>
 </template>
 
@@ -101,6 +100,7 @@ export default {
         // 会在3s之后关闭
         this.$toast.success('登陆成功')
         // todo 登陆成功，跳转
+        this.$router.push('/')
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')

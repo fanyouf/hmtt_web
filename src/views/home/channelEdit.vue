@@ -7,7 +7,9 @@
     -->
     <div class="channel">
       <van-cell title="我的频道" :border="false">
-        <van-button  size="mini" type="info">编辑</van-button>
+        <van-button size="mini" plain hairline type="info" @click="editing=!editing" class="editBtn">
+          {{ editing ? '取消' : '编辑'}}
+        </van-button>
       </van-cell>
       <van-grid>
         <van-grid-item
@@ -17,7 +19,13 @@
         :class="{'cur': item.id === channelId}"
         >
           <span>{{item.name}}</span>
-          <!-- <van-icon name="cross" class="btn"></van-icon> -->
+          <!--
+            我的频道上的x按钮
+            1. 只有在编辑状态时，才可见
+          1 2. 推荐频道始终是不能删除的，它不应该显示x
+               推荐频道的id一直是0
+          -->
+          <van-icon v-show="editing && item.id!== 0" name="cross" class="btn"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
@@ -38,12 +46,23 @@
 </template>
 
 <script>
-import { getAllChannels, addChannel } from '@/api/channel.js'
+import { getAllChannels, addChannel, deleteChannel } from '@/api/channel.js'
 export default {
   name: 'ChannelEdit',
-  props: ['channels', 'channelId'],
+  // props: ['channels', 'channelId'],
+  props: {
+    channels: {
+      type: Array, // 类型
+      required: true // 是否必须要传入
+    },
+    channelId: {
+      type: Number,
+      required: true
+    }
+  },
   data () {
     return {
+      editing: false, // 是否处于编辑状态
       allChannels: [] // 所有的频道
     }
   },
@@ -96,10 +115,35 @@ export default {
       // 2) 会激活计算属性再次工作，修改可选频道会少一项
       // 3) 它还会去修改父组件中的channels。原因是channels本身就是通过props从父组件传递过来的 数组
     },
-    // 用户点击了我的频道，要做频道跳转，通知父组件
-    hClickMyChannel (channel) {
-      // 抛出事件
-      this.$emit('updateCurChannel', channel)
+
+    // 用户点击了我的频道
+    // 有两种情况：
+    // 1. 普通状态
+    //   要做频道跳转，通知父组件
+    // 2. 编辑状态
+    //   删除频道
+    async hClickMyChannel (channel) {
+      if (this.editing) {
+        // 删除频道
+        console.log('删除频道')
+        if (channel.id === 0) { // 推荐频道是不能去删除的
+          return
+        }
+        // 1. 请求接口。不再去订阅这个频道了
+        const result = await deleteChannel(channel.id)
+        console.log(result)
+        // 2. 更新视图: 在已经选中的频道中去删除这一项
+        const idx = this.channels.findIndex(item => item.id === channel.id)
+        if (idx !== -1) {
+          this.channels.splice(idx, 1)
+          // 1) 修改了已经订阅的频道   减少出一项
+          // 2) 会激活计算属性再次工作，修改可选频道会多一项
+          // 3) 它还会去修改父组件中的channels。原因是channels本身就是通过props从父组件传递过来的 数组
+        }
+      } else {
+        // 抛出事件
+        this.$emit('updateCurChannel', channel)
+      }
     },
     async loadAllChannels () {
       const result = await getAllChannels()
@@ -125,5 +169,11 @@ export default {
   .cur {
     color: red;
     font-weight: bold;
+  }
+  .editBtn {
+    color: rgb(229, 97, 91) !important;
+    margin-right:10px;
+    padding:0 10px;
+    border-color: rgb(229, 97, 91);
   }
 </style>

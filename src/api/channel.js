@@ -35,6 +35,20 @@ export const addChannel = (channels) => {
   })
 }
 
+/**
+ * 删除指定id的频道
+ * @param {*} channelId 要删除的频道的id
+ */
+export const deleteChannel = channelId => {
+  return ajax({
+    method: 'DELETE',
+    url: '/app/v1_0/user/channels',
+    data: {
+      channels: [channelId]
+    }
+  })
+}
+
 // export const getChannels = () => {
 //   return ajax({
 //     method: ,
