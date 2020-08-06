@@ -45,8 +45,14 @@
 
     <!-- https://vant-contrib.gitee.io/vant/#/zh-CN/action-sheet -->
     <van-action-sheet v-model="showChannelEdit" title="频道管理">
-      <!-- 1. 父传子。把当前订阅频道传给 频道编辑组件 -->
-      <channel-edit :channels="channels"></channel-edit>
+      <!--
+        1. 父传子。把当前订阅频道传给 频道编辑组件
+        2. 监听子组件回传的事件
+      -->
+      <channel-edit
+        :channels="channels"
+        @updateCurChannel="hUpdateCurChannel"
+      ></channel-edit>
     </van-action-sheet>
   </div>
 </template>
@@ -80,6 +86,16 @@ export default {
     this.loadChannels()
   },
   methods: {
+    // 处理子组件channelEdit中用户在我的频道上点击的动作
+    // 1 . 关闭 我的频道 弹层
+    // 2 . 切换频道列表到 当前频道上去
+    hUpdateCurChannel (channel) {
+      console.log('处理子组件channelEdit中用户在我的频道上点击的动作', channel)
+      // 1 . 关闭 我的频道 弹层
+      this.showChannelEdit = false
+      // 2 . 切换频道列表到 当前频道上去
+      this.channelId = channel.id
+    },
     delArticle () {
       const obj = {
         articleId: this.articleId, // 当前的文章编号

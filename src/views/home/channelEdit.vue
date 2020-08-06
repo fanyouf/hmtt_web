@@ -6,7 +6,11 @@
         <van-button  size="mini" type="info">编辑</van-button>
       </van-cell>
       <van-grid>
-        <van-grid-item v-for="item in channels" :key="item.id">
+        <van-grid-item
+        v-for="item in channels"
+        :key="item.id"
+        @click="hClickMyChannel(item)"
+        >
           <span>{{item.name}}</span>
           <!-- <van-icon name="cross" class="btn"></van-icon> -->
         </van-grid-item>
@@ -60,6 +64,11 @@ export default {
     }
   },
   methods: {
+    // 用户点击了我的频道，要做频道跳转，通知父组件
+    hClickMyChannel (channel) {
+      // 抛出事件
+      this.$emit('updateCurChannel', channel)
+    },
     async loadAllChannels () {
       const result = await getAllChannels()
       console.log(result)
