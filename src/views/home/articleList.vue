@@ -23,7 +23,8 @@
               <span>{{item.pubdate | relativeTime}}</span>
 
               <!-- 如果是登陆用户(有没有token)，则显示x按钮 -->
-              <span class="close" @click="hClose(item)" v-if="$store.state.tokenInfo.token">
+              <!-- <span class="close" @click="hClose(item)" v-if="$store.state.tokenInfo.token"> -->
+              <span class="close" @click="hClose(item)" v-if="isLogin">
                   <van-icon name="cross"></van-icon>
               </span>
             </div>
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { getArticles } from '@/api/article.js'
 export default {
   name: 'ArticleList',
@@ -48,6 +50,9 @@ export default {
       loading: false, // 是否正在加载
       finished: false // 是否所有的数据全部加载完成
     }
+  },
+  computed: {
+    ...mapGetters(['isLogin'])
   },
   created () {
     console.log(this.channel, 'created,启动了监听')

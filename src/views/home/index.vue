@@ -24,7 +24,7 @@
     </van-tabs>
 
     <!-- 频道列表 开关 通过定位 -->
-    <div v-if="$store.state.tokenInfo.token" class="bar-btn" @click="showChannelEdit=true">
+    <div v-if="$store.getters.isLogin" class="bar-btn" @click="showChannelEdit=true">
         <van-icon name="wap-nav"/>
     </div>
 

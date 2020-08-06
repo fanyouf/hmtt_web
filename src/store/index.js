@@ -19,6 +19,18 @@ export default new Vuex.Store({
       setItem('tokenInfo', tokenObj)
     }
   },
+  // 它相当于计算属性
+  // 基于state中的数据产生新的数据项
+  getters: {
+    // 是否登陆了
+    isLogin (state) {
+      if (state.tokenInfo.token) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   actions: {
   },
   modules: {

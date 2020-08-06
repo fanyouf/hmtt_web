@@ -36,7 +36,7 @@
         视频
       </van-tabbar-item>
       <van-tabbar-item to="/user" icon="search">
-        {{$store.state.tokenInfo.token ? '我的' : '未登陆' }}
+        {{$store.getters.isLogin ? '我的' : '未登陆' }}
       </van-tabbar-item>
     </van-tabbar>
   </div>
