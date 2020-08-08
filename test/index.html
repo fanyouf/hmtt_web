@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>字符串替换</h1>
+  <div>
+    <span style="color:red">ab</span>cdefgbef<span style="color:red">AB</span>
+  </div>
+  <script>
+    var str = "abcdefgbefAB"
+    // 目标: 把str中的b全部换成<span style="color:red">b</span>
+    // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    // 普通字符串替换：str.replace(目标字符串，要替换的字符串)，它的返回值是替换之后的字符串，注意它不会修改原字符串。
+    // 它的问题是，它只能替换一次。如上，我们有两个b需要替换，那又该怎么办呢？
+    // - 循环
+    // - 正则
+    var target = 'ab'
+    var reg = new RegExp(target, 'gi') // 定义一个正则表达式 
+    // g：全局匹配(可以多次匹配), i:忽略大小写（无论大小写都可以匹配）
+
+    var m = '<span style="color:red">' + target + '</span>'
+
+    // str.replace(目标字符串，要替换的字符串)： 只能替换一次
+    // console.log( str.replace(target, m) )
+  
+    // str.replace(正则/g，要替换的字符串)： 设置了正则的全局匹配之后，就可以替换多次
+    // console.log( str.replace(target, m) )
+    // console.log( str.replace(reg, m) ) // 不能正确对大小写进行正确的显示
+  
+    // str.replace(正则/g，fucntion(s){ return XXXX })
+    // 函数执行的逻辑:
+    // s: 表示当前匹配到的内容
+    // return: 表示要替换的内容
+    console.log( str.replace(reg, function(s){
+      console.log(s)
+      return '<span style="color:red">' + s + '</span>'
+    }) )
+</script>
+</body>
+</html>
