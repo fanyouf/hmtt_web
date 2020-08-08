@@ -9,6 +9,7 @@
         type="info"
         size="small"
         icon="search"
+        @click="$router.push('/search')"
       >搜索</van-button>
     </van-nav-bar>
 

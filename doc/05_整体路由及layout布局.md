@@ -235,19 +235,19 @@ export default router
 
 ### 约定路由规则
 
-| path           | 文件                     | 功能                     | 组件名       | 路由级别 |
-| -------------- | ------------------------ | ------------------------ | ------------ | -------- |
-| /login         | views/login/index.vue    | 登录页                   | Login        | 一级路由 |
-| /              | views/layout/index.vue   | 布局                     | Layout       | 一级路由 |
-| ├─ /           | views/home/index.vue     | 主页（不登陆也能访问的） | Home         | 二级路由 |
-| ├─ /question   | views/question/index.vue | 问答                     | Question     | 二级路由 |
-| ├─ /video      | views/video/index.vue    | 视频                     | Video        | 二级路由 |
-| ├─ /user       | views/user/index.vue     | 个人中心                 | User         | 二级路由 |
-| /user/profile  | views/user/profile.vue   | 编辑资料                 | UserProfile  | 一级路由 |
-| /user/chat     | views/user/chat.vue      | 小智同学                 | UserChat     | 一级路由 |
-| /search        | views/search/index.vue   | 搜索中心                 | Search       | 一级路由 |
-| /search/result | views/search/result.vue  | 搜索结果                 | SearchResult | 一级路由 |
-| /article       | views/article/index.vue  | 文章详情                 | Article      | 一级路由 |
+| path           | 文件                     | 功能                     | 组件名       | 路由级别 |       |
+| -------------- | ------------------------ | ------------------------ | ------------ | -------- | ----- |
+| /login         | views/login/index.vue    | 登录页                   | Login        | 一级路由 |       |
+| /              | views/layout/index.vue   | 布局                     | Layout       | 一级路由 |       |
+| ├─ /           | views/home/index.vue     | 主页（不登陆也能访问的） | Home         | 二级路由 |       |
+| ├─ /question   | views/question/index.vue | 问答                     | Question     | 二级路由 | 3天   |
+| ├─ /video      | views/video/index.vue    | 视频                     | Video        | 二级路由 | 2天   |
+| ├─ /user       | views/user/index.vue     | 个人中心                 | User         | 二级路由 | 1.5天 |
+| /user/profile  | views/user/profile.vue   | 编辑资料                 | UserProfile  | 一级路由 |       |
+| /user/chat     | views/user/chat.vue      | 小智同学                 | UserChat     | 一级路由 |       |
+| /search        | views/search/index.vue   | 搜索中心                 | Search       | 一级路由 |       |
+| /search/result | views/search/result.vue  | 搜索结果                 | SearchResult | 一级路由 |       |
+| /article       | views/article/index.vue  | 文章详情                 | Article      | 一级路由 |       |
 
 
 

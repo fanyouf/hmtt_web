@@ -7,6 +7,7 @@ import Home from '@/views/home' // index.vue是可以省略的
 import Video from '@/views/video' // index.vue是可以省略的
 import Question from '@/views/question' // index.vue是可以省略的
 import User from '@/views/user' // index.vue是可以省略的
+import Search from '@/views/search' // index.vue是可以省略的
 
 Vue.use(VueRouter)
 
@@ -26,7 +27,13 @@ const routes = [
       { path: '/question', component: Question },
       { path: '/user', component: User }
     ]
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: Search
   }
+
   // {
   //   path: '/about',
   //   name: 'About',
