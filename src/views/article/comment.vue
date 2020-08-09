@@ -24,7 +24,10 @@
           <p style="color: #363636;">{{item.content}}</p>
           <p>
             <span style="margin-right: 10px;">{{item.pubdate | relativeTime }}</span>
-            <van-button size="mini" type="default">回复</van-button>
+            <van-button size="mini"
+            type="default"
+            @click="hReplay"
+            >回复</van-button>
           </p>
         </div>
         <van-icon slot="right-icon" name="like-o" />
@@ -43,10 +46,21 @@
       </van-field>
     </van-cell-group>
     <!-- /发布评论 -->
+
+    <!-- 评论回复 -->
+    <van-popup
+      v-model="isReplyShow"
+      round position="bottom"
+      :style="{ height: '85%' }"
+      >
+        <comment-reply></comment-reply>
+    </van-popup>
+    <!-- 评论回复 -->
   </div>
 </template>
 
 <script>
+import CommentReply from './commentReply'
 import { addComment, getComments } from '@/api/comment'
 export default {
   name: 'ArticleComment',
@@ -56,8 +70,12 @@ export default {
       required: true
     }
   },
+  components: {
+    CommentReply
+  },
   data () {
     return {
+      isReplyShow: false, // 是否显示评论回复
       offset: null, // 获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
       content: '', // 当前的评论内容
       list: [], // 评论列表
@@ -67,6 +85,9 @@ export default {
   },
 
   methods: {
+    hReplay () {
+      this.isReplyShow = true
+    },
     async hAddComment () {
       if (this.content === '') {
         return
