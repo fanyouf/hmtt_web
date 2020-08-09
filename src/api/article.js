@@ -55,6 +55,17 @@ export const reportArticle = (articleId, typeId) => {
   })
 }
 
+/**
+ * 根据文章编号来获取文章详情
+ * @param {*} id 文章编号
+ */
+export const getArticle = id => {
+  return ajax({
+    method: 'GET',
+    url: '/app/v1_0/articles/' + id
+  })
+}
+
 // 对axios来说，
 // 如果要通过body去传参，就要写data      ---  post
 // 如果要通过query去传参，就要写params   ---  get

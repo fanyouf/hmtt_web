@@ -8,7 +8,10 @@
         @load="onLoad"
         finished-text="没有更多了"
         >
-        <van-cell v-for="(item, idx) in list" :key="idx" :title="item.title">
+        <van-cell v-for="(item, idx) in list"
+        :key="idx"
+        :title="item.title"
+        @click="$router.push('/article/' + item.art_id.toString())">
           <div slot="label">
             <!-- 图片 当前文章有几张图 就用几个宫格 -->
             <van-grid :column-num="item.cover.images.length">
