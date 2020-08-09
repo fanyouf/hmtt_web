@@ -22,8 +22,18 @@
     <!-- 文章详情 -->
     <div class="detail" v-else>
       <h3 class="title">{{article.title}}</h3>
+
+      <author :author="article">
+        <van-button
+          round
+          size="small"
+          type="info"
+          @click="hSwitchFollow"
+        >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
+      </author>
+
       <!-- 作者 -->
-      <div class="author">
+      <!-- <div class="author">
         <van-image round width="1rem" height="1rem" fit="fill"
         :src="article.aut_photo"/>
         <div class="text">
@@ -36,7 +46,7 @@
           type="info"
           @click="hSwitchFollow"
         >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
-      </div>
+      </div> -->
       <!-- 作者 end-->
 
       <div class="content">
@@ -55,6 +65,7 @@
 </template>
 
 <script>
+import Author from '@/components/author'
 import { unFollowUser, followUser } from '@/api/user.js'
 import { getArticle } from '@/api/article.js'
 export default {
@@ -68,6 +79,9 @@ export default {
   },
   created () {
     this.loadArticle()
+  },
+  components: {
+    Author
   },
   methods: {
     async loadArticle () {
