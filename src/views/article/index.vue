@@ -18,52 +18,51 @@
       <van-button @click="$router.back()">后退</van-button>
       <van-button @click="$router.push('/')">回主页</van-button>
     </div>
+    <div v-else>
+      <!-- 文章详情 -->
+      <div class="detail">
+        <h3 class="title">{{article.title}}</h3>
+        <author :author="article">
+          <van-button
+            round
+            size="small"
+            type="info"
+            @click="hSwitchFollow"
+          >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
+        </author>
 
-    <!-- 文章详情 -->
-    <div class="detail" v-else>
-      <h3 class="title">{{article.title}}</h3>
+        <!-- 作者 -->
+        <!-- <div class="author">
+          <van-image round width="1rem" height="1rem" fit="fill"
+          :src="article.aut_photo"/>
+          <div class="text">
+            <p class="name">{{article.aut_name}}</p>
+            <p class="time">{{article.pubdate | relativeTime}}</p>
+          </div>
+          <van-button
+            round
+            size="small"
+            type="info"
+            @click="hSwitchFollow"
+          >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
+        </div> -->
+        <!-- 作者 end-->
 
-      <author :author="article">
-        <van-button
-          round
-          size="small"
-          type="info"
-          @click="hSwitchFollow"
-        >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
-      </author>
-
-      <!-- 作者 -->
-      <!-- <div class="author">
-        <van-image round width="1rem" height="1rem" fit="fill"
-        :src="article.aut_photo"/>
-        <div class="text">
-          <p class="name">{{article.aut_name}}</p>
-          <p class="time">{{article.pubdate | relativeTime}}</p>
+        <div class="content">
+          <div v-html="article.content"></div>
         </div>
-        <van-button
-          round
-          size="small"
-          type="info"
-          @click="hSwitchFollow"
-        >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
-      </div> -->
-      <!-- 作者 end-->
+        <van-divider>END</van-divider>
+        <div class="zan">
+          <van-button round size="small" hairline type="primary" plain icon="good-job-o">点赞</van-button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
+        </div>
+      </div>
+      <!-- /文章详情 -->
 
-      <div class="content">
-        <div v-html="article.content"></div>
-      </div>
-      <van-divider>END</van-divider>
-      <div class="zan">
-        <van-button round size="small" hairline type="primary" plain icon="good-job-o">点赞</van-button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
-      </div>
+      <!-- 文章评论 -->
+      <article-comment :article_id="$route.params.id"></article-comment>
     </div>
-    <!-- /文章详情 -->
-
-    <!-- 文章评论 -->
-    <article-comment :article_id="$route.params.id"></article-comment>
-
   </div>
 </template>
 

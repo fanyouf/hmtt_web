@@ -4,7 +4,7 @@
     <van-list
       v-model="loading"
       :finished="finished"
-      finished-text="没有更多了"
+      :finished-text="list.length===0 ? '没有评论' : '以上所有的评论'"
       @load="onLoad"
      >
       <van-cell
