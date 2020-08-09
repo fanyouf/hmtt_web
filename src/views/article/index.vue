@@ -13,6 +13,12 @@
     <van-loading v-if="loading" class="article-loading" />
     <!-- /加载中 loading -->
 
+    <div class="error" v-if="is404">
+      <p>文章被外星人吃掉了</p>
+      <van-button @click="$router.back()">后退</van-button>
+      <van-button @click="$router.push('/')">回主页</van-button>
+    </div>
+
     <!-- 文章详情 -->
     <div class="detail" v-else>
       <h3 class="title">{{article.title}}</h3>
@@ -55,6 +61,7 @@ export default {
   name: 'ArticleIndex',
   data () {
     return {
+      is404: false, // 文章是否存在
       loading: true, // 控制加载中的 loading 状态
       article: { } // 当前文章
     }
@@ -64,10 +71,19 @@ export default {
   },
   methods: {
     async loadArticle () {
-      const id = this.$route.params.id
-      const result = await getArticle(id)
-      this.article = result.data.data
-      this.loading = false
+      try {
+        const id = this.$route.params.id
+        const result = await getArticle(id)
+        this.article = result.data.data
+        this.loading = false // 结束loading
+      } catch (err) {
+        this.loading = false // 结束loading
+        if (err.response && err.response.status === 404) {
+          this.is404 = true
+        } else {
+          this.$toast.fail('文章加载失败')
+        }
+      }
     },
     // 如果这篇文章是自已写的。则不能自已关注自已！
     async hSwitchFollow () {
