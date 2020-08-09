@@ -38,7 +38,7 @@
       :key="idx"
       @click="hSearchSuggestion(idx)"
       icon="search">
-        <div v-html="item"></div>
+        <div v-html="item" slot="default"></div>
       </van-cell>
     </van-cell-group>
 
@@ -46,13 +46,15 @@
     <van-cell-group v-else>
       <van-cell title="历史记录"/>
 
-      <van-cell v-for="(item,idx) in history" :title="item" :key="idx">
-        <van-icon name="close" @click="hDeleteHistory(idx)"></van-icon>
+      <van-cell
+      v-for="(item,idx) in history"
+      :title="item"
+      :key="idx"
+      @click="$router.push('/search/result?keyword='+ item)"
+      >
+      <!-- @click.stop 为了阻止冒泡 -->
+        <van-icon name="close" @click.stop="hDeleteHistory(idx)"></van-icon>
       </van-cell>
-
-      <!-- <van-cell title="单元格">
-        <van-icon name="close"></van-icon>
-      </van-cell> -->
     </van-cell-group>
   </div>
 </template>
@@ -115,9 +117,16 @@ export default {
     // 搜索的第1种方法：用户在搜索建议上点击了
     hSearchSuggestion: function (idx) {
       console.log(idx)
+      const keyword = this.suggestion[idx]
       // 1. 把当前的搜索建议 添加到搜索历史记录中去
-      this.addHistory(this.suggestion[idx])
-      // 2. todo 跳转到搜索结果页
+      this.addHistory(keyword)
+      // 2. 跳转到搜索结果页
+      this.$router.push({
+        path: '/search/result',
+        query: {
+          keyword
+        }
+      })
     },
     // 搜索的第2种方法：用户在搜索按钮上点击了
     hSearch: function () {
@@ -126,7 +135,13 @@ export default {
       }
       // 1. 把当前的搜索内容 添加到搜索历史记录中去
       this.addHistory(this.keyword)
-      // 2. todo 跳转到搜索结果页
+      // 2. 跳转到搜索结果页
+      this.$router.push({
+        path: '/search/result',
+        query: {
+          keyword: this.keyword
+        }
+      })
     },
     // 当用户输入内容变化时，就会执行
     async hGetSuggestion () {
