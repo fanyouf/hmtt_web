@@ -61,13 +61,18 @@
     </div>
     <!-- /文章详情 -->
 
+    <!-- 文章评论 -->
+    <article-comment :article_id="$route.params.id"></article-comment>
+
   </div>
 </template>
 
 <script>
+import ArticleComment from './comment'
 import Author from '@/components/author'
 import { unFollowUser, followUser } from '@/api/user.js'
 import { getArticle } from '@/api/article.js'
+
 export default {
   name: 'ArticleIndex',
   data () {
@@ -81,7 +86,8 @@ export default {
     this.loadArticle()
   },
   components: {
-    Author
+    Author,
+    ArticleComment
   },
   methods: {
     async loadArticle () {
@@ -152,24 +158,6 @@ export default {
   }
   .zan{
     text-align: center;
-  }
-  .author {
-    padding: 10px 0;
-    display: flex;
-    .text {
-      flex: 1;
-      padding-left: 10px;
-      line-height: 1.3;
-      .name {
-        font-size: 14px;
-        margin: 0;
-      }
-      .time {
-        margin: 0;
-        font-size: 12px;
-        color: #999;
-      }
-    }
   }
   .content {
     font-size:14px;
