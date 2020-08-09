@@ -23,3 +23,28 @@ export const getProfile = () => {
     url: '/app/v1_0/user/profile'
   })
 }
+
+/**
+ * 关注用户
+ * @param {*} userId 用户的id
+ */
+export const followUser = userId => {
+  return ajax({
+    method: 'POST',
+    url: '/app/v1_0/user/followings',
+    data: {
+      target: userId
+    }
+  })
+}
+
+/**
+ * 取消关注用户
+ * @param {*} userId 用户的id
+ */
+export const unFollowUser = userId => {
+  return ajax({
+    method: 'DELETE',
+    url: '/app/v1_0/user/followings/' + userId
+  })
+}

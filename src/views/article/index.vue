@@ -28,7 +28,8 @@
           round
           size="small"
           type="info"
-        >+ 关注</van-button>
+          @click="hSwitchFollow"
+        >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
       </div>
       <!-- 作者 end-->
 
@@ -48,6 +49,7 @@
 </template>
 
 <script>
+import { unFollowUser, followUser } from '@/api/user.js'
 import { getArticle } from '@/api/article.js'
 export default {
   name: 'ArticleIndex',
@@ -66,6 +68,31 @@ export default {
       const result = await getArticle(id)
       this.article = result.data.data
       this.loading = false
+    },
+    // 如果这篇文章是自已写的。则不能自已关注自已！
+    async hSwitchFollow () {
+      try {
+        const isFollowed = this.article.is_followed
+        const autId = this.article.aut_id
+        // 根据当前的is_followed的值决定调用哪个 方法
+        // 如果 is_followed是true,在点击按钮，说明要做取关
+        if (isFollowed) {
+          const result = await unFollowUser(autId)
+          console.log(result)
+        } else {
+          // 如果 is_followed是false,在点击按钮，说明要做加关注
+          const result = await followUser(autId)
+          console.log(result)
+        }
+        // 更新视图
+        // 在本地取反
+        this.article.is_followed = !isFollowed
+
+        this.$toast.success('操作成功')
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('操作失败')
+      }
     }
   }
 }
