@@ -26,7 +26,7 @@
             <span style="margin-right: 10px;">{{item.pubdate | relativeTime }}</span>
             <van-button size="mini"
             type="default"
-            @click="hReplay"
+            @click="hShowReplay(item)"
             >回复</van-button>
           </p>
         </div>
@@ -53,7 +53,8 @@
       round position="bottom"
       :style="{ height: '85%' }"
       >
-        <comment-reply></comment-reply>
+      <!-- 向子组件传递当要评论的 那条数据 -->
+        <comment-reply :comment="currentComment"></comment-reply>
     </van-popup>
     <!-- 评论回复 -->
   </div>
@@ -75,6 +76,7 @@ export default {
   },
   data () {
     return {
+      currentComment: {}, // 表示当前的评论回复组件 要 回复是评论是第一条
       isReplyShow: false, // 是否显示评论回复
       offset: null, // 获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
       content: '', // 当前的评论内容
@@ -85,8 +87,13 @@ export default {
   },
 
   methods: {
-    hReplay () {
+    // 用户在回复按钮点击了
+    hShowReplay (item) {
+      // 1. 显示弹层。--- 评论回复组件
       this.isReplyShow = true
+
+      // 2. 当前评论传递给评论回复组件
+      this.currentComment = item
     },
     async hAddComment () {
       if (this.content === '') {
