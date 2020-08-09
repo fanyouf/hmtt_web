@@ -19,8 +19,8 @@
     >
       <van-cell
         v-for="item in list"
-        :key="item"
-        :title="item"
+        :key="item.art_id"
+        :title="item.title"
       />
     </van-list>
     <!-- /文章列表 -->
@@ -28,35 +28,33 @@
 </template>
 
 <script>
+import { getSearch } from '@/api/search'
 export default {
   name: 'SearchResult',
   data () {
     return {
       list: [],
+      page: 1, // 当前是第几页
       loading: false, // 正在加载
       finished: false // 是否所有的数据全部加载完成
     }
   },
-  mounted () {
-    console.log(this.$route.query.keyword)
-    // 发请求，取回数据，显示数据.....
-  },
-
   methods: {
-    onLoad () {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
-        this.loading = false
+    async onLoad () {
+      // 1. 调用api, 获取数据
+      const result = await getSearch(this.$route.query.keyword, this.page)
+      console.log(result)
+      const arr = result.data.data.results
+      // 2. 把数据填充到list
+      this.list.push(...arr)
+      this.page++ // 页面自增
 
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 500)
+      // 3. 修改loading为false
+      this.loading = false
+      // 4. 判断是否加载完了所有的数据
+      if (arr.length === 0) {
+        this.finished = true
+      }
     }
   }
 }
