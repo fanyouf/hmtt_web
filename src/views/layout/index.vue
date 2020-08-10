@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <!-- logo导航  logo + 按钮  固定在头部 -->
-    <van-nav-bar fixed>
+    <van-nav-bar fixed
+      v-show="$route.path!=='/user'"
+      >
       <!-- 注意插槽的问题 -->
       <div slot="left" class="logo"></div>
       <van-button slot="right"

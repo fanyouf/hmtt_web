@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { setItem, getItem } from '@/utils/storage.js'
+import { setItem, getItem, removeItem } from '@/utils/storage.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -17,6 +17,12 @@ export default new Vuex.Store({
 
       // 2. 做持久化 -- 保存到localstorage
       setItem('tokenInfo', tokenObj)
+    },
+    mClearTokenInfo (state) {
+      // 1. 保存到vuex
+      state.tokenInfo = {}
+      // 2. 做持久化 -- 保存到localstorage
+      removeItem('tokenInfo')
     }
   },
   // 它相当于计算属性

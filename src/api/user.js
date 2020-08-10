@@ -25,6 +25,16 @@ export const getProfile = () => {
 }
 
 /**
+ * 获取用户自已的信息
+ */
+export const getInfo = () => {
+  return ajax({
+    method: 'GET',
+    url: '/app/v1_0/user'
+  })
+}
+
+/**
  * 关注用户
  * @param {*} userId 用户的id
  */
