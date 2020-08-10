@@ -10,6 +10,7 @@ import User from '@/views/user' // index.vue是可以省略的
 import Search from '@/views/search' // index.vue是可以省略的
 import Result from '@/views/search/result.vue' //
 import Article from '@/views/article' //
+import Profile from '@/views/user/profile' //
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,11 @@ const routes = [
     path: '/article/:id',
     name: 'article',
     component: Article
+  },
+  {
+    path: '/user/profile',
+    name: 'profile',
+    component: Profile
   }
 
   // {

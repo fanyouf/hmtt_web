@@ -17,6 +17,9 @@ export const login = (mobile, code) => {
   })
 }
 
+/**
+ * 获取用户的个人信息(包括：姓名，性别，生日......)
+ */
 export const getProfile = () => {
   return ajax({
     method: 'GET',
@@ -25,7 +28,7 @@ export const getProfile = () => {
 }
 
 /**
- * 获取用户自已的信息
+ * 获取用户自已的信息(系统信息：粉丝数量，点赞数量........)
  */
 export const getInfo = () => {
   return ajax({
@@ -56,5 +59,22 @@ export const unFollowUser = userId => {
   return ajax({
     method: 'DELETE',
     url: '/app/v1_0/user/followings/' + userId
+  })
+}
+
+/**
+ * 修改个人的三项基本信息
+ * @param {*} obj 要修改的内容
+ * obj {
+ *  name: 姓名,
+ *  gender: 性别：男(0) ,女(1)
+ *  birthday: 2010-12-20
+ * }
+ */
+export const updateUserInfo = obj => {
+  return ajax({
+    method: 'PATCH',
+    url: '/app/v1_0/user/profile',
+    data: obj
   })
 }
