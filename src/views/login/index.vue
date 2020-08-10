@@ -100,7 +100,8 @@ export default {
         // 会在3s之后关闭
         this.$toast.success('登陆成功')
         // todo 登陆成功，跳转
-        this.$router.push('/')
+        const backto = this.$route.query.backto || '/'
+        this.$router.push(backto)
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')
