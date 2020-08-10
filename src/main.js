@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from './router/auth.js'
 // 脚手架自动创建的vuex.store
 import store from './store'
 // 引入vant组件库
