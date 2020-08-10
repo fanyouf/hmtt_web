@@ -27,7 +27,7 @@
             <van-button size="mini"
             type="default"
             @click="hShowReplay(item)"
-            >回复</van-button>
+            >回复{{item.reply_count}}</van-button>
           </p>
         </div>
         <van-icon slot="right-icon" name="like-o" />
@@ -53,8 +53,12 @@
       round position="bottom"
       :style="{ height: '85%' }"
       >
-      <!-- 向子组件传递当要评论的 那条数据 -->
-        <comment-reply :comment="currentComment"></comment-reply>
+      <!--  :comment="currentComment" 向子组件传递当要评论的 那条数据 -->
+      <!--  @close="isReplyShow=false"  收到子组件传递消息，关闭弹层 -->
+        <comment-reply
+        @close="isReplyShow=false"
+        :comment="currentComment"
+        :article_id="article_id"></comment-reply>
     </van-popup>
     <!-- 评论回复 -->
   </div>
