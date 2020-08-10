@@ -56,6 +56,7 @@
       <!--  :comment="currentComment" 向子组件传递当要评论的 那条数据 -->
       <!--  @close="isReplyShow=false"  收到子组件传递消息，关闭弹层 -->
         <comment-reply
+        v-if="isReplyShow"
         @close="isReplyShow=false"
         :comment="currentComment"
         :article_id="article_id"></comment-reply>
