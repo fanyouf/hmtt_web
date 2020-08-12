@@ -6,8 +6,8 @@
     <!-- 聊天主体区域 -->
     <div class="chat-list">
       <div class="chat-item"
-        v-for="item in list"
-        :key="item.timestamp"
+        v-for="(item,idx) in list"
+        :key="item.timestamp + idx"
         :class="item.name==='xz' ? 'left':'right'"
       >
         <!-- template这个组件的作用：是在逻辑上形成一个整体，在实际渲染时，它并不会呈现为任意的dom元素 -->
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+// 提供websocket的功能
+import io from 'socket.io-client'
 export default {
   name: 'UserChat',
   data () {
@@ -42,14 +44,88 @@ export default {
         { name: 'xz', msg: '你好，我是无所不知的小智同学！', timestamp: Date.now() },
         { name: 'me', msg: '小智同学, 请问你知道你不知道什么吗？', timestamp: Date.now() },
         { name: 'xz', msg: '我有点晕了', timestamp: Date.now() },
+        { name: 'xz', msg: '我要下班了', timestamp: Date.now() },
+        { name: 'xz', msg: '你好，我是无所不知的小智同学！', timestamp: Date.now() },
+        { name: 'me', msg: '小智同学, 请问你知道你不知道什么吗？', timestamp: Date.now() },
+        { name: 'xz', msg: '我有点晕了', timestamp: Date.now() },
         { name: 'xz', msg: '我要下班了', timestamp: Date.now() }
       ],
       word: ''
     }
   },
+  created () {
+    // 1. 创建webscoket连接
+    // 格式：io(url, 参数)
+    // http://47.114.163.79:3003
+    // http://ttapi.research.itcast.cn
+    this.socket = io('http://47.114.163.79:3003', {
+      query: {
+        token: this.$store.state.tokenInfo.token
+      }
+    })
+    this.socket.on('connect', () => {
+      console.log('与webscoket服务器连接成功')
+      // 填充到list中
+      this.list.push({
+        msg: '我是小智。你已经连上我了',
+        timestamp: Date.now(),
+        name: 'xz'
+      })
+      this.$nextTick(() => {
+        document.querySelector('.chat-list').scrollTop = document.querySelector('.chat-list').scrollHeight
+      })
+    })
+    this.socket.on('message', obj => {
+      console.log('收到服务器端的消息', obj)
+      // 填充到list中
+      this.list.push({
+        msg: obj.msg,
+        timestamp: obj.timestamp,
+        name: 'xz'
+      })
+      this.$nextTick(() => {
+        document.querySelector('.chat-list').scrollTop = document.querySelector('.chat-list').scrollHeight
+      })
+    })
+  },
   methods: {
+    // 用户点击了发送按钮
     send () {
       console.log(this.word)
+      if (this.word === '') {
+        return
+      }
+      if (this.socket) {
+        // 1. 向websocket服务器发消息
+        const info = {
+          msg: this.word,
+          timestamp: Date.now()
+        }
+        this.socket.emit('message', info)
+
+        // 2. 把自已说的话，添加到list中去
+        // 添加了数据项，会引起视图的变化 ---- 添加了一个div块 ---- 导致整体高度会增加
+        this.list.push({
+          name: 'me',
+          msg: this.word,
+          timestamp: Date.now()
+        })
+        // console.log(document.querySelector('.chat-list').scrollHeight)
+        // setTimeout(() => {
+        //   console.log(document.querySelector('.chat-list').scrollHeight)
+        // }, 1000)
+        this.$nextTick(() => {
+          document.querySelector('.chat-list').scrollTop = document.querySelector('.chat-list').scrollHeight
+        })
+        // 3. 清空留言区域
+        this.word = ''
+      }
+    }
+  },
+  destroyed () {
+    // 组件销毁时，关闭与服务器的连接
+    if (this.socket) {
+      this.socket.close()
     }
   }
 }

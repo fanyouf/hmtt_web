@@ -64,6 +64,7 @@
 </template>
 
 <script>
+
 import { getProfile, updateUserInfo, updatePhoto } from '@/api/user'
 import dayjs from 'dayjs'
 export default {
