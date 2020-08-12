@@ -12,11 +12,12 @@ import Result from '@/views/search/result.vue' //
 import Article from '@/views/article' //
 import Profile from '@/views/user/profile' //
 
-// const originalPush = VueRouter.prototype.push
-// VueRouter.prototype.push = function push (location, onResolve, onReject) {
-//   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-//   return originalPush.call(this, location).catch(err => err)
-// }
+// 为了解决在路由导航守卫中，发生路由跳转时的错误异常
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(VueRouter)
 const routes = [

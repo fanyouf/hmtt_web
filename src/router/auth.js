@@ -22,7 +22,9 @@ router.beforeEach(function (to, from, next) {
   //  - 正常放行
 
   // fullPath: 包含了path及查询字符串的内容
-  if (to.path === '/user') {
+
+  // 项目中所有需要权限的页面都应该写在下面
+  if (to.path === '/user' || to.path === '/user/profile') {
     // 检查是否登陆
     if (store.state.tokenInfo.token) {
       console.log('你有身份证，可以访问')
