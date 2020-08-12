@@ -12,8 +12,13 @@ import Result from '@/views/search/result.vue' //
 import Article from '@/views/article' //
 import Profile from '@/views/user/profile' //
 
-Vue.use(VueRouter)
+// const originalPush = VueRouter.prototype.push
+// VueRouter.prototype.push = function push (location, onResolve, onReject) {
+//   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+//   return originalPush.call(this, location).catch(err => err)
+// }
 
+Vue.use(VueRouter)
 const routes = [
   {
     path: '/login',
@@ -24,8 +29,9 @@ const routes = [
     path: '/',
     name: 'layout',
     component: Layout,
+    redirect: '/home',
     children: [
-      { path: '', component: Home }, // 默认显示的子路由
+      { path: '/home', component: Home }, // 默认显示的子路由
       { path: '/video', component: Video },
       { path: '/question', component: Question },
       { path: '/user', component: User }
