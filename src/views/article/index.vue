@@ -27,6 +27,7 @@
             round
             size="small"
             type="info"
+            v-show="!isYourself"
             @click="hSwitchFollow"
           >{{ article.is_followed ? '取关' : '+ 关注'}}</van-button>
         </author>
@@ -81,6 +82,15 @@ export default {
       article: { } // 当前文章
     }
   },
+  computed: {
+    isYourself () {
+      if (!this.article.aut_id) {
+        return false
+      }
+      // eslint-disable-next-line eqeqeq
+      return this.article.aut_id == this.$store.state.userInfo.id
+    }
+  },
   created () {
     this.loadArticle()
   },
@@ -128,6 +138,16 @@ export default {
         console.log(err)
         this.$toast.fail('操作失败')
       }
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    console.log('你现在在文章详情页，你将要离开这个页面')
+    console.log(to, from)
+    if (to.path === '/login' && this.$store.state.tokenInfo.token) {
+      // 如果你已经登陆了，则不能再回到Login了，只能回主页
+      next({ path: '/' })
+    } else {
+      next()
     }
   }
 }
