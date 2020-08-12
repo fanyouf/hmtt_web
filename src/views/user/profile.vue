@@ -9,7 +9,9 @@
 
     <!-- 编辑区 -->
     <van-cell-group>
-      <van-cell is-link title="头像"  center>
+      <!-- hidden : 隐藏自已。但是，它的功能是正常的。 -->
+      <input type="file" hidden @change="hPhotoChange" ref="refPhoto"/>
+      <van-cell is-link title="头像" center @click="hShowSelectImage">
         <van-image
           slot="default"
           width="1.5rem"
@@ -62,7 +64,7 @@
 </template>
 
 <script>
-import { getProfile, updateUserInfo } from '@/api/user'
+import { getProfile, updateUserInfo, updatePhoto } from '@/api/user'
 import dayjs from 'dayjs'
 export default {
   name: 'userProfile',
@@ -88,6 +90,44 @@ export default {
     this.loadProfile()
   },
   methods: {
+    // 用户在头像上点击，希望也弹出文件选择框
+    // 移花接木
+    hShowSelectImage () {
+      // 就相当于直接在input type="file" 上点击
+      this.$refs.refPhoto.click()
+    },
+    // 用户选择头像
+    async hPhotoChange () {
+      // 1. 获取当前的头像文件
+      // console.dir(this.$refs.refPhoto)
+      // this.$refs.refPhoto 获取当前的dom对象。
+      // files: 这个input文件域有一个属性名是files，其中保存是的当前
+      // 用户选择的所有的文件。由于这里只是一个单选，则选中的文件一定放在下
+      // 标为0的位置
+      const file = this.$refs.refPhoto.files[0]
+      if (!file) {
+        return
+      }
+      this.$toast.loading({
+        duration: 0, // 永远不会关闭
+        mask: true,
+        message: '操作中....'
+      })
+      try {
+        // 2. 调用接口向服务器传
+        // (1) 由于上传是文件，需要用FormData动态构建参数
+        const fd = new FormData()
+        fd.append('photo', file)
+        // (2) 调用接口发请求
+        // const result = await updatePhoto(fd)
+        const result = await updatePhoto({ photo: file })
+        // 3. 更新视图
+        this.user.photo = result.data.data.photo
+        this.$toast.success('修改头像成功')
+      } catch {
+        this.$toast.fail('修改头像失败')
+      }
+    },
     // 修改名字
     async hSaveName () {
       if (this.newName === '') {
