@@ -3,14 +3,12 @@
     <!-- 频道列表
     https://vant-contrib.gitee.io/vant/#/zh-CN/tab#biao-qian-lan-gun-dong
     -->
-
-    <!-- // v-model用来获取当前是哪一个频道id。它与van-tab中的name属性一起工作  -->
-    <van-tabs v-model="channelId">
+    <van-tabs v-model="curIndex">
       <van-tab
         v-for="channel in channels"
         :title="channel.name"
         :key="channel.id"
-        :name="channel.id">
+        >
         <!-- 频道与文章列表是一一对应的。每个频道都需要有一个文章列表组件。
           article-list写在了v-for中，则每次循环都会生成一个文章列表组件。
           van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才会去创建文章列表组件
@@ -48,11 +46,12 @@
       <!--
         1. 父传子。把当前订阅频道传给 频道编辑组件
         2. 监听子组件回传的事件
-        3. :channelId="channelId" 把当前频道id传入
+        3. :curIndex="curIndex" 把当前频道的下标传入
       -->
       <channel-edit
         :channels="channels"
-        :channelId="channelId"
+        :curIndex="curIndex"
+        @fixedIndex="hFixedIndex"
         @updateCurChannel="hUpdateCurChannel"
       ></channel-edit>
     </van-action-sheet>
@@ -73,7 +72,7 @@ export default {
   data () {
     return {
       channels: [], // 当前订阅的频道
-      channelId: '', // 表示当前选择中频道的编号
+      curIndex: 0, // 表示当前选中频道的索引值
       articleId: null, // 本次要操作的文章编号
       showChannelEdit: false, // 是否显示频道编辑弹层
       showMoreAction: false // 是否显示更多操作的弹层
@@ -88,20 +87,23 @@ export default {
     this.loadChannels()
   },
   methods: {
+    hFixedIndex (idx) {
+      this.curIndex = idx
+    },
     // 处理子组件channelEdit中用户在我的频道上点击的动作
     // 1 . 关闭 我的频道 弹层
     // 2 . 切换频道列表到 当前频道上去
-    hUpdateCurChannel (channel) {
-      console.log('处理子组件channelEdit中用户在我的频道上点击的动作', channel)
+    hUpdateCurChannel (idx) {
+      console.log('处理子组件channelEdit中用户在我的频道上点击的动作', idx)
       // 1 . 关闭 我的频道 弹层
       this.showChannelEdit = false
       // 2 . 切换频道列表到 当前频道上去
-      this.channelId = channel.id
+      this.curIndex = idx
     },
     delArticle () {
       const obj = {
         articleId: this.articleId, // 当前的文章编号
-        channelId: this.channelId // 当前频道id
+        channelId: this.channels[this.curIndex].id // 当前频道id
       }
       this.$eventBus.$emit('delArticle', obj)
     },

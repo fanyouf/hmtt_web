@@ -13,10 +13,10 @@
       </van-cell>
       <van-grid>
         <van-grid-item
-        v-for="item in channels"
+        v-for="(item, idx) in channels"
         :key="item.id"
-        @click="hClickMyChannel(item)"
-        :class="{'cur': item.id === channelId}"
+        @click="hClickMyChannel(idx)"
+        :class="{'cur': curIndex === idx}"
         >
           <span>{{item.name}}</span>
           <!--
@@ -55,7 +55,7 @@ export default {
       type: Array, // 类型
       required: true // 是否必须要传入
     },
-    channelId: {
+    curIndex: {
       type: Number,
       required: true
     }
@@ -122,27 +122,31 @@ export default {
     //   要做频道跳转，通知父组件
     // 2. 编辑状态
     //   删除频道
-    async hClickMyChannel (channel) {
+    async hClickMyChannel (idx) {
       if (this.editing) {
         // 删除频道
         console.log('删除频道')
-        if (channel.id === 0) { // 推荐频道是不能去删除的
+        if (idx === 0) { // 推荐频道是不能去删除的
           return
         }
         // 1. 请求接口。不再去订阅这个频道了
-        const result = await deleteChannel(channel.id)
+        const result = await deleteChannel(this.channels[idx].id)
         console.log(result)
         // 2. 更新视图: 在已经选中的频道中去删除这一项
-        const idx = this.channels.findIndex(item => item.id === channel.id)
-        if (idx !== -1) {
-          this.channels.splice(idx, 1)
-          // 1) 修改了已经订阅的频道   减少出一项
-          // 2) 会激活计算属性再次工作，修改可选频道会多一项
-          // 3) 它还会去修改父组件中的channels。原因是channels本身就是通过props从父组件传递过来的 数组
+        // const idx = this.channels.findIndex(item => item.id === channel.id)
+        // if (idx !== -1) {
+        this.channels.splice(idx, 1)
+        // 1) 修改了已经订阅的频道   减少出一项
+        // 2) 会激活计算属性再次工作，修改可选频道会多一项
+        // 3) 它还会去修改父组件中的channels。原因是channels本身就是通过props从父组件传递过来的 数组
+        // }
+        // 如果删除的频道在当前频道之前，则要去修复bug
+        if (idx < this.curIndex) {
+          this.$emit('fixedIndex', this.curIndex - 1)
         }
       } else {
         // 抛出事件
-        this.$emit('updateCurChannel', channel)
+        this.$emit('updateCurChannel', idx)
       }
     },
     async loadAllChannels () {
