@@ -43,11 +43,27 @@
         <van-cell title="男" @click="hSaveGender(0)" is-link></van-cell>
         <van-cell title="女" @click="hSaveGender(1)" is-link></van-cell>
       </van-popup>
+
+    <!-- 修改生日 -->
+      <van-popup v-model="showBirthday" position="bottom">
+        <van-nav-bar title="修改生日">
+        </van-nav-bar>
+        <van-datetime-picker
+          v-model="newDate"
+          type="date"
+          title="选择年月日"
+          @cancel="showBirthday=false"
+          @confirm="hSaveBirthday"
+          :min-date="minDate"
+          :max-date="maxDate"
+        />
+      </van-popup>
   </div>
 </template>
 
 <script>
 import { getProfile, updateUserInfo } from '@/api/user'
+import dayjs from 'dayjs'
 export default {
   name: 'userProfile',
   data () {
@@ -64,7 +80,7 @@ export default {
       newName: '',
       // 修改后新生日
       newDate: new Date(),
-      minDate: new Date(1965, 0, 10), // dateTime-picker中最小时间
+      minDate: new Date(2000, 0, 10), // dateTime-picker中最小时间: 2000年1月10号
       maxDate: new Date() // 当前时间
     }
   },
@@ -121,6 +137,35 @@ export default {
         this.$toast.fail('修改性别失败')
       }
     },
+    // 保存生日
+    async hSaveBirthday () {
+      const birthday = dayjs(this.newDate).format('YYYY-MM-DD')
+      console.log(birthday)
+
+      this.$toast.loading({
+        duration: 0, // 永远不会关闭
+        mask: true,
+        message: '操作中....'
+      })
+
+      try {
+        // 1. 调用接口，发请求，修改生日
+        const result = await updateUserInfo({
+          birthday
+        })
+        console.log(result)
+        // 2. 更新视图
+        this.user.birthday = birthday
+
+        // 3. 收起弹层
+        this.showBirthday = false
+
+        this.$toast.success('修改生日成功')
+      } catch {
+        this.$toast.fail('修改生日失败')
+      }
+    },
+
     async loadProfile () {
       const result = await getProfile()
       console.log(result)
