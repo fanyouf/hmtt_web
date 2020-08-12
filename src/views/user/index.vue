@@ -78,6 +78,13 @@ export default {
         console.log(result)
         this.user = result.data.data
 
+        // 保存到vuex
+        this.$store.commit('mSetUserInfo', {
+          id: this.user.id,
+          name: this.user.name,
+          photo: this.user.photo
+        })
+
         this.$toast.success('获取成功')
       } catch {
         this.$toast.fail('获取失败')

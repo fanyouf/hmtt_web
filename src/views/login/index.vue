@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { login, getProfile } from '@/api/user'
+import { login, getProfile, getInfo } from '@/api/user'
 export default {
   name: 'Login',
   data () {
@@ -94,7 +94,16 @@ export default {
         // console.log(result.data.data)
         this.$store.commit('mSetTokenInfo', result.data.data)
 
-        // 2. 后续再发请求时，把token加入到请求头中。
+        // 2. 再发请求获取个人信息
+        const res = await getInfo()
+        console.log(res)
+        const user = res.data.data
+        // 保存到vuex
+        this.$store.commit('mSetUserInfo', {
+          id: user.id,
+          name: user.name,
+          photo: user.photo
+        })
 
         // 覆盖上一个toast提示
         // 会在3s之后关闭

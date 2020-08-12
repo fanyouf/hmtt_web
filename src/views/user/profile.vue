@@ -119,10 +119,14 @@ export default {
         const fd = new FormData()
         fd.append('photo', file)
         // (2) 调用接口发请求
-        // const result = await updatePhoto(fd)
-        const result = await updatePhoto({ photo: file })
+        const result = await updatePhoto(fd)
+        // const result = await updatePhoto({ photo: file })  // 错误的写法
         // 3. 更新视图
         this.user.photo = result.data.data.photo
+
+        // 4. 保存到vuex
+        this.$store.commit('mSetUserPhoto', this.user.photo)
+
         this.$toast.success('修改头像成功')
       } catch {
         this.$toast.fail('修改头像失败')

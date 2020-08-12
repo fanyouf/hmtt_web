@@ -7,9 +7,26 @@ export default new Vuex.Store({
   // 保存公共数据
   state: {
     // tokenInfo的值是先从本地存储中取，取不到就用{}
-    tokenInfo: getItem('tokenInfo') || {}
+    tokenInfo: getItem('tokenInfo') || {},
+    // 保存用户的三个信息：id, name, photo
+    userInfo: getItem('userInfo') || {}
   },
   mutations: {
+    // 设置mutation来更新userInfo
+    mSetUserInfo (state, userObj) {
+      // 1. 保存到vuex
+      state.userInfo = userObj
+      // 2. 做持久化 -- 保存到localstorage
+      setItem('userInfo', userObj)
+    },
+
+    // 设置mutation来更新userInfo中的头像信息
+    mSetUserPhoto (state, photo) {
+      // 1. 保存到vuex
+      state.userInfo.photo = photo
+      // 2. 做持久化 -- 保存到localstorage
+      setItem('userInfo', state.userInfo)
+    },
     // 设置mutation来更新tokenInfo
     mSetTokenInfo (state, tokenObj) {
       // 1. 保存到vuex

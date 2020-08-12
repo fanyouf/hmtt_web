@@ -11,6 +11,7 @@ import Search from '@/views/search' // index.vue是可以省略的
 import Result from '@/views/search/result.vue' //
 import Article from '@/views/article' //
 import Profile from '@/views/user/profile' //
+import Chat from '@/views/user/chat' //
 
 // 为了解决在路由导航守卫中，发生路由跳转时的错误异常
 const originalPush = VueRouter.prototype.push
@@ -59,6 +60,11 @@ const routes = [
     path: '/user/profile',
     name: 'profile',
     component: Profile
+  },
+  {
+    path: '/user/chat',
+    name: 'chat',
+    component: Chat
   }
 
   // {
