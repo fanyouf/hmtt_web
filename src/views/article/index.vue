@@ -149,6 +149,9 @@ export default {
     } else {
       next()
     }
+  },
+  destroyed () {
+    console.log('文章详情页 destroyed')
   }
 }
 </script>

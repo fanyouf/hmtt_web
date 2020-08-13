@@ -31,9 +31,10 @@ const routes = [
     path: '/',
     name: 'layout',
     component: Layout,
-    redirect: '/home',
     children: [
-      { path: '/home', component: Home }, // 默认显示的子路由
+      // meta: 是属于路由对象的一部分。用来保存一些元信息
+      //       它本身是一个对象，你可以自已去补充键值对
+      { path: '', component: Home, meta: { isKeepAlive: true } }, // 默认显示的子路由
       { path: '/video', component: Video },
       { path: '/question', component: Question },
       { path: '/user', component: User }

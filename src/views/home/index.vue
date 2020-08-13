@@ -151,7 +151,7 @@ export default {
       console.log(this.$refs.refMoreAction)
       if (this.$refs.refMoreAction) {
         this.$refs.refMoreAction.isReport = false
-        this.$refs.refMoreAction.abc()
+        // this.$refs.refMoreAction.abc()
       }
     }
   }

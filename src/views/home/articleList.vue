@@ -1,6 +1,14 @@
 <template>
-<!-- 它的目标：显示它对应的那个频道下的文章信息 -->
-  <div class="scroll-wrapper">
+<!-- 它的目标：显示它对应的那个频道下的文章信息
+  为了达到从文章详情页回到列表时，能还原它的滚动条的位置：
+  1. 在组件内监听scroll，实时记录这个位置
+  2. 再次回到本组件（从文章详情页回来），去恢复滚动条的位置
+
+  如果这个组件被缓存了，则它会多个两个特殊的钩子函数
+   activated() {}    激活
+   deactivated () {} 失活
+-->
+  <div class="scroll-wrapper" @scroll="hScroll" ref="refScroll">
     <van-pull-refresh v-model="isLoadingNew" @refresh="onRefresh">
       <van-list
         v-model="loading"
@@ -14,7 +22,7 @@
         @click="$router.push('/article/' + item.art_id.toString())">
           <div slot="label">
             <!-- 图片 当前文章有几张图 就用几个宫格 -->
-            <van-grid :column-num="item.cover.images.length">
+            <van-grid :column-num="item.cover.images.length" :border="false">
               <van-grid-item v-for="(img,idx) in item.cover.images" :key="idx">
                 <van-image :src="img" lazy-load />
               </van-grid-item>
@@ -28,7 +36,7 @@
 
               <!-- 如果是登陆用户(有没有token)，则显示x按钮 -->
               <!-- <span class="close" @click="hClose(item)" v-if="$store.state.tokenInfo.token"> -->
-              <span class="close" @click="hClose(item)" v-if="isLogin">
+              <span class="close" @click.stop="hClose(item)" v-if="isLogin">
                   <van-icon name="cross"></van-icon>
               </span>
             </div>
@@ -87,6 +95,11 @@ export default {
     })
   },
   methods: {
+    hScroll () {
+      // console.log(this.$refs.refScroll.scrollTop)
+      // scrollTop并不是定义在data中 响应式的数据
+      this.scrollTop = this.$refs.refScroll.scrollTop
+    },
     // 用户点击了关闭按钮
     hClose (article) {
       // 向父组件传递文章编号. 我们通过 大数处理，把文章编号转成了对象，这里要通过toString()恢复
@@ -141,6 +154,17 @@ export default {
         this.finished = true;
       }
     }
+  },
+  activated () {
+    console.log('激活 activated...activated...activated...activated...')
+    if (this.scrollTop) {
+      // 恢复滚动条位置
+      this.$refs.refScroll.scrollTop = this.scrollTop
+    }
+  },
+  deactivated () {
+    // this.scrollTop = this.$refs.refScroll.scrollTop
+    console.log('失活 deactivated...deactivated...deactivated...deactivated...')
   }
 }
 </script>

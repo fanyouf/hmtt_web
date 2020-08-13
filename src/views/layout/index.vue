@@ -47,7 +47,13 @@
 
 <script>
 export default {
-
+  name: 'Layout',
+  created () {
+    console.log('layout created')
+  },
+  destroyed () {
+    console.log('layout destroyed')
+  }
 }
 </script>
 
