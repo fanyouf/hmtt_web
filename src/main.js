@@ -3,13 +3,10 @@ import App from './App.vue'
 import router from './router/auth.js'
 // 脚手架自动创建的vuex.store
 import store from './store'
-// 引入vant组件库
-// 全局导入，全部的vant可以直接使用
-import Vant, { Lazyload } from 'vant'
-import 'vant/lib/index.css'
 
 // 它会根据的手机尺寸来调整rem的基准值：html标签上的font-size。
 import 'amfe-flexible'
+import 'vant/lib/index.css'
 
 import '@/styles/index.less'
 
@@ -17,6 +14,7 @@ import { formatTime, relativeTime } from '@/utils/date-time.js'
 // 导入事件总线
 import EventBus from './utils/eventbus'
 
+import './plugin/vant.js'
 // 定义全局过滤器（这个过滤器需要在其它的组件中使用）
 // Vue.filter('过滤器名', function(过滤前的值){
 //   .....
@@ -29,9 +27,6 @@ Vue.filter('formatTime', function (val) {
 Vue.filter('relativeTime', function (val) {
   return relativeTime(val)
 })
-
-Vue.use(Vant)
-Vue.use(Lazyload)
 
 // 把事件总线挂在原型对象上
 // 则在组件内部，可以直接通过this.$eventBus来访问这个事件总线对象
