@@ -85,7 +85,7 @@ git clone -b 分支名 https://gitee.com/fanyoufu2/hmtt_web.git
 
 示例：
 
-​	目标：从本仓库中克隆出名为dev108的分支。
+​	目标：从本仓库中克隆出名为dev106的分支。
 
 ​	命令：git clone -b dev108 https://gitee.com/fanyoufu2/hmtt_web.git
 
@@ -95,7 +95,7 @@ git clone -b 分支名 https://gitee.com/fanyoufu2/hmtt_web.git
 
 ```bash
 ## 0）克隆指定仓库
-git clone -b dev108 https://gitee.com/fanyoufu2/hmtt_web.git
+git clone -b dev106 https://gitee.com/fanyoufu2/hmtt_web.git
 ## 1） 进入目录
 cd http_web
 ## 2） 安装依赖
