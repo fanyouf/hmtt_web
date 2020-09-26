@@ -782,7 +782,7 @@ export default {
 
 ### 定义格式
 
-mutation具体在代码中表现为创建Vuex.Store实例时，所传入的参数对象中的mutations项，具体格式如下：
+mutation(变化，变动)具体在代码中表现为创建Vuex.Store实例时，所传入的参数对象中的mutations项，具体格式如下：
 
 ```javascript
 new Vuex.Store({
@@ -1050,9 +1050,9 @@ this.$store.commit('mAddN',{n:100,m:200})
       - 映射使用。映射成组件内部的计算属性. computed: { ...mapState(['XXXX'])}
     - 设置
       - this.$store.state.XXX = 新值。（不推荐....）
+      
+      - **mutations: 更新数据**
     
-  - mutations: 更新数据
-  
     ```
     new Vuex.Store({
     	state: {},
@@ -1062,7 +1062,7 @@ this.$store.commit('mAddN',{n:100,m:200})
     	}
     })
     ```
-  
+    
     
 
 ### 定义数据 
