@@ -467,6 +467,7 @@ src/styles/index.less
     color: #fff;
   }
 }
+
 #app{
   position: absolute;
   left: 0;

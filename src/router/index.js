@@ -8,6 +8,8 @@ import Video from '@/pages/video/index.vue'
 import Question from '@/pages/question/index.vue'
 import Setting from '@/pages/setting/index.vue'
 
+import Search from '@/pages/search/index.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -35,6 +37,11 @@ const routes = [
         path: '/user', component: Setting
       }
     ]
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: Search
   }
   // {
   //   path: '/',

@@ -1,13 +1,14 @@
 <template>
-  <div>
+  <div class="container">
     <!-- logo导航 -->
-    <van-nav-bar>
+    <van-nav-bar fixed>
       <div slot="left" class="logo"></div>
       <van-button slot="right"
         round
         type="info"
         size="small"
         icon="search"
+        @click="$router.push('/search')"
       >搜索</van-button>
     </van-nav-bar>
 
@@ -30,7 +31,7 @@
 
 <script>
 export default {
-
+  name: 'layout'
 }
 </script>
 
