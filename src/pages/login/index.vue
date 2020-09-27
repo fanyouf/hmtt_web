@@ -72,8 +72,7 @@ export default {
       }
 
       console.log(this.userInfo)
-      // 2. 发请求
-      // (1) 引入axios， （2）传入接口所需的参数
+
       const { mobile, code } = this.userInfo
       // 请求前加loading
       // https://youzan.github.io/vant/#/zh-CN/toast#zu-jian-nei-diao-yong
@@ -83,17 +82,17 @@ export default {
         message: '加载中...'
       })
       try {
+        //  2. 发请求
+        // (1) 引入axios， （2）传入接口所需的参数
         const result = await login(mobile, code)
 
-        // const result = await axios({
-        //   url: '/app/v1_0/authorizations',
-        //   method: 'POST',
-        //   data: {
-        //     mobile,
-        //     code
-        //   }
-        // })
-        console.log(result)
+        // 3. 登陆成功，保存token到 vuex
+        this.$store.commit('mSetToken', result.data.data)
+        console.log(result.data.data)
+
+        // const profile = await getProfile()
+        // console.log(profile)
+
         this.$toast.success('登陆成功')
       } catch (err) {
         console.log(err)

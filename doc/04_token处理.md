@@ -113,7 +113,9 @@ export const getProfile = () => {
 
 为了在任意组件之中都可以方便地使用token值，所以我们把token保存在vuex中。
 
-> vuex就是用来管理公共数据的。
+> vuex就是用来管理公共数据的
+>
+> 它还有响应式的效果
 
 ### 设置vuex
 
@@ -121,13 +123,13 @@ export const getProfile = () => {
 
 ```javascript
 export default new Vuex.Store({
-  // 保存公共数据
+  // 公共数据
   state: {
     tokenInfo: {}
   },
+  // 通过mutations对修改公共数据
   mutations: {
-    // 设置mutation来更新tokenInfo
-    mSetTokenInfo (state, tokenObj) {
+    mSetToken (state, tokenObj) {
       state.tokenInfo = tokenObj
     }
   }
@@ -141,25 +143,15 @@ export default new Vuex.Store({
 在login/index.vue中，修改hLogin的代码：在登陆成功之后，把token保存到vuex中
 
 ```diff
-// 2. 发请求.根据接口文档说明
-      try {
-        const result = await login(this.mobile, this.code)
-        // 登陆成功之后，后端返回的数据
-        // 1. 保存token 到vuex (所有的组件都可以访问这个数据)
-        //    在组件中如何去调用mutation?(1) mapMutations,(2)$store.commit
-        // console.log(result.data.data)
-+        this.$store.commit('mSetTokenInfo', result.data.data)
+try {
+        //  2. 发请求
+        // (1) 引入axios， （2）传入接口所需的参数
+        const result = await login(mobile, code)
 
-        // 2. 后续再发请求时，把token加入到请求头中。
+        // 3. 登陆成功，保存token到 vuex
+        this.$store.commit('mSetToken', result.data.data)
 
-        // 覆盖上一个toast提示
-        // 会在3s之后关闭
-        this.$toast.success('登陆成功')
-        // todo 登陆成功，跳转
-      } catch (err) {
-        console.log(err)
-        this.$toast.fail('登陆失败')
-      }
+}
 ```
 
 ### 验证
