@@ -27,12 +27,14 @@
     <div class="btn-wrap">
       <van-button round type="info" class="btn" @click="hLogin">登录</van-button>
     </div>
+    <van-button round type="info" class="btn" @click="hTest">获取个人信息</van-button>
+    当前是否登陆？{{ $store.state.tokenInfo.token ? '已登录' : '未登录' }}
   </div>
 </template>
 
 <script>
 // import axios from '@/utils/request.js'
-import { login } from '@/api/user.js'
+import { login, getProfile } from '@/api/user.js'
 export default {
   name: 'login',
   data () {
@@ -46,6 +48,9 @@ export default {
     }
   },
   methods: {
+    hTest () {
+      getProfile()
+    },
     // 用来做校验
     // 手机号： /\d{11}/
     // 密码： /\d{6}/
@@ -72,7 +77,6 @@ export default {
       }
 
       console.log(this.userInfo)
-
       const { mobile, code } = this.userInfo
       // 请求前加loading
       // https://youzan.github.io/vant/#/zh-CN/toast#zu-jian-nei-diao-yong
@@ -85,13 +89,14 @@ export default {
         //  2. 发请求
         // (1) 引入axios， （2）传入接口所需的参数
         const result = await login(mobile, code)
+        // this.$store.state.xxxx
 
         // 3. 登陆成功，保存token到 vuex
         this.$store.commit('mSetToken', result.data.data)
         console.log(result.data.data)
 
-        // const profile = await getProfile()
-        // console.log(profile)
+        const profile = await getProfile()
+        console.log(profile)
 
         this.$toast.success('登陆成功')
       } catch (err) {

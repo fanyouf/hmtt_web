@@ -24,11 +24,11 @@ export const login = (mobile, code) => {
 export const getProfile = () => {
   return ajax({
     method: 'GET',
-    url: '/app/v1_0/user/profile',
-    headers: {
-      // Authorization: 'Bearer token值' 之间有空格
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDExODQ0MDIsInVzZXJfaWQiOjExMDI0OTA1MjI4Mjk3MTc1MDQsInJlZnJlc2giOmZhbHNlfQ.8A8wyLwEvRrz3cdkPe3x7juskspAF1OnDsGMWYf0oIw'
-    }
+    url: '/app/v1_0/user/profile'
+    // headers: {
+    //   // Authorization: 'Bearer token值' 之间有空格
+    //   Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDExODQ0MDIsInVzZXJfaWQiOjExMDI0OTA1MjI4Mjk3MTc1MDQsInJlZnJlc2giOmZhbHNlfQ.8A8wyLwEvRrz3cdkPe3x7juskspAF1OnDsGMWYf0oIw'
+    // }
   })
 }
 
