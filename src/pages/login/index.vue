@@ -31,7 +31,8 @@
 </template>
 
 <script>
-import axios from '@/utils/request.js'
+// import axios from '@/utils/request.js'
+import { login } from '@/api/user.js'
 export default {
   name: 'login',
   data () {
@@ -82,14 +83,16 @@ export default {
         message: '加载中...'
       })
       try {
-        const result = await axios({
-          url: '/app/v1_0/authorizations',
-          method: 'POST',
-          data: {
-            mobile,
-            code
-          }
-        })
+        const result = await login(mobile, code)
+
+        // const result = await axios({
+        //   url: '/app/v1_0/authorizations',
+        //   method: 'POST',
+        //   data: {
+        //     mobile,
+        //     code
+        //   }
+        // })
         console.log(result)
         this.$toast.success('登陆成功')
       } catch (err) {
