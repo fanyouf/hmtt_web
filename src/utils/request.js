@@ -9,14 +9,14 @@ import axios from 'axios'
 // axios.defaults.baseURL = '' // 基地址
 const instance1 = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn', // 后端小张同学写的
-  timeout: 1000,
-  headers: { 'X-Custom-Header': 'foobar' }
+  timeout: 1000
+  // headers: { 'X-Custom-Header': 'foobar' }
 })
 
 const instance2 = axios.create({
   baseURL: 'http://api-toutiao-web.itheima.net', // 后端老王同学写的
-  timeout: 1000,
-  headers: { 'X-Custom-Header': 'foobar' }
+  timeout: 1000
+  // headers: { 'X-Custom-Header': 'foobar' }
 })
 
 export {
