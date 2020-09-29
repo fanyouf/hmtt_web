@@ -22,7 +22,7 @@
         @load="onLoad"
       >
         <van-cell v-for="article in list"
-        :key="article.art_id"
+        :key="article.art_id.toString()"
         :title="article.title">
           <div slot="label">
             <!-- 图片: 可能出现三种情况： 0, 1, 3
@@ -40,10 +40,10 @@
             <div class="meta">
               <span>{{article.aut_name}}</span>
               <span>{{article.comm_count}}评论</span>
-              <!--
-                TODO: 时间格式化
-                -->
               <span>{{article.pubdate | relativeTime}}</span>
+              <span @click="hClose(article)" class="close" v-if="$store.state.tokenInfo.token">
+                  <van-icon name="cross" />
+              </span>
             </div>
           </div>
         </van-cell>
@@ -77,6 +77,13 @@ export default {
     console.log('文章列表组件被创建了.....')
   },
   methods: {
+    hClose (article) {
+      // 1. 获取当前的文章编号
+      const id = article.art_id.toString()
+      // console.log(article, article.art_id)
+      // 2. 抛出去
+      this.$emit('showMoreAction', id)
+    },
     async onRefresh () {
       // 1. 重发请求，取最新的数据
       const result = await getArticles(this.channel.id, Date.now())
@@ -119,8 +126,12 @@ export default {
 
 <style scoped lang='less'>
 .meta {
+  display: flex;
   span{
     margin-right: 10px;
+  }
+  .close {
+    margin-left: auto;
   }
 }
 </style>

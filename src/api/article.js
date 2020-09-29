@@ -24,6 +24,20 @@ export const getArticles = (channelID, timestamp) => {
   })
 }
 
+/**
+ * 用户不感兴趣某个文章
+ * @param {*} articleID 文章编号
+ */
+export const disLike = articleID => {
+  return ajax({
+    method: 'POST',
+    url: '/app/v1_0/article/dislikes',
+    data: {
+      target: articleID
+    }
+  })
+}
+
 // 总结
 // 1. 按模块（article, user, channel....）。有利于协作。
 // 2. 填空题

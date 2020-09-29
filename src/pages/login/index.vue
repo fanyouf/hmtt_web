@@ -99,6 +99,8 @@ export default {
         console.log(profile)
 
         this.$toast.success('登陆成功')
+        // 直接跳入主页
+        this.$router.push('/')
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')
