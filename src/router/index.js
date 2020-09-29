@@ -34,8 +34,11 @@ const routes = [
         path: '/video', component: Video
       },
       {
-        path: '/user', component: Setting
+        path: '/user', component: Setting // /a/user
       }
+      // {
+      //   path: '/a/user', component: Setting // /user
+      // }
     ]
   },
   {

@@ -13,7 +13,7 @@ console.log('store', store)
 // axios.defaults.baseURL = '' // 基地址
 const instance1 = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn', // 后端小张同学写的
-  timeout: 3000
+  timeout: 5000
   // headers: { 'X-Custom-Header': 'foobar' }
 })
 
