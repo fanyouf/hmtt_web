@@ -13,43 +13,42 @@
         3) 如果手动向上拉，且finished不为true, 也会去调用onLoad
     -->
 
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      loading-text="一大波数据正在赶过来"
-      finished-text="讨厌，人家被你看完了"
-      @load="onLoad"
-    >
-      <van-cell v-for="article in list"
-      :key="article.art_id"
-      :title="article.title">
-        <div slot="label">
-          <!-- 图片: 可能出现三种情况： 0, 1, 3
-            article.cover.images:[]
-          -->
-          <van-grid :column-num="article.cover.images.length">
-            <van-grid-item
-              v-for="(image, idx) in article.cover.images"
-              :key="idx">
-              <van-image lazy-load :src="image" alt="" />
-            </van-grid-item>
-          </van-grid>
+    <van-pull-refresh v-model="isLoadingNew" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        loading-text="一大波数据正在赶过来"
+        finished-text="讨厌，人家被你看完了"
+        @load="onLoad"
+      >
+        <van-cell v-for="article in list"
+        :key="article.art_id"
+        :title="article.title">
+          <div slot="label">
+            <!-- 图片: 可能出现三种情况： 0, 1, 3
+              article.cover.images:[]
+            -->
+            <van-grid :column-num="article.cover.images.length">
+              <van-grid-item
+                v-for="(image, idx) in article.cover.images"
+                :key="idx">
+                <van-image lazy-load :src="image" alt="" />
+              </van-grid-item>
+            </van-grid>
 
-          <!-- 文字 -->
-          <div class="meta">
-            <span>{{article.aut_name}}</span>
-            <span>{{article.comm_count}}评论</span>
-            <!--
-              TODO: 时间格式化
-              -->
-            <span>{{article.pubdate}}</span>
+            <!-- 文字 -->
+            <div class="meta">
+              <span>{{article.aut_name}}</span>
+              <span>{{article.comm_count}}评论</span>
+              <!--
+                TODO: 时间格式化
+                -->
+              <span>{{article.pubdate | relativeTime}}</span>
+            </div>
           </div>
-        </div>
-      </van-cell>
-    </van-list>
-    <!-- <p v-for="idx in 20" :key="idx">
-      第{{idx}}条文章
-    </p> -->
+        </van-cell>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -67,9 +66,10 @@ export default {
   },
   data () {
     return {
+      isLoadingNew: false, // 是否正在加载最新数据（下拉刷新）
       timestamp: null,
       list: [], // 数据项
-      loading: false, // 是否正在加载...
+      loading: false, // 是否正在加载（上拉加载更多）...
       finished: false // 是否所有的数据全部加载完成
     }
   },
@@ -77,6 +77,18 @@ export default {
     console.log('文章列表组件被创建了.....')
   },
   methods: {
+    async onRefresh () {
+      // 1. 重发请求，取最新的数据
+      const result = await getArticles(this.channel.id, Date.now())
+      // 2. 放在list的最前面（数组的头部）
+      const arr = result.data.data.results
+      this.list.unshift(...arr)
+
+      // 3. 结束loading: isLoadingNew=false
+      this.isLoadingNew = false
+      // 4. 提示
+      this.$toast(`更新${arr.length}条数据`)
+    },
     async onLoad () {
       // 1. 发请求，取回数据
       if (!this.timestamp) {
