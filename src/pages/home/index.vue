@@ -21,7 +21,11 @@ van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才�
       </van-tab>
     </van-tabs>
 
-    <!-- <弹层>
+    <!-- 频道列表 开关 通过定位 -->
+    <div class="bar-btn" @click="isShowChannelEdit=true">
+        <van-icon name="wap-nav"/>
+    </div>
+    <!-- 更多操作 弹层
       在弹层没有显示时，请问：moreAction被创建出来了吗？ 没有！
     </弹层> -->
     <van-popup v-model="isSHowMoreAction" :style="{ width: '80%' }">
@@ -30,6 +34,14 @@ van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才�
       @report="hReport"
       @dis-like="hDislike"></more-action>
     </van-popup>
+
+    <!-- 频道管理 弹层 -->
+    <van-action-sheet v-model="isShowChannelEdit" title="频道管理">
+      <!-- 1. 父传子。把当前订阅频道传给 频道编辑组件 -->
+      <channel-edit
+      @updateCurChannel="hUpdateCurChannel"
+      :channels="channels"></channel-edit>
+    </van-action-sheet>
   </div>
 </template>
 
@@ -37,18 +49,21 @@ van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才�
 import { getChannels } from '@/api/channel.js'
 import { disLike, report } from '@/api/article.js'
 import ArticleList from './aritcleList'
+import ChannelEdit from './channelEdit'
 import MoreAction from './moreAction'
 export default {
   name: 'Index',
   components: {
     ArticleList,
-    MoreAction
+    MoreAction,
+    ChannelEdit
   },
   data () {
     return {
       articleId: null, // 当前要操作的文章编号
+      isShowChannelEdit: false, // 是否显示频道管理面板
       isSHowMoreAction: false, // 是否显示更多操作
-      channels: [],
+      channels: [], // 当前用户的频道列表
       curIndex: 0 // 表示当前选中频道的下标
     }
   },
@@ -62,7 +77,14 @@ export default {
     }
   },
   methods: {
-
+    // 响应 频道管理子组件 用户点击了 某个我的频道
+    hUpdateCurChannel (idx) {
+      console.log('响应 频道管理子组件', idx)
+      // 1. 切换 频道
+      this.curIndex = idx
+      // 2. 关闭弹层
+      this.isShowChannelEdit = false
+    },
     delArticle () {
       //    eventBus传参数
       this.$eventBus.$emit('delArticle',
