@@ -37,10 +37,17 @@ van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才�
 
     <!-- 频道管理 弹层 -->
     <van-action-sheet v-model="isShowChannelEdit" title="频道管理">
-      <!-- 1. 父传子。把当前订阅频道传给 频道编辑组件 -->
+      <!--
+        1. 父传子
+          把当前订阅频道传给 频道编辑组件
+          把当前用户选择的频道的下标传给 频道编辑组件
+        2. 监听事件updateCurChannel
+          跳转频道
+      -->
       <channel-edit
       @updateCurChannel="hUpdateCurChannel"
-      :channels="channels"></channel-edit>
+      :channels="channels"
+      :curIndex="curIndex"></channel-edit>
     </van-action-sheet>
   </div>
 </template>

@@ -20,13 +20,18 @@
 
 <script>
 import reportsArr from '@/constants/report.js'
-console.log(reportsArr)
+// console.log(reportsArr)
 export default {
   name: 'moreAction',
   data () {
     return {
       reportsArr,
       isReport: false
+    }
+  },
+  methods: {
+    f1 () {
+
     }
   }
 }
