@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import eventBus from '@/utils/eventBus'
 // import Vant from 'vant'
 // import { Lazyload } from 'vant'
 
@@ -34,6 +35,9 @@ Vue.filter('relativeTime', relativeTime)
 //   return val.substr(0, 10)
 //   // return '相对' + val
 // })
+
+// 事件总线
+Vue.prototype.$eventBus = eventBus
 
 new Vue({
   router,

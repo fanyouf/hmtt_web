@@ -38,6 +38,23 @@ export const disLike = articleID => {
   })
 }
 
+/**
+ * 举报文章
+ * @param {*} articleID  举报的文章id
+ * @param {*} typeID 举报类型
+ * 0-其他问题，1-标题夸张，2-低俗色情，3-错别字多，4-旧闻重复，5-广告软文，6-内容不实，7-涉嫌违法犯罪，8-侵权'
+ */
+export const report = (articleID, typeID) => {
+  return ajax({
+    method: 'POST',
+    url: '/app/v1_0/article/reports',
+    data: {
+      target: articleID,
+      type: typeID
+    }
+  })
+}
+
 // 总结
 // 1. 按模块（article, user, channel....）。有利于协作。
 // 2. 填空题

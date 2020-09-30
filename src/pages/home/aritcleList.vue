@@ -68,15 +68,39 @@ export default {
     return {
       isLoadingNew: false, // 是否正在加载最新数据（下拉刷新）
       timestamp: null,
-      list: [], // 数据项
+      list: [], // 数据项 文章列表
       loading: false, // 是否正在加载（上拉加载更多）...
       finished: false // 是否所有的数据全部加载完成
     }
   },
   created () {
-    console.log('文章列表组件被创建了.....')
+    // 监听eventBus
+    this.$eventBus.$on('delArticle', (obj) => {
+      const { articleId, channelId } = obj
+      console.log(this.channel.name, '收到了删除文章的消息', articleId, channelId)
+
+      this.delArticle(articleId, channelId)
+    })
   },
   methods: {
+    delArticle (articleId, channelId) {
+      // 检查频道id
+      if (this.channel.id !== channelId) {
+        console.log(this.channel, '这不是我的频道，我不用进一步去搜索')
+        return
+      }
+
+      // 去在当前的文章列表中搜索是否有 编号是articleId的文章，
+      //  1. findIndex会找出下标，如果找不到，返回-1
+      const idx = this.list.findIndex(item => {
+        return item.art_id.toString() === articleId
+      })
+
+      if (idx !== -1) {
+        // 如果找到就删除
+        this.list.splice(idx, 1)
+      }
+    },
     hClose (article) {
       // 1. 获取当前的文章编号
       const id = article.art_id.toString()
