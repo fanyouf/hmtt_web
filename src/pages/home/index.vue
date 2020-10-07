@@ -1,5 +1,6 @@
 <template>
   <div class="index">
+    <!-- curIndex：当前频道的下标 -->
     <van-tabs v-model="curIndex">
       <!--1. tab -->
       <van-tab
@@ -22,7 +23,7 @@ van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才�
     </van-tabs>
 
     <!-- 频道列表 开关 通过定位 -->
-    <div class="bar-btn" @click="isShowChannelEdit=true">
+    <div class="bar-btn" @click="isShowChannelEdit=true" v-if="$store.state.tokenInfo.token">
         <van-icon name="wap-nav"/>
     </div>
     <!-- 更多操作 弹层
@@ -45,7 +46,9 @@ van-tab具有类似于 懒加载的效果： 只有激活了当前的tab，才�
           跳转频道
       -->
       <channel-edit
+      @updateCurrentIndex="hUpdateCurrentIndex"
       @updateCurChannel="hUpdateCurChannel"
+      :abc="101"
       :channels="channels"
       :curIndex="curIndex"></channel-edit>
     </van-action-sheet>
@@ -91,6 +94,10 @@ export default {
       this.curIndex = idx
       // 2. 关闭弹层
       this.isShowChannelEdit = false
+    },
+    // 更新当前选中的频道的下标
+    hUpdateCurrentIndex (idx) {
+      this.curIndex = idx
     },
     delArticle () {
       //    eventBus传参数

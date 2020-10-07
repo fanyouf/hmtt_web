@@ -41,7 +41,7 @@
               <span>{{article.aut_name}}</span>
               <span>{{article.comm_count}}评论</span>
               <span>{{article.pubdate | relativeTime}}</span>
-              <span @click="hClose(article)" class="close" v-if="$store.state.tokenInfo.token">
+              <span @click="hClose(article)" class="close" v-if="$store.getters.isLogin">
                   <van-icon name="cross" />
               </span>
             </div>

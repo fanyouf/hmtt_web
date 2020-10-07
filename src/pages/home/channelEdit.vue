@@ -54,6 +54,21 @@ import { getAllChannels, addChannel, delChannel } from '@/api/channel.js' //
 export default {
   name: 'channelEdit',
   props: {
+    abc: {
+      type: Number,
+      required: false,
+      default: 1,
+      validator: function (val) {
+      // 自定义的校验函数
+      //     val 就是从父组件中传入的值
+      //     如果返回true,表示prop 值合法的；如果返回false,就会在控制台给出提示
+        if (val > 100) {
+          return false
+        } else {
+          return true
+        }
+      }
+    },
     // 已经订阅的频道
     channels: {
       type: Array,
@@ -104,6 +119,7 @@ export default {
     this.loadAllChannels()
   },
   methods: {
+    // 添加频道
     async hClickRecommandChannel (channel) {
       // 1. 组装接口需要的参数 -- 推荐频道不能加在其中
       //  (1) 获取当前的频道的id
@@ -151,6 +167,13 @@ export default {
         console.log(res)
         // 2.更新视图
         this.channels.splice(idx, 1)
+
+        // 3. 修复bug：如果当前删除的频道在当前频道之前，
+        //  则要去通知父组件去更新选中的频道下标: -1
+        if (idx < this.curIndex) {
+          this.$emit('updateCurrentIndex', this.curIndex - 1)
+        }
+
         this.$toast.success('删除频道成功')
       } else {
         // 2. 频道切换

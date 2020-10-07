@@ -28,7 +28,7 @@
       <van-button round type="info" class="btn" @click="hLogin">登录</van-button>
     </div>
     <van-button round type="info" class="btn" @click="hTest">获取个人信息</van-button>
-    当前是否登陆？{{ $store.state.tokenInfo.token ? '已登录' : '未登录' }}
+    当前是否登陆？{{ $store.getters.isLogin ? '已登录' : '未登录' }}
   </div>
 </template>
 

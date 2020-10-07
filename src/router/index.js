@@ -9,6 +9,7 @@ import Question from '@/pages/question/index.vue'
 import Setting from '@/pages/setting/index.vue'
 
 import Search from '@/pages/search/index.vue'
+import SearchResult from '@/pages/search/result.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/search',
     name: 'Search',
     component: Search
+  },
+  {
+    path: '/search/result',
+    name: 'SearchResult',
+    component: SearchResult
   }
   // {
   //   path: '/',
