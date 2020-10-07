@@ -10,6 +10,7 @@ import Setting from '@/pages/setting/index.vue'
 
 import Search from '@/pages/search/index.vue'
 import SearchResult from '@/pages/search/result.vue'
+import Article from '@/pages/article/index.vue'
 
 Vue.use(VueRouter)
 
@@ -51,12 +52,12 @@ const routes = [
     path: '/search/result',
     name: 'SearchResult',
     component: SearchResult
+  },
+  {
+    path: '/article/:id',
+    name: 'Article',
+    component: Article
   }
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
   // {
   //   path: '/about',
   //   name: 'About',

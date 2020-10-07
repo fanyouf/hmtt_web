@@ -10,8 +10,9 @@
       v-model.trim="keyword"
       show-action
       placeholder="请输入搜索关键词"
-      @input="jieliu"
+      @input="_jieliu"
       >
+      <!-- @input="hGetSuggestion" -->
       <!-- #action ==== slot="action" -->
       <!-- <template slot="action">
         <div>搜索</div>
@@ -39,8 +40,9 @@
       <van-cell
       v-for="(item,idx) in history"
       :key="idx"
-      :title="item">
-        <van-icon name="close" @click="hDeleteSearchHistory(idx)"></van-icon>
+      :title="item"
+      @click="hClickHistory(item)">
+        <van-icon name="close" @click.stop="hDeleteSearchHistory(idx)"></van-icon>
       </van-cell>
 
       <!-- <van-cell title="单元格">
@@ -53,6 +55,7 @@
 <script>
 import { getSuggestion } from '@/api/search'
 import { getItem, setItem } from '@/utils/storage'
+import _ from 'lodash'
 const STORAGE_SEARCH = 'searchistory'
 // const let
 export default {
@@ -99,6 +102,17 @@ export default {
     // 添加搜索记录的第1种方式：用户点击了搜索建议
     hSearchSuggestion (idx) {
       this.addHistroy(this.suggestList[idx])
+
+      // this.$router.push('/search/result?keyword=' + this.suggestList[idx])
+
+      this.$router.push({
+        path: '/search/result',
+        query: {
+          keyword: this.suggestList[idx],
+          a: 1,
+          b: 100
+        }
+      })
     },
     // 添加搜索记录的第2种方式：用户点击了搜索按钮
     hSearch () {
@@ -106,6 +120,10 @@ export default {
         return
       }
       this.addHistroy(this.keyword)
+      console.log(1)
+      // 携带参数跳到搜索结果页
+      // this.$router.push('/search/result?a=1&b=2&keyword=' + this.keyword)
+      this.$router.push('/search/result?keyword=' + this.keyword)
     },
     // 添加搜索记录
     // 1. 不能重复
@@ -123,6 +141,9 @@ export default {
       // 持久化
       setItem(STORAGE_SEARCH, this.history)
     },
+    hClickHistory (item) {
+      this.$router.push('/search/result?keyword=' + item)
+    },
     async hGetSuggestion () {
       // 1. 如果内容不用空，则要发请求
       if (this.keyword === '') {
@@ -134,6 +155,8 @@ export default {
       this.suggestList = result.data.data.options
       console.log(this.keyword)
     },
+    _jieliu: _.throttle(function () { console.log(this); this.hGetSuggestion() }, 500),
+    // _jieliu: _.throttle(this.hGetSuggestion, 500),
     jieliu () {
       //    思路：
       //      当这个函数被调用时，不是立即执行的时，而是检查本次执行距离上一次执行中间是否相隔10秒。
@@ -151,7 +174,7 @@ export default {
       this.timer = setTimeout(() => {
         this.timer = null
         this.hGetSuggestion()
-      }, 50)
+      }, 100)
     },
     fandou () {
       // 对hGetSuggestion进行防抖处理
@@ -166,7 +189,7 @@ export default {
 
       this.timer = setTimeout(() => {
         this.hGetSuggestion()
-      }, 0.5 * 1000)
+      }, 0.1 * 1000)
     }
   }
 }

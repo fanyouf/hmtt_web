@@ -23,6 +23,7 @@
       >
         <van-cell v-for="article in list"
         :key="article.art_id.toString()"
+        @click="$router.push({name: 'Article', params:{id:article.art_id.toString(), a:1, b:2}})"
         :title="article.title">
           <div slot="label">
             <!-- 图片: 可能出现三种情况： 0, 1, 3

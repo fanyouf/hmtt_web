@@ -55,6 +55,17 @@ export const report = (articleID, typeID) => {
   })
 }
 
+/**
+ * 根据文章编号来获取文章详情
+ * @param {*} id 文章编号
+ */
+export const getArticle = id => {
+  return ajax({
+    method: 'GET',
+    url: '/app/v1_0/articles/' + id
+  })
+}
+
 // 总结
 // 1. 按模块（article, user, channel....）。有利于协作。
 // 2. 填空题
