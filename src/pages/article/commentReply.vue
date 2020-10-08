@@ -2,7 +2,7 @@
 <div class="article-comments">
     <!-- 导航栏 -->
     <van-nav-bar :title="currentComment.reply_count + '条回复'">
-      <van-icon slot="left" name="cross" />
+      <van-icon slot="left" name="cross" @click="$emit('close')" />
     </van-nav-bar>
     <!-- /导航栏 -->
 
@@ -67,11 +67,13 @@
       <van-field
         clearable
         placeholder="请输入回复内容"
+        v-model.trim="content"
       >
         <van-button
           slot="button"
           size="mini"
           type="info"
+          @click="hAddReply"
         >发布</van-button>
       </van-field>
     </van-cell-group>
@@ -80,17 +82,22 @@
 
 </template>
 <script>
-import { getCommentReplys } from '@/api/comment'
+import { getCommentReplys, addCommentReply } from '@/api/comment'
 export default {
   name: 'CommentReply',
   props: {
     currentComment: {
       type: Object,
       required: true
+    },
+    articleId: {
+      type: String,
+      required: true
     }
   },
   data () {
     return {
+      content: '请回复', // 回复内容
       offset: null,
       list: [], // 评论列表
       loading: false, // 上拉加载更多的 loading
@@ -98,6 +105,28 @@ export default {
     }
   },
   methods: {
+    async hAddReply () {
+      console.log('this.$route.params.id', this.$route.params.id)
+      if (this.content === '') {
+        return
+      }
+      try {
+        // addCommentReply = (commentId, articleId, content)
+        const result = await addCommentReply(this.currentComment.com_id.toString(), this.articleId, this.content)
+        console.log(result)
+        // 评论成功之后，后端返回的数据中有一个new_obj，它表示本次评论产生完整的数据
+        this.list.unshift(result.data.data.new_obj)
+
+        this.$toast.success('回复成功')
+        this.content = ''
+
+        // 回复数量+1
+        this.currentComment.reply_count++
+      } catch (err) {
+        console.log(err)
+        this.$toast('回复失败')
+      }
+    },
     async onLoad () {
       const comId = this.currentComment.com_id.toString()
       // 1. 请求数据

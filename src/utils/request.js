@@ -3,7 +3,7 @@
 // 1. 基地址
 // 2. transformResponse: 对bigint处理
 // 3. 请求拦截器：加token
-
+import router from '@/router/index.js'
 import axios from 'axios'
 import JSONBig from 'json-bigint'
 // 在一个普通的.js文件（不是.vue组件）中，如何去获取vuex中的数据？
@@ -40,6 +40,46 @@ instance1.interceptors.request.use(function (config) {
 }, function (error) {
   // 对请求错误做些什么
   return Promise.reject(error)
+})
+
+// 添加响应拦截器
+instance1.interceptors.response.use(function (response) {
+  // 对响应数据做点什么
+  return response
+}, async function (error) {
+  // console.log('响应拦截器，错误：')
+  // console.dir(error)
+  if (error.response && error.response.status === 401) {
+    const refreshToken = store.state.tokenInfo.refresh_token
+    if (refreshToken) {
+      try {
+        const result = await axios({
+          method: 'PUT',
+          url: 'http://ttapi.research.itcast.cn/app/v1_0/authorizations',
+          headers: {
+            Authorization: `Bearer ${refreshToken}`
+          }
+        })
+        // 取回一个新的，有效期为2小时token
+        const newToken = result.data.data.token
+        // 保存到vuex
+        store.commit('mSetToken', {
+          token: newToken,
+          refresh_token: refreshToken
+        })
+        // 重发请求
+        return instance1(error.config)
+      } catch (err) {
+        router.push('/login?jumpto=' + router.currentRoute.fullPath)
+      }
+    } else {
+      // 跳到登陆页 携带当前的路由地址信息
+      router.push('/login?jumpto=' + router.currentRoute.fullPath)
+    }
+  } else {
+    // 对响应错误做点什么
+    return Promise.reject(error)
+  }
 })
 
 const instance2 = axios.create({

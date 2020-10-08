@@ -85,9 +85,13 @@ export default {
         this.article.is_followed = false
         this.$toast.success('取关成功')
       } else {
-        await followUser(autId.toString())
-        this.article.is_followed = true
-        this.$toast.success('加关注成功')
+        try {
+          await followUser(autId.toString())
+          this.article.is_followed = true
+          this.$toast.success('加关注成功')
+        } catch (err) {
+          this.$toast.fail('加关注失败')
+        }
       }
     },
     async loadArticle () {

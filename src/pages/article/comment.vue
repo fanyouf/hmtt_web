@@ -46,7 +46,10 @@
 
     <!-- 评论回复弹层 -->
     <van-popup v-model="isReplyShow" round position="bottom" :style="{ height: '80%' }">
-      <comment-reply :currentComment="currentComment"/>
+      <comment-reply
+      @close="isReplyShow=false"
+      v-if="isReplyShow"
+      :currentComment="currentComment" :articleId="articleId"/>
     </van-popup>
   </div>
 </template>

@@ -99,8 +99,9 @@ export default {
         console.log(profile)
 
         this.$toast.success('登陆成功')
-        // 直接跳入主页
-        this.$router.push('/')
+        // 检查是否有jumpto
+        const path = this.$route.query.jumpto || '/'
+        this.$router.push(path)
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')
