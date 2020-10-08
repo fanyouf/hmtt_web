@@ -13,6 +13,12 @@
     <van-loading class="article-loading"  v-if="loading"/>
     <!-- /加载中 loading -->
 
+    <div class="error" v-if="is404">
+      <p>文章被外星人吃掉了</p>
+      <van-button @click="$router.back()">后退</van-button>
+      <van-button @click="$router.push('/')">回主页</van-button>
+    </div>
+
     <!-- 文章详情 -->
     <div class="detail" v-else>
       <h3 class="title">{{article.title}}</h3>
@@ -26,29 +32,39 @@
           round
           size="small"
           type="info"
-        >+ 关注</van-button>
+          @click="hSwitchFollow"
+        >{{ article.is_followed ? '取关' : '+ 关注' }}</van-button>
       </div>
       <div class="content">
         <div v-html="article.content"></div>
       </div>
       <van-divider>END</van-divider>
       <div class="zan">
-        <van-button round size="small" hairline type="primary" plain icon="good-job-o">点赞</van-button>
+        <van-button round size="small" hairline type="primary" plain
+        :icon="article.attitude === 1 ? 'good-job': 'good-job-o'">点赞</van-button>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
       </div>
     </div>
     <!-- /文章详情 -->
 
+    <!-- 文章评论 -->
+    <article-comment :articleId="articleId"/>
   </div>
 </template>
 
 <script>
+import ArticleComment from './comment.vue'
+import { followUser, unFollowUser } from '@/api/user'
 import { getArticle } from '@/api/article'
 export default {
   name: 'ArticleIndex',
+  components: {
+    ArticleComment
+  },
   data () {
     return {
+      is404: false, // 文章是否存在
       articleId: null,
       loading: true, // 控制加载中的 loading 状态
       article: { }
@@ -59,17 +75,41 @@ export default {
     this.loadArticle()
   },
   methods: {
+    async hSwitchFollow () {
+      const { is_followed: isFollowed, aut_id: autId } = this.article
+      if (isFollowed) {
+        // 已关注，这里要做取关
+        // 1. 发请求
+        await unFollowUser(autId.toString())
+        // 2. 修改视图
+        this.article.is_followed = false
+        this.$toast.success('取关成功')
+      } else {
+        await followUser(autId.toString())
+        this.article.is_followed = true
+        this.$toast.success('加关注成功')
+      }
+    },
     async loadArticle () {
       // 1. 设置loading
       this.loading = true
-
-      // 2. 发请求
-      const result = await getArticle(this.articleId)
-      // console.log(result)
-      this.article = result.data.data
-
-      // 3. 设置loading
-      this.loading = false
+      try {
+        // 2. 发请求
+        const result = await getArticle(this.articleId)
+        // console.log(result)
+        this.article = result.data.data
+        // 3. 设置loading
+        this.loading = false
+      } catch (err) {
+        // if (err.response && err.response.status === 404) {
+        //   this.is404 = true
+        // } else {
+        //   this.$toast.fail('加载失败')
+        // }
+        this.is404 = (err.response && err.response.status === 404)
+        this.$toast.fail('加载失败')
+        this.loading = false
+      }
     }
   }
 }
