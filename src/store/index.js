@@ -60,6 +60,9 @@ export default new Vuex.Store({
   // 自动传入state， 基于state中的数据产生新的数据项
   // 它就是一个函数，它会接收state 作为第一个参数
   getters: {
+    userPhoto (state) {
+      return state.userInfo.photo
+    },
     isLogin (state) {
       if (state.tokenInfo.token) {
         return true

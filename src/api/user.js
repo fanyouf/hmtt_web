@@ -95,6 +95,21 @@ export const updateUserInfo = obj => {
   })
 }
 
+/**
+ * 修改用户头像
+ *
+ * obj： 以formData格式保存参数
+ */
+export const updatePhoto = obj => {
+  return ajax({
+    method: 'PATCH',
+    url: '/app/v1_0/user/photo',
+    data: obj
+    // data: {
+    //   photo: xxxx
+    // }
+  })
+}
 // const result = await ajax({
 //   url: '/app/v1_0/authorizations',
 //   method: 'POST',

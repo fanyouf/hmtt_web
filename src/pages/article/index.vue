@@ -118,10 +118,15 @@ export default {
   },
   // 组件级别的路由守卫
   beforeRouteLeave (to, from, next) {
-    // next(false)
+    next()
+    // console.dir(this.$router)
+    // console.info('content', this.$refs.refArticleComment.content)
     // if (!this.$refs.refArticleComment.content) {
     //   next()
     // } else {
+    //   // alert(1)
+    //   // next(false)
+    //   // alert(1)
     //   this.$dialog.confirm({
     //     title: '系统提示',
     //     message: '你的数据还没有保存~~'
@@ -131,19 +136,25 @@ export default {
     //     })
     //     .catch(() => {
     //       next(false)
+    //       // .then(() => {
+    //       //   next({ ...to })
+    //       // })
+    //       // console.dir(this.$router)
+    //       // console.log('canel')
+    //       // this.$router.replace(this.$route.fullPath)
     //     })
     // }
     // console.log('beforeRouteLeave (to, from, next)')
 
-    if (to.path === '/login') {
-      if (this.$store.state.tokenInfo.token) {
-        this.$router.push('/') // next('/')
-      } else {
-        next()
-      }
-    } else {
-      next()
-    }
+    // if (to.path === '/login') {
+    //   if (this.$store.state.tokenInfo.token) {
+    //     this.$router.push('/') // next('/')
+    //   } else {
+    //     next()
+    //   }
+    // } else {
+    //   next()
+    // }
   }
 }
 </script>

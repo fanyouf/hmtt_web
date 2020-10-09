@@ -12,6 +12,7 @@ import Search from '@/pages/search/index.vue'
 import SearchResult from '@/pages/search/result.vue'
 import Article from '@/pages/article/index.vue'
 import Profile from '@/pages/setting/profile.vue'
+import Chat from '@/pages/setting/chat.vue'
 
 Vue.use(VueRouter)
 
@@ -28,7 +29,8 @@ const routes = [
     children: [
       // path是'', 默认显示的子路由
       {
-        path: '', component: Home
+        // meta: 是路由对象的一个属性，是由vue提供的。
+        path: '', component: Home, meta: { isKeepAlive: true }
       },
       {
         path: '/question', component: Question
@@ -45,11 +47,6 @@ const routes = [
     ]
   },
   {
-    path: '/user/profile',
-    name: 'Profile',
-    component: Profile
-  },
-  {
     path: '/search',
     name: 'Search',
     component: Search
@@ -63,6 +60,16 @@ const routes = [
     path: '/article/:id',
     name: 'Article',
     component: Article
+  },
+  {
+    path: '/user/profile',
+    name: 'Profile',
+    component: Profile
+  },
+  {
+    path: '/user/chat',
+    name: 'Chat',
+    component: Chat
   }
   // {
   //   path: '/about',
