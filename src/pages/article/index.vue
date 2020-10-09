@@ -49,7 +49,7 @@
     <!-- /文章详情 -->
 
     <!-- 文章评论 -->
-    <article-comment :articleId="articleId"/>
+    <article-comment :articleId="articleId" ref="refArticleComment"/>
   </div>
 </template>
 
@@ -114,6 +114,35 @@ export default {
         this.$toast.fail('加载失败')
         this.loading = false
       }
+    }
+  },
+  // 组件级别的路由守卫
+  beforeRouteLeave (to, from, next) {
+    // next(false)
+    // if (!this.$refs.refArticleComment.content) {
+    //   next()
+    // } else {
+    //   this.$dialog.confirm({
+    //     title: '系统提示',
+    //     message: '你的数据还没有保存~~'
+    //   })
+    //     .then(() => {
+    //       next()
+    //     })
+    //     .catch(() => {
+    //       next(false)
+    //     })
+    // }
+    // console.log('beforeRouteLeave (to, from, next)')
+
+    if (to.path === '/login') {
+      if (this.$store.state.tokenInfo.token) {
+        this.$router.push('/') // next('/')
+      } else {
+        next()
+      }
+    } else {
+      next()
     }
   }
 }

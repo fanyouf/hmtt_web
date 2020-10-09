@@ -93,10 +93,11 @@ export default {
 
         // 3. 登陆成功，保存token到 vuex
         this.$store.commit('mSetToken', result.data.data)
-        console.log(result.data.data)
+        // console.log(result.data.data)
 
         const profile = await getProfile()
-        console.log(profile)
+        // console.log(profile)
+        this.$store.commit('mSetUserInfo', profile.data.data)
 
         this.$toast.success('登陆成功')
         // 检查是否有jumpto
@@ -106,7 +107,6 @@ export default {
         console.log(err)
         this.$toast.fail('登陆失败')
       }
-      // 3. 根据请求结果给出反馈，做后续
     }
   }
 }

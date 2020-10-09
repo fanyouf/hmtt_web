@@ -11,6 +11,7 @@ import Setting from '@/pages/setting/index.vue'
 import Search from '@/pages/search/index.vue'
 import SearchResult from '@/pages/search/result.vue'
 import Article from '@/pages/article/index.vue'
+import Profile from '@/pages/setting/profile.vue'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,11 @@ const routes = [
       //   path: '/a/user', component: Setting // /user
       // }
     ]
+  },
+  {
+    path: '/user/profile',
+    name: 'Profile',
+    component: Profile
   },
   {
     path: '/search',

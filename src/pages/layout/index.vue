@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- logo导航 -->
-    <van-nav-bar fixed>
+    <van-nav-bar fixed v-show="cVisible">
       <div slot="left" class="logo"></div>
       <van-button slot="right"
         round
@@ -39,7 +39,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'layout',
   computed: {
-    ...mapGetters(['isLogin'])
+    ...mapGetters(['isLogin']),
+    cVisible () {
+      return this.$route.path !== '/user'
+    }
   }
 }
 </script>
