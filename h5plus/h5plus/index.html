@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.image-box {
+				width: 80%;
+				margin: 20px auto;
+				border-radius: 5px;
+				border: 1px solid #2AC845;
+				padding: 10px;
+				box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, .1);
+			}
+
+			.image-box img {
+				display: block;
+				width: 100%;
+			}
+
+		</style>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+
+		<script type="text/javascript">
+			document.addEventListener('plusready', function() {
+				// 5+runtime 初始化完成
+				console.log('原生能力已经就绪')
+				console.dir(plus)
+			})
+		</script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">标题</h1>
+		</header>
+		<div class="mui-content" id="content">
+			<ul class="mui-table-view mui-grid-view mui-grid-9">
+				<li id="btnCamera" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<span class="mui-icon mui-icon-camera"></span>
+						<div class="mui-media-body">camera</div>
+					</a>
+				</li>
+				<li id="btnLocation"class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<span class="mui-icon mui-icon-location"></span>
+						<div class="mui-media-body">Location</div>
+					</a>
+				</li>
+
+				<li id="btnPhone"class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<span class="mui-icon mui-icon-phone"></span>
+						<div class="mui-media-body">Phone</div>
+					</a>
+				</li>
+			</ul>
+			
+			<div class="image-box">
+				<img src="">
+			</div>
+
+		</div>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-phone"></span>
+				<span class="mui-tab-label">电话</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-email"></span>
+				<span class="mui-tab-label">邮件</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">设置</span>
+			</a>
+		</nav>
+
+		<script type="text/javascript">
+			// 拍照
+			document.getElementById("btnCamera").addEventListener('tap', () => {
+				if (plus) {
+					var carmera = plus.camera.getCamera(1) // 获取主摄像头对象
+					carmera.captureImage(function(url) {
+						// 注意这个地址不能用 需要转化
+						// 需要将相对手机路径变成绝对路径
+						let absoluteUrl = plus.io.convertLocalFileSystemURL(url)
+						// 我们把地址放到一个新的图片上
+						let imageBox = document.createElement("div")
+						imageBox.className = "image-box"
+						let img = document.createElement("img")
+						img.src = absoluteUrl
+						imageBox.appendChild(img)
+
+						document.getElementById("content").appendChild(imageBox)
+					})
+				}
+			})
+		
+			document.getElementById("btnPhone").addEventListener("tap",()=>{
+				// 打电话 
+				plus.device.dial('10086')
+			})
+		</script>
+	</body>
+</html>
