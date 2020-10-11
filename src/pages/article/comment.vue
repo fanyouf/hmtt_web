@@ -73,7 +73,7 @@ export default {
       currentComment: {}, // 当前要回复的评论
       isReplyShow: false, // 是否显示评论回复弹层
       offset: null, // 评论的偏移量
-      content: '开始你的表演：',
+      content: '',
       list: [], // 评论列表
       loading: false, // 上拉加载更多的 loading
       finished: false // 是否加载结束

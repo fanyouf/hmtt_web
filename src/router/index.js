@@ -1,18 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/pages/login/index.vue'
-import Layout from '@/pages/layout/index.vue'
-
-import Home from '@/pages/home/index.vue'
-import Video from '@/pages/video/index.vue'
-import Question from '@/pages/question/index.vue'
-import Setting from '@/pages/setting/index.vue'
-
-import Search from '@/pages/search/index.vue'
-import SearchResult from '@/pages/search/result.vue'
-import Article from '@/pages/article/index.vue'
-import Profile from '@/pages/setting/profile.vue'
-import Chat from '@/pages/setting/chat.vue'
 
 Vue.use(VueRouter)
 
@@ -20,56 +7,56 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: () => import('../pages/login/index.vue')// Login
   },
   {
     path: '/',
     name: 'Layout',
-    component: Layout,
+    component: () => import('../pages/layout/index.vue'), // Layout,
     children: [
       // path是'', 默认显示的子路由
       {
         // meta: 是路由对象的一个属性，是由vue提供的。
-        path: '', component: Home, meta: { isKeepAlive: true }
+        path: '', component: () => import('../pages/home/index.vue')// Home, meta: { isKeepAlive: true }
       },
       {
-        path: '/question', component: Question
+        path: '/question', component: () => import('../pages/question/index.vue')// Question
       },
       {
-        path: '/video', component: Video
+        path: '/video', component: () => import('../pages/video/index.vue')// Video
       },
       {
-        path: '/user', component: Setting // /a/user
+        path: '/user', component: () => import('../pages/setting/index.vue')// Setting // /a/user
       }
       // {
-      //   path: '/a/user', component: Setting // /user
+      //   path: '/a/user', component: () => import('../pages/')// Setting // /user
       // }
     ]
   },
   {
     path: '/search',
     name: 'Search',
-    component: Search
+    component: () => import('../pages/search/index.vue')// Search
   },
   {
     path: '/search/result',
     name: 'SearchResult',
-    component: SearchResult
+    component: () => import('../pages/search/result.vue')// SearchResult
   },
   {
     path: '/article/:id',
     name: 'Article',
-    component: Article
+    component: () => import('../pages/article/index.vue')// Article
   },
   {
     path: '/user/profile',
     name: 'Profile',
-    component: Profile
+    component: () => import('../pages/setting/profile.vue')// Profile
   },
   {
     path: '/user/chat',
     name: 'Chat',
-    component: Chat
+    component: () => import('../pages/setting/chat.vue')// Chat
   }
   // {
   //   path: '/about',
@@ -77,7 +64,7 @@ const routes = [
   //   // route level code-splitting
   //   // this generates a separate chunk (about.[hash].js) for this route
   //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  //   component: () => import('../pages/')// () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // }
 ]
 

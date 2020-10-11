@@ -3,10 +3,9 @@ import App from './App.vue'
 import router from './router/auth'
 import store from './store'
 import eventBus from '@/utils/eventBus'
-// import Vant from 'vant'
-// import { Lazyload } from 'vant'
 
-import Vant, { Lazyload } from 'vant'
+// 按需引入vant组件
+import './plugin/vant'
 
 import 'vant/lib/index.css'
 
@@ -16,9 +15,6 @@ import '@/styles/index.less'
 // 它会根据的手机尺寸来调整rem的基准值：html标签上的font-size。
 import 'amfe-flexible'
 import { relativeTime } from '@/utils/dateTime.js'
-
-Vue.use(Lazyload)
-Vue.use(Vant)
 
 Vue.config.productionTip = false
 

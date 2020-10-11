@@ -90,6 +90,7 @@ export default {
           this.article.is_followed = true
           this.$toast.success('加关注成功')
         } catch (err) {
+          console.log(err)
           this.$toast.fail('加关注失败')
         }
       }
@@ -118,43 +119,36 @@ export default {
   },
   // 组件级别的路由守卫
   beforeRouteLeave (to, from, next) {
-    next()
+    // next(false)
+    // next()
     // console.dir(this.$router)
     // console.info('content', this.$refs.refArticleComment.content)
-    // if (!this.$refs.refArticleComment.content) {
-    //   next()
-    // } else {
-    //   // alert(1)
-    //   // next(false)
-    //   // alert(1)
-    //   this.$dialog.confirm({
-    //     title: '系统提示',
-    //     message: '你的数据还没有保存~~'
-    //   })
-    //     .then(() => {
-    //       next()
-    //     })
-    //     .catch(() => {
-    //       next(false)
-    //       // .then(() => {
-    //       //   next({ ...to })
-    //       // })
-    //       // console.dir(this.$router)
-    //       // console.log('canel')
-    //       // this.$router.replace(this.$route.fullPath)
-    //     })
-    // }
-    // console.log('beforeRouteLeave (to, from, next)')
+    if (!this.$refs.refArticleComment.content) {
+      // 没有评论，没有提示，直接路由跳转
+      next()
+    } else {
+      // 有评论内容，要提示，直接路由跳转
+      const ans = window.confirm('页面上有评论，如果离开就会丢失，你确定吗?')
+      if (ans) {
+        next()
+      } else {
+        // 页面不跳转
+        next(false)
+      }
 
-    // if (to.path === '/login') {
-    //   if (this.$store.state.tokenInfo.token) {
-    //     this.$router.push('/') // next('/')
-    //   } else {
-    //     next()
-    //   }
-    // } else {
-    //   next()
-    // }
+      // this.$dialog.confirm({
+      //   title: '系统提示',
+      //   message: '你的数据还没有保存~~'
+      // }).then(() => {
+      //   next()
+      // })
+      //   .catch(() => {
+      //     next(false)
+      //   })
+
+      // console.log('111111111111111')
+    }
+    // console.log('beforeRouteLeave (to, from, next)')
   }
 }
 </script>

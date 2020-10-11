@@ -28,8 +28,17 @@ router.beforeEach(function (to, from, next) {
       next('/login?jumpto=' + to.fullPath)
     }
   } else {
-    //  - 正常放行
-    next()
+    // 如果登陆了，就不能回到login
+    // next()
+    if (to.path === '/login') {
+      if (store.state.tokenInfo.token) {
+        router.push('/') // next('/')
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
   }
 })
 

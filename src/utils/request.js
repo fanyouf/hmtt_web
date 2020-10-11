@@ -70,11 +70,15 @@ instance1.interceptors.response.use(function (response) {
         // 重发请求
         return instance1(error.config)
       } catch (err) {
+        store.commit('mSetToken', {})
         router.push('/login?jumpto=' + router.currentRoute.fullPath)
+        return Promise.reject(new Error('refresh_token错误'))
       }
     } else {
       // 跳到登陆页 携带当前的路由地址信息
+      store.commit('mSetToken', {})
       router.push('/login?jumpto=' + router.currentRoute.fullPath)
+      return Promise.reject(new Error('你没有登陆啦~~~~~'))
     }
   } else {
     // 对响应错误做点什么
