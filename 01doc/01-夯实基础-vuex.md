@@ -501,50 +501,54 @@ new Vue({
 
 可以直接在调试工具中修改这些数据，体会一下响应式的效果。
 
-![image-20200801104856995](asset/image-20200801104856995.png)
+![ ](asset/image-20200801104856995.png)
 
 
 
 ## 学习vuex的要点
 
+
+
+![image-20201115095029197](asset/image-20201115095029197.png)
+
+
+
 State提供整个项目中唯一的公共数据源，所有共享的数据都要统一放到Store中的state中存储。打开项目中的store.js文件，在state对象中可以添加我们要共享的数据。
 
 - 如何初始化state数据
-- 如何在组件中获取state数据
-- 如何在组件中修改state数据
+- 如何在组件中**获取**state数据
+- 如何在组件中**修改**state数据
 
 ## 初始化state数据
 
 ```javascript
-// 用来创建vuex的地方
-import Vue from 'vue'
+// 引入vuex
+// 定义store
 
+import Vue from 'vue'
 import Vuex from 'vuex'
-// 由于Vuex是vue插件，还要以vue插件的方式挂载在vue上
-// 1. 以插件的方式挂载在vue上
-//    Vue.use(vue的插件)  ---- Vue.use(vueRouter)
+
+// 1. 以插件的格式把vuex挂载到Vue上
 Vue.use(Vuex)
 
 // 2. 创建Vuex.Store的实例
-// Vuex是一个对象，其中有一个属性名是Store.
-// Vuex.Store在这里当作构造器
 const store = new Vuex.Store({
-  // 各种配置项
-  //  state就是数据。用它来保存当前整个vue项目中，所有
-  //  需要在组件之间共享的数据。这个数据，在所有的组件中
-  //  都可以访问到.
-
-  //  --- 对比理解vue组件中的data
-  //  state的定义， state的定义
+  // 各种配置(类似于data,methods,computed....)
+  // state就对应理解为组件中data
+  // data中能写的数据类型，在state中照样写！
   state: {
-    num: 1,
-    msg: 'hello,vuex'
+    msg: 'hello vuex',
+    list: [1,2,3],
+    person: {
+      name: '张三',
+      nickname: '法外狂徒'
+    }
   }
+
 })
 
-// 3. 导出store
+// 3. 导出store实例
 export default store
-
 ```
 
 state是固定的名字。它的值是一个对象，用来装所有的公共数据。
@@ -561,7 +565,6 @@ state是固定的名字。它的值是一个对象，用来装所有的公共数
   - 语法：`this.$store.state.全局数据名称`
 - 方法二：映射使用
   - 语法：mapState
-  - 应用场景：获取数据，不能修改
 
 ### 直接使用
 
@@ -595,41 +598,30 @@ this.$store.state.count
 例如：
 
 ```
-// 通过映射的方式来使用vuex.store中的数据
-// 1. 导入vuex中定义工具函数 mapState 
-//    es6中的按需导入
+// es6 按需导入
 import { mapState } from 'vuex'
-// mapState是vuex中定义一个函数
-// mapState(['count']) : 执行一个函数，并传入参数。
-//      参数是一个数组，其中有一个元素,这个传参的格式是 mapState要求的。
-//      它的返回值是：一个对象，格式是{count:function(){}}
-
-//  在如下代码中，调用 mapState这个函数，把得到的对象合并到当前的外层对象中。
-//  {
-//      f: function(){ },
-//      ...mapState(['count'])
-//  }    
-
-console.log(mapState(['count']))
+// console.log('mapState', mapState)
+// mapState就是vuex中的一个函数
+// mapState(['msg']): 调用这个函数，传入实参['msg']
+// const rs = mapState(['msg'])
+// // rs就是一个对象，结构是：
+// // {
+// //   msg: function (){}
+// // }
+// console.log('rs',rs)
 
 export default {
-  name: 'app',
-  components: {
-    AddItem,
-    SubItem
-  },
-  // 下面的代码中有几个计算属性？
-  // 2个。
-  // 名字分别是： cA,count
+  name: 'SubItem',
+  // 把mapState([])的结果，就是一个对象 
+  // 把这个对象展开，合并到computed这个对象中
   computed: {
-    // 定义App.vue自已的计算属性
-    cA () {
-      return 100
+    c1: function(){
+      return "c1"
     },
-    // 调用 mapState这个函数，把得到的对象合并到当前的外层对象computed中
-    ...mapState(['count'])
+    ...mapState(['msg'])
   }
 }
+</script>
 ```
 
 注意：
@@ -700,35 +692,34 @@ export default new Vuex.Store({
     // state 就相当于vue组件中的data。它用来存放整个vue项目中公共的数据
     //       这个数据，在所有的vue组件中都可以访问到
     state: {
-        num: 101,
+        msg: '',
         count: 21.5,
         person: {
             name: '张三'
         }
     },
-  	mutations: {
-        // 下面定义mutation。本质就是一个函数
-        // 特殊之处：在定义函数时，第一个参数就表示当前vuex中的state
-        //          直接在此函数内部去修改state.
-        //          在调用这个函数时，第一个参数不要传入。
-        // 1.不带参数的mutation
-        mAdd1(state){
-            // 这个mutation的作用就是让state中的num加1
-            state.num++
-        },
-        // 2. 带参数的mutation
-        mAddN(state, n){
-            // 这个mutation的作用就是让state中的num加 n
-            // 这个n是需要额外传入的
-            state.num = state.num + n
-        }
+  	// 变异，变化
+  mutations: {
+    // 参数1：在这个函数被调用时，会自动传入当前state
+    // 参数2：可选的，它表示在调用这个函数时，额外传入的参数
+    // 函数名(形参参数1，形参参数2) {
+    //   // 在函数体内部，去修改数据项
+    // }
+    // 更新
+    updateMsg (state, newMsg) {
+      state.msg = newMsg
+    },
+    // 清空
+    resetMsg (state) {
+      state.msg = ''
     }
+  }
 });
 ```
 
 - mutations对象中的成员均是函数，并且有自己特定的格式。
-- 如上所示的mAdd1函数，它的第一个参数固定表示当前的state的引用，在调用这个mAdd1函数时，你也不需要去设置第一个实参。
-- mAddN的第一个参数不用传入，第二个参数需要传入。
+- 如上所示的resetMsg函数，它的第一个参数固定表示当前的state的引用，在调用这个resetMsg函数时，你也不需要去设置第一个实参。
+- updateMsg的第一个参数不用传入，第二个参数需要传入。
 
 
 
@@ -767,17 +758,12 @@ AddItem.vue中给按钮添加事件代码如下：
 
 methods:{
   methods: {
-    add () {
-      // 直接修改state，不推荐
-      // this.$store.state.num++
-
-      // 调用了Vuex.store配置项中的mutations对象中的名为mAdd1的方法。
-      // 不需要传入任何参数。
-      this.$store.commit("mAdd1")
-    }，
-    addN () {
-      // 调用一个带参数的mutation
-      this.$store.commit('mAddN', 10)
+    hClick () {
+      // 用户点击，把msg设置成abc
+      // this.$store.commit("updateMsg", "abc")
+      this.$store.commit("resetMsg")
+      // console.log(this.$store.state.msg)
+      // this.$store.state.msg = "abc"
     }
   }
 }
@@ -785,19 +771,15 @@ methods:{
 
 说明：
 
-- commit('mAdd')相于调用了mutations中的`mAdd1(state)`
-
-![image-20200606142651656](asset/image-20200606142651656.png)
-
-- this.$store.commit('mAddN', 10)
-
-![image-20200606143727876](asset/image-20200606143727876.png)
-
-在调试工具中：
-
-![image-20200606143749936](asset/image-20200606143749936.png)
+![image-20201115103609053](asset/image-20201115103609053.png)
 
 
+
+![image-20201115103651501](asset/image-20201115103651501.png)
+
+在调试工具中：观察mutations的变化
+
+![image-20201115103729297](asset/image-20201115103729297.png)
 
 <img src="asset/1571903994723.png" alt="1571903994723" style="zoom:50%;" />
 
@@ -808,39 +790,32 @@ methods:{
 下面是一个使用案例
 
 ```javascript
-<script>
-// 在组件中通过映射的方式来使用vuex中的mutations
-// 1. 引入工具函数
 import { mapMutations } from 'vuex'
-// mapMutations 是一个函数，在vuex中定义的。
-// mapMutations(['mAdd1', 'mAddN'])的返回值是一个对象
-//       这个对象类似于{mAdd1:function(){}, mAddN:function(){}}
-// 2. 在methods中 插入 映射函数的结果
-
+// console.log(mapMutations)
+const rs = mapMutations(['updateMsg'])
+console.log(rs)
+// rs是一个对象 
+// { updateMsg: function (){} }
 export default {
-  name: 'SubItem',
-  // 下面的代码中，相当于methods中定义了 4个方法 
-  // sub,mAdd1,mAddN, test
+  name: 'AddItem',
   methods: {
-    sub () {
-      this.$store.state.num--
+    hClick () {
+      console.log(this)
+
+      // this.updateMsg就是在多个方法之间相互调用
+      this.updateMsg('abc')
     },
-    ...mapMutations(['mAdd1', 'mAddN']),
-    test () {
-      // 由于上面的mAdd1并映射成方法，所以这里可以直接加this.来访问。
-      // this.mAdd1()
-      this.mAddN(100)
-    }
+    // updateMsg () {
+
+    // }
+    // 把mapMutations(['updateMsg'])的结果合并到
+    // methods对象中，相当于给methods添加了一个方法
+    ...mapMutations(['updateMsg'])
   }
 }
-</script>
 ```
 
-示意图：
-
-![image-20200606145217334](asset/image-20200606145217334.png)
-
-
+这里的使用与mapState比较像。
 
 ## mutation使用的两个细节
 
@@ -851,21 +826,23 @@ export default {
 
 **传参的个数只能是1个**
 
-在定义mutation时，只能补充一个参数。下面的代码中，m不能收到值。
+在定义mutation时，只能补充一个参数。下面的代码中，b不能收到值。
 
 ```javascript
 // 定义
-mAddN(state, n,m){
+testMutation(state, a, b) {
+  console.log('testMutation')
+  console.log(state, a, b ) // state, 100, undefined
 }
 
 // 调用
-this.$store.commit('mAddN',100,200)
+this.$store.commit('testMutation',100,200)
 ```
 
 如果一定要传多个值，可以放在对象中
 
 ```
-this.$store.commit('mAddN',{n:100,m:200})
+this.$store.commit('testMutation',{a:100,b:200})
 ```
 
 **映射成methods时可以取别名**
@@ -893,7 +870,49 @@ this.$store.commit('mAddN',{n:100,m:200})
 
 示意图如下：
 
-<img src="asset/image-20200106195305818.png" alt="image-20200106195305818" style="zoom: 50%;" />
+![image-20201115113416738](asset/image-20201115113416738.png)
+
+定义vuex
+
+```
+// 引入vuex
+// 定义store
+
+import Vue from 'vue'
+import Vuex from 'vuex'
+// 1. 以插件的格式把vuex挂载到Vue上
+Vue.use(Vuex)
+
+// 2. 创建Vuex.Store的实例
+const store = new Vuex.Store({
+  // 各种配置(类似于data,methods,computed....)
+  // state就对应理解为组件中data
+  // data中能写的数据类型，在state中照样写！
+  state: {
+    num: 1,
+  },
+  // 变异，变化
+  mutations: {
+    numUpDate(state, newNum) {
+      state.num = newNum
+    },
+    numSub1 (state) {
+      state.num--
+    },
+    numAdd1 (state) {
+      state.num++
+    }
+  }
+
+})
+
+// 3. 导出store实例
+export default store
+```
+
+
+
+
 
 打开刚刚创建的vuex项目，找到src目录中的App.vue组件，将代码重新修改如下：
 
@@ -906,8 +925,10 @@ this.$store.commit('mAddN',{n:100,m:200})
 ```html
 <template>
   <div id="app">
-    <h1>根组件</h1> {{$store.state.num}}
-    <input type="text" v-model="$store.state.num">
+    <h1>根组件</h1>
+    <!-- <input @input="value => $store.state.num=value" -->
+    <!-- <input type="text" v-model="$store.state.num"> -->
+    <input type="text" :value="$store.state.num" @input="hInput">
     <add-item></add-item>
     <hr>
     <sub-item></sub-item>
@@ -920,10 +941,23 @@ import SubItem from './components/SubItem.vue'
 
 export default {
   name: 'app',
+  data:function(){
+    return {
+    }
+  },
   components: {
     AddItem,
     SubItem
   },
+  created () {
+    console.log(this.$store.state.person.nickname)
+  },
+  methods: {
+    hInput (e) {
+      console.log(e.target.value)
+      this.$store.commit('numUpDate', e.target.value)
+    }
+  }
 }
 </script>
 
@@ -945,7 +979,7 @@ export default {
     <h2>子组件 add</h2>
     从父组件中获取的值:<label for="">{{$store.state.num}}</label>
     <br>
-    <button @click="add">值+1</button>
+    <button @click="hAdd1">值+1</button>
   </div>
 </template>
 <style lang="css">
@@ -960,9 +994,10 @@ export default {
 export default {
   name: 'AddItem',
   methods: {
-    add () {
-      this.$store.state.num++
-    }
+    hAdd1 () {
+      // this.$store.state.num++
+      this.$store.commit('numAdd1')
+    },
   }
 }
 </script>
@@ -990,7 +1025,7 @@ export default {
   import vue
   import vuex
   vue.use(Vuex)
-  const store = new Vuex.store({
+  const store = new Vuex.Store({
    // 配置项
    state: {
        xxxx :
@@ -1018,8 +1053,9 @@ export default {
       - 映射使用。映射成组件内部的计算属性. computed: { ...mapState(['XXXX'])}
     - 设置
       - this.$store.state.XXX = 新值。（不推荐....）
-      
       - **mutations: 更新数据**
+        - this.$store.commit(mutation的名字，参数)
+        - 映射使用。映射成组件内部的methods. methods: { ...mapMutations(['XXXX'])}
     
     ```
     new Vuex.Store({
@@ -1040,7 +1076,23 @@ export default {
 - 响应式 
   - 数据变化了，视图也会变化
 
-![image-20200703142132134](asset/image-20200703142132134.png)
+
+
+![image-20201115114505433](asset/image-20201115114505433.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 其它内容：
 
