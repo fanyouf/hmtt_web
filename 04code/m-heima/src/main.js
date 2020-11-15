@@ -15,4 +15,5 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
 // #app 是指public/index.html中的div的id
