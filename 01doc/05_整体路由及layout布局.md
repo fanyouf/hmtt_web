@@ -29,7 +29,7 @@ src/view/layout/index.vue
 
 ```
 <template>
-  <div>
+  <div class="container">
     <!-- logo导航 -->
     <div>
       logo + 按钮
@@ -549,7 +549,3 @@ src/styles/index.less
 }
 
 ```
-
-
-
-## 测试

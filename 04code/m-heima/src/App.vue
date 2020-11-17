@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    黑马头条
-    <van-button type="danger" @click="hTestAxios1">测试axios的效果</van-button>
-    <van-button type="primary" @click="hTestAxios2">测试axios的效果-async</van-button>
+    <!-- 路由出口 -->
     <router-view/>
   </div>
 </template>
