@@ -28,7 +28,7 @@
 
 <script>
 
-import request from '@/utils/request.js'
+import { login } from '@/api/user.js'
 export default {
   data () {
     return {
@@ -69,17 +69,23 @@ export default {
     },
     async doLogin () {
       const { mobile, code } = this.userInfo
+      // 显示loading
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast, 不会自已关闭
+        overlay: true, // 整体加一个遮罩
+        message: '登陆中....'
+      })
       try {
-        const res = await request({
-          method: 'POST',
-          url: '/app/v1_0/authorizations',
-          data: { mobile, code }
-        })
+        const res = await login(mobile, code)
+
         console.log(res)
-        alert('登陆成功，准备跳转')
+        // 给出成功的提示， 它会把前面的loading替换掉
+        this.$toast.success('登陆成功')
+        // alert('登陆成功，准备跳转')
       } catch (err) {
         console.log(err)
-        alert('登陆失败，用户名密码错误')
+        this.$toast.fail('登陆失败')
+        // alert('登陆失败，用户名密码错误')
       }
     },
     hLogin () {
