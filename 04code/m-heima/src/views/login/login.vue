@@ -28,7 +28,7 @@
 
 <script>
 
-import { login } from '@/api/user.js'
+import { login, getProfile } from '@/api/user.js'
 export default {
   data () {
     return {
@@ -77,11 +77,19 @@ export default {
       })
       try {
         const res = await login(mobile, code)
-
-        console.log(res)
-        // 给出成功的提示， 它会把前面的loading替换掉
+        console.log('login', res)
+        // 登陆成功
+        // 1. 把res中的token信息保存到vuex中
+        this.$store.commit('mSetTokenInfo', res.data.data)
+        // 2. 获取个人资料，并保存
+        const profile = await getProfile()
+        console.log('profile', profile)
+        this.$store.commit('mUserInfo', profile.data.data)
+        // 3. 给出成功的提示， 它会把前面的loading替换掉
         this.$toast.success('登陆成功')
         // alert('登陆成功，准备跳转')
+        // 4. 跳转到主页
+        this.$router.push('/')
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')
@@ -94,7 +102,7 @@ export default {
         // 2. 发请求
         this.doLogin()
       }
-      // 尽早的返回
+      // 尽早返回
       // if (!this.validate()) {
       //   return
       // }

@@ -9,6 +9,42 @@ const routes = [
     // component: function () {
     //   return import('../views/login/login.vue')
     // }
+  },
+  {
+    path: '/',
+    name: 'layout',
+    component: () => import('../views/layout/layout.vue'),
+    // 二级路由
+    children: [
+      {
+        path: '', // 默认要装入的组件
+        name: 'home',
+        component: () => import('../views/home/home.vue')
+      },
+      {
+        path: '/question',
+        name: 'question',
+        component: () => import('../views/question/question.vue')
+      },
+      {
+        path: '/video',
+        name: 'video',
+        component: () => import('../views/video/video.vue')
+      },
+      {
+        path: 'setting',
+        name: 'setting',
+        component: () => import('../views/setting/setting.vue')
+      }
+    ]
+  },
+  {
+    path: '/page1',
+    name: 'page1',
+    component: () => import('../views/page1/page1.vue')
+    // component: function () {
+    //   return import('../views/login/login.vue')
+    // }
   }
   // {
   //   path: '/about',

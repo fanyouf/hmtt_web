@@ -1,7 +1,7 @@
 <template>
   <div>
-    {{$store.state.tokenInfo.token}}
-    </div>
+    我是问答
+  </div>
 </template>
 
 <script>

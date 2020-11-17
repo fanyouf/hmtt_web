@@ -1,7 +1,7 @@
 <template>
   <div>
-    {{$store.state.tokenInfo.token}}
-    </div>
+    我是video
+  </div>
 </template>
 
 <script>

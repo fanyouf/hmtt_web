@@ -1,5 +1,3 @@
-
-
 目标
 
 - 完成整体路由规划(要搞清楚要做几个页面，它们分别在哪个路由下面，是怎么跳转的.....)
@@ -25,7 +23,7 @@
 
 **创建组件**
 
-src/view/layout/index.vue
+src/view/layout/layout.vue
 
 ```
 <template>
@@ -63,32 +61,16 @@ export default {
 
 
 ```
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Login from '@/views/login' // index.vue是可以省略的
-import Layout from '@/views/layout' // index.vue是可以省略的
-
-Vue.use(VueRouter)
-
-const routes = [
-  {
+{
     path: '/login',
     name: 'login',
-    component: Login
+    component: () => import('../views/login/login.vue')
   },
   {
     path: '/',
     name: 'layout',
-    component: Layout
-  }
-]
-
-const router = new VueRouter({
-  routes
-})
-
-export default router
-
+    component: () => import('../views/layout/layout.vue')
+  },
 ```
 
 
@@ -135,19 +117,12 @@ views/layout/index.vue
       -route : 启用路由导航
       -to : 导航路由的path
     -->
-    <van-tabbar route>
-      <van-tabbar-item to="/" icon="home-o">
-        首页
-      </van-tabbar-item>
-      <van-tabbar-item to="/question" icon="chat-o">
-        问答
-      </van-tabbar-item>
-      <van-tabbar-item to="/video" icon="video-o">
-        视频
-      </van-tabbar-item>
-      <van-tabbar-item to="/user" icon="search">
-        我的/未登陆
-      </van-tabbar-item>
+    <!-- 底部的tabbar -->
+    <van-tabbar v-model="active" route>
+      <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
+      <van-tabbar-item icon="question-o" to="/question">问答</van-tabbar-item>
+      <van-tabbar-item icon="video-o" to="/video">视频</van-tabbar-item>
+      <van-tabbar-item icon="setting-o" to="/setting">未登陆|我的</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -179,49 +154,41 @@ export default {
 ## Layout路由配置
 
 ```js
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Login from '@/views/login' // index.vue是可以省略的
-import Layout from '@/views/layout' // index.vue是可以省略的
-
-import Home from '@/views/home' // index.vue是可以省略的
-import Video from '@/views/video' // index.vue是可以省略的
-import Question from '@/views/question' // index.vue是可以省略的
-import User from '@/views/user' // index.vue是可以省略的
-
-Vue.use(VueRouter)
-
-const routes = [
-  {
-    path: '/login',
-    name: 'login',
-    component: Login
-  },
-  {
+{
     path: '/',
     name: 'layout',
-    component: Layout,
+    component: () => import('../views/layout/layout.vue'),
+    // 二级路由
     children: [
-      { path: '', component: Home }, // 默认显示的子路由
-      { path: '/video', component: Video },
-      { path: '/question', component: Question },
-      { path: '/user', component: User }
+      {
+        path: '', // 默认要装入的组件
+        name: 'home',
+        component: () => import('../views/home/home.vue')
+      },
+      {
+        path: '/question',
+        name: 'question',
+        component: () => import('../views/question/question.vue')
+      },
+      {
+        path: '/video',
+        name: 'video',
+        component: () => import('../views/video/video.vue')
+      },
+      {
+        path: 'setting',
+        name: 'setting',
+        component: () => import('../views/setting/setting.vue')
+      }
     ]
-  }
-]
-
-const router = new VueRouter({
-  routes
-})
-
-export default router
+  },
 ```
 
 - 根据约定的路由规则定义。
 
 - 先定义规则对应的组件。
 
-  ![image-20200804103838018](asset/image-20200804103838018.png)
+  ![image-20201117161707031](asset/image-20201117161707031.png)
 
 ## 整体路由设置
 

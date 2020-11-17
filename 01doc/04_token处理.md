@@ -41,19 +41,14 @@ token就是你家小区的门禁卡。
 /**
  * 获取用户个人资料
  */
+
 export const getProfile = () => {
-  return ajax({
+  return request({
     method: 'GET',
-    url: '/app/v1_0/user/profile',
-    headers: {
-      // Authorization: 'Bearer token值' 之间有空格
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTM4NTIyMjgsInVzZXJfaWQiOjExMDI0OTA1MjI4Mjk3MTc1MDQsInJlZnJlc2giOmZhbHNlfQ.gR880MifO8GIFG6PNh9eOZGGpfcwNRkK6MpI1upN93w'
-    }
+    url: '/app/v1_0/user/profile'
   })
 }
 ```
-
-
 
 ### 调用功能
 
@@ -127,12 +122,12 @@ export default new Vuex.Store({
   state: {
     tokenInfo: {}
   },
-  // 通过mutations对修改公共数据
+  // 定义mutation来修改数据
   mutations: {
-    mSetToken (state, tokenObj) {
-      state.tokenInfo = tokenObj
+    mSetTokenInfo (state, initTokenInfo) {
+      state.tokenInfo = initTokenInfo
     }
-  }
+  },
 })
 ```
 
@@ -143,15 +138,30 @@ export default new Vuex.Store({
 在login/index.vue中，修改hLogin的代码：在登陆成功之后，把token保存到vuex中
 
 ```diff
-try {
-        //  2. 发请求
-        // (1) 引入axios， （2）传入接口所需的参数
-        const result = await login(mobile, code)
-
-        // 3. 登陆成功，保存token到 vuex
-        this.$store.commit('mSetToken', result.data.data)
-
-}
+async doLogin () {
+      const { mobile, code } = this.userInfo
+      // 显示loading
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast, 不会自已关闭
+        overlay: true, // 整体加一个遮罩
+        message: '登陆中....'
+      })
+      try {
+        const res = await login(mobile, code)
+        console.log('login', res)
+        // 把res中的token信息保存到vuex中
++        this.$store.commit('mSetTokenInfo', res.data.data)
+        const profile = await getProfile()
+        console.log('profile', profile)
+        // 给出成功的提示， 它会把前面的loading替换掉
+        this.$toast.success('登陆成功')
+        // alert('登陆成功，准备跳转')
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('登陆失败')
+        // alert('登陆失败，用户名密码错误')
+      }
+    },
 ```
 
 ### 验证
@@ -171,36 +181,31 @@ try {
 
 结论：在请求拦截器，获取vuex的token，补充上headers中。
 
+代码：
+
 src\utils\request.js
 
 ```diff
-// 对axios进行二次封装
-
-// 1. 基地址
-// 2. transformResponse: 对bigint处理
-// 3. 请求拦截器：加token
-
 import axios from 'axios'
-
-// 在一个普通的.js文件（不是.vue组件）中，如何去获取vuex中的数据？
-// 答：直接引入，获取其中的state即可
 import store from '@/store/index.js'
 console.log('store', store)
-// axios.defaults.baseURL = '' // 基地址
 const instance1 = axios.create({
-  baseURL: 'http://ttapi.research.itcast.cn', // 后端小张同学写的
-  timeout: 3000
-  // headers: { 'X-Custom-Header': 'foobar' }
+  // 后端服务器1
+  baseURL: 'http://ttapi.research.itcast.cn'
+  // baseURL: 'http://api-toutiao-web.itheima.net'
+  // timeout: 1000,
+  // headers: {'X-Custom-Header': 'foobar'}
 })
 
 // 添加请求拦截器
 instance1.interceptors.request.use(function (config) {
-  // 在发送请求之前
-  // 检查在vuex中是否有token信息，如果有，就加到header中
+  // config就是本次请求所使用的配置项
+  console.log('config', config)
+  // 取出vuex中的tokenInfo，检查是否有token，如果有就添加到config.headers中
+  // this.$store.state
   const token = store.state.tokenInfo.token
   if (token) {
-    // 加到header
-    //    Bearer空格token  这个格式是后端要求的
+    // config.headers.abcd = 100
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
@@ -210,22 +215,75 @@ instance1.interceptors.request.use(function (config) {
 })
 
 const instance2 = axios.create({
-  baseURL: 'http://api-toutiao-web.itheima.net', // 后端老王同学写的
-  timeout: 1000
-  // headers: { 'X-Custom-Header': 'foobar' }
+  // 后端服务器2
+  baseURL: 'http://api-toutiao-web.itheima.net'
+  // timeout: 1000,
+  // headers: {'X-Custom-Header': 'foobar'}
 })
 
-export {
-  instance1, instance2
-}
+export { instance1, instance2 }
+
+// 默认导出intance1
 export default instance1
 
 ```
+
+在一个.js模块中使用vuex就直接把它import即可（不能再用this.$store.state,只能在vue组件中去使用）
+
+
 
 我们可以在这里自动加上token。
 
 - 在获取token要先判断一下，是否有token
 - 这里在请求拦截器中设置了token之后，在发所有的请求时，都会自动给加上token.
+
+
+
+## 保存用户信息到vuex
+
+在login成功之后，获取token，通过请求拦截器自动附加到headers中，发出请求，去取回用户的个人信息，并进一步保存到vuex
+
+store/index.js
+
+```diff
+state: {
+    // 保存token信息
+    tokenInfo: {},
++    userInfo: {}
+  },
+  // 定义mutation来修改数据
+  mutations: {
+    mSetTokenInfo (state, initTokenInfo) {
+      state.tokenInfo = initTokenInfo
+    },
++    mUserInfo (state, initUserInfo) {
++      state.userInfo = initUserInfo
++    }
+  },
+```
+
+login.vue
+
+```diff
+try {
+        const res = await login(mobile, code)
+        console.log('login', res)
+        // 登陆成功
+        // 1. 把res中的token信息保存到vuex中
+        this.$store.commit('mSetTokenInfo', res.data.data)
+        // 2. 获取个人资料，并保存
+        const profile = await getProfile()
+        console.log('profile', profile)
++        this.$store.commit('mUserInfo', profile.data.data)
+        // 3. 给出成功的提示， 它会把前面的loading替换掉
+        this.$toast.success('登陆成功')
+        // alert('登陆成功，准备跳转')
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('登陆失败')
+        // alert('登陆失败，用户名密码错误')
+      }
+```
 
 
 
@@ -236,8 +294,6 @@ Vuex 容器中的数据只是为了方便在其他任何地方能方便的获取
 ### 刷新丢失状态的问题
 
 vuex在刷新页面就消失了。就好像在程序中定义的变量一样，在程序重新运行时，值会恢复。
-
-
 
 前端持久化常见的方式就是：
 
@@ -262,23 +318,24 @@ vuex在刷新页面就消失了。就好像在程序中定义的变量一样，�
 并写入以下内容
 
 ```javascript
-// 对localstorage的操作进行封装
+// 消除魔术字符串
+const TOKEN_STR = 'tokenInfo'
 
-export const setItem = (name, obj) => {
-  localStorage.setItem(name, JSON.stringify(obj))
+export const getToken = () => {
+  return JSON.parse(localStorage.getItem(TOKEN_STR))
 }
 
-// export const geItem = name => JSON.parse(localStorage.getItem(name))
-
-export const getItem = name => {
-  return JSON.parse(localStorage.getItem(name))
+export const setToken = tokenInfo => {
+  localStorage.setItem(TOKEN_STR, JSON.stringify(tokenInfo))
 }
 
-export const removeItem = name => {
-  localStorage.removeItem(name)
+export const removeToken = () => {
+  localStorage.removeItem(TOKEN_STR)
 }
 
 ```
+
+
 
 ### 登录成功，保存token到localstorage
 
@@ -293,26 +350,26 @@ export const removeItem = name => {
 ```diff
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { setItem } from '@/utils/storage'
-
++ import { setToken, getToken } from '@/utils/storage.js'
 Vue.use(Vuex)
-export default new Vuex.Store({
-  // 公共数据
-  state: {
-    tokenInfo: {}
-  },
-  // 通过mutations对修改公共数据
-  mutations: {
-    mSetToken (state, tokenObj) {
-      // 1. 修改vuex
-      state.tokenInfo = tokenObj
 
-      // 2. 持久化
-      setItem('tokeInfo', tokenObj)
+export default new Vuex.Store({
+  state: {
+    // 保存token信息
++    tokenInfo: getToken() || {}, // 从localstroage获取初值
+    userInfo: {}
+  },
+  // 定义mutation来修改数据
+  mutations: {
+    mSetTokenInfo (state, initTokenInfo) {
+      state.tokenInfo = initTokenInfo
+
+      // 保存到本地localStorage
++      setToken(initTokenInfo)
     }
   }
+  // ...
 })
-
 ```
 
 
@@ -321,28 +378,7 @@ export default new Vuex.Store({
 
 ![image-20200607155109288](asset/image-20200607155109288.png)
 
-### 容器初始化去localstorage中取值
 
-最后，在容器中使用本地存储中的数据进行初始化
-
-```diff
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-+ import { getItem, setItem } from '@/utils/storage.js'
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-    // 保存公共数据
-    // 在tokenInfo中保存token和refresh_token
-
-    // tokenInfo的值是先从本地存储中取，取不到就用{}
-+    tokenInfo: getItem('tokeInfo') || {}
-  }
-```
-
-在设置vuex中的初值时，先从本地存储中取，如果取不到，则初始为空。
 
 
 
