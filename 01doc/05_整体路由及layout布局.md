@@ -192,6 +192,10 @@ export default {
 
 ## 整体路由设置
 
+把整个项目中的用到的所有的页面的壳子都做出来，把路由规划做出来，产出排期。
+
+
+
 排期：工作进度划化表。
 
 - 2020.8.4  - XXX功能
@@ -202,19 +206,19 @@ export default {
 
 ### 约定路由规则
 
-| path           | 文件                     | 功能                     | 组件名       | 路由级别 |       |
-| -------------- | ------------------------ | ------------------------ | ------------ | -------- | ----- |
-| /login         | views/login/index.vue    | 登录页                   | Login        | 一级路由 |       |
-| /              | views/layout/index.vue   | 布局                     | Layout       | 一级路由 |       |
-| ├─ /           | views/home/index.vue     | 主页（不登陆也能访问的） | Home         | 二级路由 |       |
-| ├─ /question   | views/question/index.vue | 问答                     | Question     | 二级路由 | 3天   |
-| ├─ /video      | views/video/index.vue    | 视频                     | Video        | 二级路由 | 2天   |
-| ├─ /user       | views/user/index.vue     | 个人中心                 | User         | 二级路由 | 1.5天 |
-| /user/profile  | views/user/profile.vue   | 编辑资料                 | UserProfile  | 一级路由 |       |
-| /user/chat     | views/user/chat.vue      | 小智同学                 | UserChat     | 一级路由 |       |
-| /search        | views/search/index.vue   | 搜索中心                 | Search       | 一级路由 |       |
-| /search/result | views/search/result.vue  | 搜索结果                 | SearchResult | 一级路由 |       |
-| /article       | views/article/index.vue  | 文章详情                 | Article      | 一级路由 |       |
+| path           | 文件                        | 功能                     | 组件名       | 路由级别 |       |
+| -------------- | --------------------------- | ------------------------ | ------------ | -------- | ----- |
+| /login         | views/login/login.vue       | 登录页                   | Login        | 一级路由 |       |
+| /              | views/layout/layout.vue     | 布局                     | Layout       | 一级路由 |       |
+| ├─ /           | views/home/home.vue         | 主页（不登陆也能访问的） | Home         | 二级路由 |       |
+| ├─ /question   | views/question/question.vue | 问答                     | Question     | 二级路由 | 3天   |
+| ├─ /video      | views/video/video.vue       | 视频                     | Video        | 二级路由 | 2天   |
+| ├─ /setting    | views/setting/setting.vue   | 个人中心                 | Setting      | 二级路由 | 1.5天 |
+| /user/profile  | views/user/profile.vue      | 编辑资料                 | UserProfile  | 一级路由 |       |
+| /user/chat     | views/user/chat.vue         | 小智同学                 | UserChat     | 一级路由 |       |
+| /search        | views/search/index.vue      | 搜索中心                 | Search       | 一级路由 |       |
+| /search/result | views/search/result.vue     | 搜索结果                 | SearchResult | 一级路由 |       |
+| /article       | views/article/index.vue     | 文章详情                 | Article      | 一级路由 |       |
 
 
 
@@ -426,15 +430,15 @@ export default {
 src/styles/index.less
 
 ```
-// 项目的公共的样式
-// 覆盖vant自带导航栏的样式
-.van-nav-bar {
-  background-color: #3196fa;
-  .van-nav-bar__title, .van-icon{
+// 顶部的导航栏
+.van-nav-bar__content {
+  background-color:#3196fa;
+  .van-nav-bar__title{
     color: #fff;
   }
 }
 
+// 整个应用的容器是百分百布局
 #app{
   position: absolute;
   left: 0;
@@ -447,25 +451,13 @@ src/styles/index.less
 .container{
   width: 100%;
   height: 100%;
-  // logo区域
-  .logo {
-    background: url("../assets/logo.png") no-repeat;
-    background-size: cover;
-    width: 100px;
-    height: 30px;
-  }
-  // 搜索按钮
-  .search-btn {
-    background-color: #5babfb;
-    width: 80px;
-  }
 }
-// .index 是home/index.vue组件的根元素的类名
+// .index 是home/home.vue组件的根元素的类名
 .index {
   height: 100%;
   // 让出顶部导航条的距离
   // 顶部在导航条是固定定位的
-  padding-top:46px;
+  padding-top: 46px;
   // #app >.container >.index > .van-tabs > van-tabs__wrap + van-tabs__content
   .van-tabs {
     padding-top:50px; 
@@ -499,20 +491,79 @@ src/styles/index.less
       }
     }
   }
-  // 频道管理的开关按钮
-  .bar-btn {
-    position: fixed;
-    right: 5px;
-    top: 57px;
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    opacity: 0.8;
-    z-index:1;
-    .van-icon-wap-nav{
-      font-size: 20px;
-    }
-  }
 }
+```
+
+
+
+------------
+
+async await
+
+作用：除了promise.then.catch的另一种异步的书写方式。一般用来改进promise的写法
+
+
+
+格式：
 
 ```
+async function f() {
+	console.log(1)
+	await f1() // await会跟一个返回promise对象的函数
+	console.log(2)
+}
+```
+
+
+
+示例
+
+```
+function f1 () {
+      // return Promise.resolve(100)
+      return new Promise((resolve,reject) => {
+        setTimeout(()=>{
+          resolve(100)
+        }, 3000)
+      })
+    }
+
+    function ajax () {
+      // return Promise.resolve(100)
+      return new Promise((resolve,reject) => {
+        setTimeout(()=>{
+          resolve(10)
+        }, 5000)
+      })
+    }
+
+   function f () {
+      console.log(1)
+      // await后面跟一个promise对象（或者一个返回promise对象的函数调用）
+      // 它的作用是取出这个promise的promiseValue
+      f1().then(res => {
+        console.log(res)
+        ajax().then(res => {
+          console.log(res)
+          console.log(2)
+        })
+      })
+    }
+    f()
+
+    async function f () {
+      console.log(1)
+      // await后面跟一个promise对象（或者一个返回promise对象的函数调用）
+      // 它的作用是取出这个promise的promiseValue
+      const rs = await f1()
+      // const rs = f1()
+      console.log(rs)
+
+      const rs1 = await ajax()
+      console.log(rs1)
+      console.log(2)
+    }
+
+    f()
+```
+

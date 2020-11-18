@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- logo导航 -->
-    <van-nav-bar>
+    <van-nav-bar fixed>
       <!-- 注意插槽的使用 -->
       <div slot="left" class="logo"></div>
       <template #right>
