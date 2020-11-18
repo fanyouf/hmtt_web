@@ -32,7 +32,7 @@
               <van-grid-item
                 v-for="url in article.cover.images"
                 :key="url">
-                <van-image :src="url"/>
+                <van-image lazy-load :src="url"/>
               </van-grid-item>
             </van-grid>
 
@@ -40,7 +40,10 @@
             <div class="meta">
               <span>{{article.aut_name}}</span>
               <span>{{article.comm_count}}评论</span>
-              <span>{{article.pubdate}}</span>
+              <span>{{article.pubdate | relativeTime}}</span>
+              <span @click="hCloseBtn" class="close" v-if="$store.state.tokenInfo.token">
+                <van-icon name="cross"></van-icon>
+              </span>
             </div>
           </div>
         </van-cell>
@@ -69,6 +72,10 @@ export default {
     }
   },
   methods: {
+    // 用户点击了关闭按钮
+    hCloseBtn () {
+      this.$emit('close-btn-click')
+    },
     async onLoad () {
       // 1) 发ajax取数据
       const rs = await getArticles(this.channel.id, this.timestamp)
@@ -111,8 +118,15 @@ export default {
 
 <style scoped lang='less'>
 .meta {
+  display:flex;
   span{
     margin-right: 10px;
+  }
+  .close{
+    // 让它在最右边
+    // 它的父级容器是flex的，给当前元素设置左外边距为auto，会让这个元素在父级容器
+    // 的最右边
+    margin-left:auto;
   }
 }
 </style>

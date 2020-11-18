@@ -31,28 +31,27 @@
       // 它的作用是取出这个promise的promiseValue
       f1().then(res => {
         console.log(res)
-        ajax().then(res => {
-          console.log(res)
-          console.log(2)
-        })
+        return ajax()
+      }).then((res)=>{
+        console.log(res)
       })
     }
     f()
 
-    async function f () {
-      console.log(1)
-      // await后面跟一个promise对象（或者一个返回promise对象的函数调用）
-      // 它的作用是取出这个promise的promiseValue
-      const rs = await f1()
-      // const rs = f1()
-      console.log(rs)
+    // async function f () {
+    //   console.log(1)
+    //   // await后面跟一个promise对象（或者一个返回promise对象的函数调用）
+    //   // 它的作用是取出这个promise的promiseValue
+    //   const rs = await f1()
+    //   // const rs = f1()
+    //   console.log(rs)
 
-      const rs1 = await ajax()
-      console.log(rs1)
-      console.log(2)
-    }
+    //   const rs1 = await ajax()
+    //   console.log(rs1)
+    //   console.log(2)
+    // }
 
-    f()
+    // f()
   </script>
 </body>
 </html>
