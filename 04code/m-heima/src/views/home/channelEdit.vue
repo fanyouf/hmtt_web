@@ -3,7 +3,10 @@
     <!-- 当前登陆用户已经订阅的频道 -->
     <div class="channel">
       <van-cell title="我的频道" :border="false">
-        <van-button  size="mini" type="info">编辑</van-button>
+        <van-button
+        class="editBtn"
+        size="mini"
+        @click="editing=!editing">{{editing ? '取消' : '编辑'}}</van-button>
       </van-cell>
       <van-grid>
         <!--
@@ -19,7 +22,8 @@
           :class="{cur:idx===curIndex}"
           >
           <span>{{channel.name}}</span>
-          <!-- <van-icon name="cross" class="btn"></van-icon> -->
+          <!-- 在编辑状态，且不是推荐频道 才会有关闭按钮 -->
+          <van-icon v-show="editing && idx !=0" name="cross" class="btn"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
@@ -39,7 +43,7 @@
 </template>
 
 <script>
-import { getAllChannels, addChannel } from '@/api/channel.js'
+import { getAllChannels, addChannel, delChannel } from '@/api/channel.js'
 export default {
   name: 'ChannelEdit',
   props: {
@@ -52,6 +56,7 @@ export default {
   },
   data () {
     return {
+      editing: false, // 是否正在编辑
       allChannels: []
     }
   },
@@ -91,8 +96,29 @@ export default {
     },
     // 用户在我的频道上的点击了某一项
     hClickMyChannel (idx) {
-      // 1. 向父组件抛出事件
-      this.$emit('update-cur-index', idx)
+      if (this.editing) {
+        this.doDeleteChannel(idx)
+      } else {
+        // 向父组件抛出事件
+        this.$emit('update-cur-index', idx)
+      }
+    },
+    async doDeleteChannel (idx) {
+      // 现在是编辑，要做删除功能
+      try {
+        const channelId = this.channels[idx].id
+        const res = await delChannel(channelId)
+        // 2. 把当前频道从已订阅的频道列表中删除
+        console.log(res)
+        this.channels.splice(idx, 1)
+        // 1) 由于修改了channels会导致计算属性重新计算： 让可选频道中会少1项
+        // 2) channels是从父组件传入的属性，由于它是一个引用数据类型（数组），在子组件中添加
+        //    了一个元素，就相当于在父组件中channels也多了一个元素
+        // 3. 提示用户
+        this.$toast.success('删除频道成功')
+      } catch (err) {
+        this.$toast.fail('删除频道失败')
+      }
     },
     // 用户在 推荐频道 上点击了某一项, 做订阅频道
     async hClickRecommendChannels (curChannel) {
@@ -139,4 +165,10 @@ export default {
   color: red;
   font-weight: bold;
 }
+.editBtn {
+    color: rgb(229, 97, 91) !important;
+    margin-right:10px;
+    padding:0 10px;
+    border-color: rgb(229, 97, 91);
+  }
 </style>
