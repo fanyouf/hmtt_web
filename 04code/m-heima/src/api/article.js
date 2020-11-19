@@ -22,3 +22,33 @@ export const getArticles = (channelId, timestamp) => {
   console.log('getChannels:', t)
   return t
 }
+
+/**
+ * 对文章不感兴趣
+ * @param {*} articleId 编号
+ */
+export const dislike = articleId => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/article/dislikes',
+    data: {
+      target: articleId
+    }
+  })
+}
+
+/**
+ * 举报文章
+ * @param {*} articleId  文章编号
+ * @param {*} reportType 举报类型
+ */
+export const report = (articleId, reportType) => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/article/reports',
+    data: {
+      target: articleId,
+      type: reportType
+    }
+  })
+}

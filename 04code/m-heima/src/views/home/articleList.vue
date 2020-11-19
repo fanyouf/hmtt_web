@@ -30,8 +30,8 @@
             :column-num="article.cover.images.length"
             v-if="article.cover.images.length">
               <van-grid-item
-                v-for="url in article.cover.images"
-                :key="url">
+                v-for="(url, idx) in article.cover.images"
+                :key="idx">
                 <van-image lazy-load :src="url"/>
               </van-grid-item>
             </van-grid>
@@ -41,7 +41,7 @@
               <span>{{article.aut_name}}</span>
               <span>{{article.comm_count}}评论</span>
               <span>{{article.pubdate | relativeTime}}</span>
-              <span @click="hCloseBtn" class="close" v-if="$store.state.tokenInfo.token">
+              <span @click="hCloseBtn(article)" class="close" v-if="$store.state.tokenInfo.token">
                 <van-icon name="cross"></van-icon>
               </span>
             </div>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus.js'
 import { getArticles } from '@/api/article.js'
 // 1. 上拉加载更多（放在底部，类似于分页）
 // 2. 下拉刷新（获取最新内容，放在头部）
@@ -71,10 +72,28 @@ export default {
       finished: false // 是否完成全部的加载
     }
   },
+  created () {
+    // 如果收到这个事件，就会执行后面的回调函数，并接收参数articleId
+    eventBus.$on('delete-article', (articleId) => {
+      console.log('收到delete-article事件', articleId)
+      // 在当前的list中去删除这个articleId的文章
+      // 1. 找这个文章在list中的下标
+      // findIndex:如果找到就返回下标，如果找不到，就返回-1
+      const idx = this.list.findIndex(article => article.art_id.toString() === articleId)
+      if (idx === -1) {
+        // 找不到
+        return
+      }
+      // 2. 删除它
+      this.list.splice(idx, 1)
+    })
+  },
   methods: {
     // 用户点击了关闭按钮
-    hCloseBtn () {
-      this.$emit('close-btn-click')
+    hCloseBtn (article) {
+      console.log(article.art_id)
+      // article_id是经过了大数处理之后的对象，需要用toString()来还原
+      this.$emit('close-btn-click', article.art_id.toString())
     },
     async onLoad () {
       // 1) 发ajax取数据
