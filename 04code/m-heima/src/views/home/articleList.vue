@@ -20,7 +20,7 @@
       >
         <van-cell
         v-for="article in list"
-        :key="article.art_id"
+        :key="article.art_id.toString()"
         :title="article.title">
           <div slot="label">
             <!-- 图片区域

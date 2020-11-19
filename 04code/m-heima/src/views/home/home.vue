@@ -21,6 +21,20 @@
       </van-tab>
     </van-tabs>
 
+    <!-- 频道列表 开关 通过定位 通过它打开频道管理的弹层 -->
+    <div class="bar-btn" @click="isShowChannelEdit=true">
+        <van-icon name="wap-nav"/>
+    </div>
+
+    <!-- 频道管理的弹层 -->
+    <!-- curIndex: 表示当前处于激活的tab的下标 -->
+    <van-action-sheet v-model="isShowChannelEdit">
+      <channel-edit
+      @update-cur-index="hUpdateCurIndex"
+      :curIndex="active"
+      :channels="channels"/>
+    </van-action-sheet>
+
     <!-- 更多操作-弹层 -->
     <van-popup v-model="isShowMoreAction" :style="{ width: '80%' }">
       <more-action
@@ -37,6 +51,7 @@
 // 1. 导入
 import ArticleList from './articleList.vue'
 import MoreAction from './moreAction.vue'
+import ChannelEdit from '@/views/home/channelEdit.vue'
 // 2. 注册
 // 3. 使用（在父组件中模板中）
 import { getChannels } from '@/api/channel.js'
@@ -46,6 +61,7 @@ export default {
   name: 'home',
   data () {
     return {
+      isShowChannelEdit: false, // 是否显示频道管理弹层
       articleId: '', // 用来保存当前要处理的文章编号
       isShowMoreAction: false, // 是否显示弹层组件
       active: 2, // tabs中的选中项的下标
@@ -53,7 +69,7 @@ export default {
     }
   },
   components: {
-    ArticleList, MoreAction
+    ArticleList, MoreAction, ChannelEdit
   },
   created () {
     this.loadChannels()
@@ -111,11 +127,32 @@ export default {
       } catch (err) {
         this.$toast.fail('举报失败')
       }
+    },
+    // 处理 频道管理 用户点击了 我的频道
+    hUpdateCurIndex (curIdx) {
+      console.log(curIdx)
+      // 1. 关闭弹层
+      this.isShowChannelEdit = false
+      // 2. 更新当前激活的tab 的下标
+      this.active = curIdx
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+// 频道管理的开关按钮
+  .bar-btn {
+    position: fixed;
+    right: 5px;
+    top: 57px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    opacity: 0.8;
+    z-index:1;
+    .van-icon-wap-nav{
+      font-size: 20px;
+    }
+  }
 </style>
