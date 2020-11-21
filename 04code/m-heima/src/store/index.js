@@ -21,6 +21,15 @@ export default new Vuex.Store({
       state.userInfo = initUserInfo
     }
   },
+  // getters就类似于computed，它的作用是基于state来产生新的数据项
+  getters: {
+    // state会自动传入
+    isLogin (state) {
+      // return state.tokenInfo.token ? true : false
+      //  (!!变量 可以把变量值转成boolean)
+      return !!state.tokenInfo.token
+    }
+  },
   actions: {
   },
   modules: {

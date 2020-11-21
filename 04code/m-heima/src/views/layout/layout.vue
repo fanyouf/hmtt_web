@@ -17,17 +17,23 @@
       <van-tabbar-item icon="home-o" to="/">主页</van-tabbar-item>
       <van-tabbar-item icon="question-o" to="/question">问答</van-tabbar-item>
       <van-tabbar-item icon="video-o" to="/video">视频</van-tabbar-item>
-      <van-tabbar-item icon="setting-o" to="/setting">未登陆|我的</van-tabbar-item>
+      <van-tabbar-item icon="setting-o" to="/setting">
+      {{ isLogin ? "我的" : "未登陆"}}
+      </van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
       active: 0
     }
+  },
+  computed: {
+    ...mapGetters(['isLogin'])
   }
 }
 </script>

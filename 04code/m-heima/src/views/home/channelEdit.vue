@@ -46,7 +46,33 @@
 import { getAllChannels, addChannel, delChannel } from '@/api/channel.js'
 export default {
   name: 'ChannelEdit',
+  // props: 用来接收父传子，有两种格式：
+  // 1. props: ['属性名1', '属性名2']
+  // 2. props: {
+  //   属性名: {
+  //     type: ,
+  //     default: , // 默认值
+  //     required:, // 是否必须要填入
+  //     validator: function (value){ // 对传入的属性进行自定义的检验，如果这个函数返回true，表示通过；否则，表法不通过
+  //               value会自动接收当前传入的值
+  //     }
+  //   }
+  // }
   props: {
+    a: {
+      type: Number,
+      required: false,
+      default: 100,
+      validator: function (value) {
+        console.log('a', value)
+        if (value > 50) {
+          return false
+        } else {
+          return true
+        }
+      }
+    },
+    // 当前激活状态的频道的下标
     curIndex: {
       type: Number
     },
@@ -116,6 +142,12 @@ export default {
         //    了一个元素，就相当于在父组件中channels也多了一个元素
         // 3. 提示用户
         this.$toast.success('删除频道成功')
+
+        // 如果删除的频道在当前频道之前，则要改下下标
+        if (idx < this.curIndex) {
+          // 通知父组件，改下下标:在原基础上-1
+          this.$emit('fixed-cur-index', this.curIndex - 1)
+        }
       } catch (err) {
         this.$toast.fail('删除频道失败')
       }

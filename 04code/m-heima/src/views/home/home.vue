@@ -22,7 +22,9 @@
     </van-tabs>
 
     <!-- 频道列表 开关 通过定位 通过它打开频道管理的弹层 -->
-    <div class="bar-btn" @click="isShowChannelEdit=true">
+    <div
+     v-if="$store.getters.isLogin"
+    class="bar-btn" @click="isShowChannelEdit=true">
         <van-icon name="wap-nav"/>
     </div>
 
@@ -30,6 +32,8 @@
     <!-- curIndex: 表示当前处于激活的tab的下标 -->
     <van-action-sheet v-model="isShowChannelEdit">
       <channel-edit
+      :a="30"
+      @fixed-cur-index="hFixedCurIndex"
       @update-cur-index="hUpdateCurIndex"
       :curIndex="active"
       :channels="channels"/>
@@ -134,6 +138,10 @@ export default {
       // 1. 关闭弹层
       this.isShowChannelEdit = false
       // 2. 更新当前激活的tab 的下标
+      this.active = curIdx
+    },
+    // 用户在删除频道时，如果删除的是前边的频道，则下标要更新一下
+    hFixedCurIndex (curIdx) {
       this.active = curIdx
     }
   }
