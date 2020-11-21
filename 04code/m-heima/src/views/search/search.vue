@@ -42,17 +42,14 @@
     <!-- 3. 历史记录 -->
     <van-cell-group v-else>
       <van-cell title="历史记录"/>
-
       <van-cell
       v-for="(item,idx) in history"
       :key="idx"
-      :title="item">
+      :title="item"
+      @click="$router.push('/searchResult?keyword=' + item)"
+      >
         <van-icon name="close" @click="hDelHistory(idx)"></van-icon>
       </van-cell>
-
-      <!-- <van-cell title="单元格">
-        <van-icon name="close"></van-icon>
-      </van-cell> -->
     </van-cell-group>
   </div>
 </template>
@@ -153,15 +150,28 @@ export default {
     },
     // 情况1：用户点击了搜索
     hSearch () {
+      if (this.keyword === '') {
+        return
+      }
       // 1. 添加一条历史
       this.addHistory(this.keyword)
       // 2. 跳转到搜索结果页
+      this.$router.push('/searchResult?keyword=' + this.keyword)
+      // this.$router.push({
+      //   path: '/searchResult',
+      //   query: {
+      //     keyword: this.keyword,
+      //     a: 1,
+      //     b: 2
+      //   }
+      // })
     },
     //  情况2： 用户点击了搜索建议
     hClickSuggetion (idx) {
       // 1. 添加一条历史
       this.addHistory(this.suggestion[idx])
       // 2. 跳转到搜索结果页
+      this.$router.push('/searchResult?keyword=' + this.suggestion[idx])
     },
     // 用户点击了删除历史记录
     hDelHistory (idx) {
