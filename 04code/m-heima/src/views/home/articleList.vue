@@ -21,7 +21,9 @@
         <van-cell
         v-for="article in list"
         :key="article.art_id.toString()"
-        :title="article.title">
+        :title="article.title"
+        @click="$router.push('/article/' + article.art_id.toString())"
+        >
           <div slot="label">
             <!-- 图片区域
             column-num： 用来等分几列，有几张图就有几列

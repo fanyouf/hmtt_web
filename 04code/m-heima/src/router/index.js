@@ -49,6 +49,11 @@ const routes = [
     component: () => import('../views/search/searchResult.vue')
   },
   {
+    path: '/article/:id', // 动态路由
+    name: 'article',
+    component: () => import('../views/article/article.vue')
+  },
+  {
     path: '/page1',
     name: 'page1',
     component: () => import('../views/page1/page1.vue')
