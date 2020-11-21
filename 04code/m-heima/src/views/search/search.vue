@@ -5,9 +5,13 @@
       this.$router.back() : 路由后退  ===== 页面中的后退按钮
     -->
     <van-nav-bar title="搜索中心" left-arrow @click-left="$router.back()"></van-nav-bar>
-    <!-- 1. 搜索区域 输入框 -->
+    <!-- 1. 搜索区域 输入框
+      @input="hInput_debounce"
+      @input="hInput_throttle"
+      @input="hInput_throttle_with_lodash"
+    -->
     <van-search
-      @input="hInput"
+      @input="hInput_debounce_with_lodash"
       v-model.trim="keyword"
       show-action
       placeholder="请输入搜索关键词"
@@ -21,8 +25,10 @@
 
     <!-- 2. 搜索建议
      根据你在上面输入的关键字，后端会返回建议
+
+     v-if="suggestion.length"：如果有搜索建议
     -->
-    <van-cell-group>
+    <van-cell-group v-if="suggestion.length">
       <van-cell
         v-for="(item,idx) in cHightLight"
         :key="idx"
@@ -34,7 +40,7 @@
     </van-cell-group>
 
     <!-- 3. 历史记录 -->
-    <van-cell-group>
+    <van-cell-group v-else>
       <van-cell title="历史记录"/>
 
       <van-cell
@@ -52,6 +58,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { setHistory, getHistory } from '@/utils/storageHistory.js'
 import { getSuggetion } from '@/api/search.js'
 export default {
@@ -59,8 +66,9 @@ export default {
   data () {
     return {
       keyword: '',
+      lastCallTimestamp: 0, // 上一次在哪个时间戳被调用了
       history: getHistory() || [], // 如果本地有，从本地取出来
-      suggestion: []
+      suggestion: [] // 系统给出的搜索建议
     }
   },
   computed: {
@@ -77,7 +85,17 @@ export default {
     }
   },
   methods: {
-    async hInput () {
+    // async hInput () {
+    //   // 没有关键字
+    //   if (!this.keyword) {
+    //     this.suggestion = []
+    //     return
+    //   }
+    //   const res = await getSuggetion(this.keyword)
+    //   console.log(res)
+    //   this.suggestion = res.data.data.options
+    // },
+    async f () {
       // 没有关键字
       if (!this.keyword) {
         this.suggestion = []
@@ -86,6 +104,36 @@ export default {
       const res = await getSuggetion(this.keyword)
       console.log(res)
       this.suggestion = res.data.data.options
+    },
+    hInput_debounce_with_lodash: _.debounce(function () {
+      this.f()
+    }, 0.3 * 1000),
+    hInput_throttle_with_lodash: _.throttle(function () {
+      this.f()
+    }, 0.3 * 1000),
+    hInput_throttle () {
+      console.log('hInput_throttle.....')
+
+      // 对f进行0.3秒节流处理。
+      // 目标：如果0.3秒内没有再次调用它，则顺利执行这个函数，否则，再等0.3s。
+      if (Date.now() - this.lastCallTimestamp >= 0.3 * 1000) {
+        this.f()
+        this.lastCallTimestamp = Date.now()
+      } else {
+        console.log('没有间隔0.3s,不能调用f()')
+      }
+    },
+
+    // 只要用户在录入内容就会触发inpput，从而执行这个函数
+    hInput_debounce () {
+      // 对f进行0.3秒防抖处理。
+      // 目标：如果0.3秒内没有再次调用它，则顺利执行这个函数，否则，再等0.3s。
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(() => {
+        this.f()
+      }, 0.3 * 1000)
     },
     // 添加一条历史
     // 1. 不能有重复项
