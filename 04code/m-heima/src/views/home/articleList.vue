@@ -18,11 +18,13 @@
         finished-text="讨厌，人家被人看完了~~"
         @load="onLoad"
       >
+        <!-- @click="$router.push('/article/' + article.art_id.toString())" -->
         <van-cell
         v-for="article in list"
         :key="article.art_id.toString()"
         :title="article.title"
-        @click="$router.push('/article/' + article.art_id.toString())"
+        @click="$router.push({name: 'article', params:{id:article.art_id.toString(), a:100, b:200}})"
+
         >
           <div slot="label">
             <!-- 图片区域
