@@ -5,7 +5,12 @@
       <!-- 注意插槽的使用 -->
       <div slot="left" class="logo"></div>
       <template #right>
-        <van-button round type="info" icon="search" size="small">搜索</van-button>
+        <van-button
+        @click="$router.push('/search')"
+        round
+        type="info"
+        icon="search"
+        size="small">搜索</van-button>
       </template>
     </van-nav-bar>
 

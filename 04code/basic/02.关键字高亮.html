@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>我爱我家</div>
+   <!-- 要求：把 我 这个字，高亮显示（突出显示） -->
+  <div><span style="color:red">我</span>爱我家</div>
+
+  <script>
+    var keyword = "A"
+    // var reg = /家/g
+    // 1. 定义一个正则
+    var reg = new RegExp(keyword,'ig')
+    
+    console.log(reg)
+    var str = "我a爱我家"
+    // 2. 调用replace
+    // str = str.replace(reg, `<span style="color:red">${keyword}</span>`)
+
+    str = str.replace(reg, function(substr) {
+      // console.log(substr)
+      return `<span style="color:red">${substr}</span>`
+    })
+
+    // 不能全局替换
+    // str = str.replace("我", '<span style="color:red">我</span>')
+    console.log(str)
+
+
+  </script>
+</body>
+</html>
