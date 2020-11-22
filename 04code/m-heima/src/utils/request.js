@@ -22,10 +22,20 @@ const instance1 = axios.create({
   // headers: {'X-Custom-Header': 'foobar'}
 })
 
+// 另一台可以使用的测试服务器
+const changeApiServer = (config) => {
+  config.baseURL = 'http://toutiao-app.itheima.net'
+  // 删除url的app
+  config.url = config.url.replace('/app', '')
+  return config
+}
 // 添加请求拦截器
 instance1.interceptors.request.use(function (config) {
   // config就是本次请求所使用的配置项
   console.log('config', config)
+
+  changeApiServer(config)
+
   // 取出vuex中的tokenInfo，检查是否有token，如果有就添加到config.headers中
   // this.$store.state
   const token = store.state.tokenInfo.token
