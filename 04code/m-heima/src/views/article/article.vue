@@ -13,8 +13,13 @@
     <van-loading v-if="loading" class="article-loading" />
     <!-- /加载中 loading -->
 
+    <div class="error" v-if="is404">
+      <p>文章被外星人吃掉了</p>
+      <van-button @click="$router.back()">后退</van-button>
+      <van-button @click="$router.push('/')">回主页</van-button>
+    </div>
     <!-- 文章详情 -->
-    <div class="detail">
+    <div class="detail" v-else>
       <h3 class="title">{{article.title}}</h3>
       <div class="author">
         <van-image round width="1rem" height="1rem" fit="fill" />
@@ -23,10 +28,12 @@
           <p class="time">{{article.pubdate | relativeTime}}</p>
         </div>
         <van-button
+          v-if="article.aut_id !== $store.state.userInfo.id"
+          @click="hSwitchFollow"
           round
           size="small"
           type="info"
-        >+ 关注</van-button>
+        >{{ article.is_followed ? "取关" : "+ 关注" }}</van-button>
       </div>
       <div class="content">
         <div v-html="article.content"></div>
@@ -43,11 +50,14 @@
 </template>
 
 <script>
+import { unFollowed, followed } from '@/api/user.js'
 import { getDetail } from '@/api/article.js'
+// console.log(unFollowed, followed)
 export default {
   name: 'ArticleIndex',
   data () {
     return {
+      is404: false, // 这篇是否是 不存在 的
       loading: true, // 控制加载中的 loading 状态
       article: { }
     }
@@ -58,13 +68,43 @@ export default {
   methods: {
     async loadDetail () {
       try {
+        this.is404 = false
+
         this.loading = true
         const res = await getDetail(this.$route.params.id)
         this.article = res.data.data
         this.loading = false
       } catch (err) {
         this.loading = false
-        console.log(err)
+        console.dir(err)
+        // 如何去判断本次请求是404?
+        if (err.response.status === 404) {
+          this.is404 = true
+        }
+      }
+    },
+    // 取关 / 加关注
+    // 自已不能关注， 自已不能关注
+    async hSwitchFollow () {
+      const { is_followed: isFollowed, aut_id: autId } = this.article
+      try {
+        if (isFollowed) {
+          // 取关
+          const res = await unFollowed(autId)
+          console.log(res)
+          this.$toast.success('取关成功')
+          // 修改页面的状态
+          this.article.is_followed = false
+        } else {
+          // 加关注
+          const res = await followed(autId)
+          console.log(res)
+          this.$toast.success('加关成功')
+          // 修改页面的状态
+          this.article.is_followed = true
+        }
+      } catch (err) {
+        this.$toast.fail('操作失败')
       }
     }
   }

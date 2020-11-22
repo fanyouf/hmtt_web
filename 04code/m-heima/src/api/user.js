@@ -19,6 +19,31 @@ export const getProfile = () => {
   })
 }
 
+/**
+ * 取消关注
+ * @param {*} userId
+ */
+export const unFollowed = userId => {
+  return request({
+    method: 'DELETE',
+    url: '/app/v1_0/user/followings/' + userId
+  })
+}
+
+/**
+ * 加关注
+ * @param {*} userId
+ */
+export const followed = userId => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/user/followings',
+    data: {
+      target: userId
+    }
+  })
+}
+
 // 前端要开始工作了,跳过
 // 1. 接口文档
 // 2. 设计稿，原型
