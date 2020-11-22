@@ -46,23 +46,31 @@
       </div>
     </div>
     <!-- /文章详情 -->
+
+    <!-- 文章评论 -->
+    <article-comment :articleId="articleId"></article-comment>
   </div>
 </template>
 
 <script>
 import { unFollowed, followed } from '@/api/user.js'
 import { getDetail } from '@/api/article.js'
-// console.log(unFollowed, followed)
+import ArticleComment from './comment.vue'
 export default {
   name: 'ArticleIndex',
+  components: {
+    ArticleComment
+  },
   data () {
     return {
+      articleId: '',
       is404: false, // 这篇是否是 不存在 的
       loading: true, // 控制加载中的 loading 状态
       article: { }
     }
   },
   created () {
+    this.articleId = this.$route.params.id
     this.loadDetail()
   },
   methods: {

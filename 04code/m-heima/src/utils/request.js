@@ -7,6 +7,7 @@ console.log('store', store)
 const instance1 = axios.create({
   // 后端服务器1
   baseURL: 'http://ttapi.research.itcast.cn',
+  // baseURL: 'http://api-toutiao-web.itheima.net',
   transformResponse: [function (data) {
     // 由于后端返回的数据有出现大数问题（文章编号）,这里使用json-bigint处理一下
     // 优先使用JSONBig转一下
