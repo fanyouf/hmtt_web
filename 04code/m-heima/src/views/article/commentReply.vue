@@ -105,6 +105,9 @@ export default {
       finished: false // 是否加载结束
     }
   },
+  created () {
+    // console.log('commentReply中获取路由参数', this.$route.params.id)
+  },
   methods: {
     async onLoad () {
       try {
