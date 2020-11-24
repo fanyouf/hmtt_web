@@ -30,6 +30,10 @@ export default new Vuex.Store({
     mUpdateBirthday (state, birthday) {
       state.userInfo.birthday = birthday
       setUserInfo(state.userInfo)
+    },
+    mUpdatePhoto (state, photo) {
+      state.userInfo.photo = photo
+      setUserInfo(state.userInfo)
     }
   },
   // getters就类似于computed，它的作用是基于state来产生新的数据项

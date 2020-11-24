@@ -9,6 +9,7 @@
 
     <!-- 编辑区 -->
     <van-cell-group>
+      <input type="file" @change="hImageChange" />
       <van-cell is-link title="头像"  center>
         <van-image
           slot="default"
@@ -61,7 +62,7 @@
 <script>
 import dayjs from 'dayjs'
 import { mapState } from 'vuex'
-import { updateUserInfo } from '@/api/user.js'
+import { updateUserInfo, updateUserPhoto } from '@/api/user.js'
 export default {
   name: 'userProfile',
   data () {
@@ -120,6 +121,24 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    async hImageChange (e) {
+      console.log(e)
+      // 获取用户当前选中的图片
+      const file = e.target.files[0]
+      // 没有选中图片，返回
+      if (!file) {
+        return
+      }
+      console.log('当前用户选中的图片文件是', file)
+      // 调用接口，上传这张图片
+      const fd = new FormData()
+      fd.append('photo', file)
+      const res = await updateUserPhoto(fd)
+      console.log(res)
+      // 保存结果
+      this.$store.commit('mUpdatePhoto', res.data.data.photo)
+      this.$toast.success('头像修改成功')
     }
   }
 }

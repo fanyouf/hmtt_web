@@ -70,6 +70,17 @@ export const updateUserInfo = (data) => {
   })
 }
 
+/**
+ * 更新用户头像
+ * @param {*} fd 头像
+ */
+export const updateUserPhoto = fd => {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/photo',
+    data: fd
+  })
+}
 // 前端要开始工作了,跳过
 // 1. 接口文档
 // 2. 设计稿，原型
