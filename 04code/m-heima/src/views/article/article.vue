@@ -112,6 +112,7 @@ export default {
           this.article.is_followed = true
         }
       } catch (err) {
+        console.log(err)
         this.$toast.fail('操作失败')
       }
     }
