@@ -9,8 +9,8 @@
 
     <!-- 编辑区 -->
     <van-cell-group>
-      <input type="file" @change="hImageChange" />
-      <van-cell is-link title="头像"  center>
+      <input type="file" hidden @change="hImageChange" ref="refInput" />
+      <van-cell is-link title="头像" @click="hClickImage"  center>
         <van-image
           slot="default"
           width="1.5rem"
@@ -139,6 +139,11 @@ export default {
       // 保存结果
       this.$store.commit('mUpdatePhoto', res.data.data.photo)
       this.$toast.success('头像修改成功')
+    },
+    // 用户点击了头像： 理解他要更新头像，此时 弹出input type="file"
+    hClickImage () {
+      // 找到这个引用，并直接调用click()
+      this.$refs.refInput.click()
     }
   }
 }

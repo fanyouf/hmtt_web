@@ -45,6 +45,11 @@ const routes = [
     component: () => import('../views/setting/profile.vue')
   },
   {
+    path: '/setting/chat',
+    name: 'settingChat',
+    component: () => import('../views/setting/chat.vue')
+  },
+  {
     path: '/search',
     name: 'search',
     component: () => import('../views/search/search.vue')
