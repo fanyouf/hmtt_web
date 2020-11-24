@@ -48,7 +48,7 @@
       <van-cell icon="edit" title="编辑资料" to="/setting/profile" is-link />
       <van-cell icon="chat-o" title="小智同学" to="/setting/chat" is-link />
       <van-cell icon="setting-o" title="系统设置" />
-      <van-cell icon="warning-o" title="退出登录" to="/login" is-link />
+      <van-cell icon="warning-o" title="退出登录" @click="hQuit" is-link />
     </van-cell-group>
   </div>
 </template>
@@ -70,6 +70,27 @@ export default {
       const res = await getInfo()
       console.log(res)
       this.userInfo = res.data.data
+    },
+    // 用户退出
+    hQuit () {
+      // 1. 是否确认要退出
+      // 2. 清空token,userInfo
+      // 3. 回去login
+
+      // https://vant-contrib.gitee.io/vant/#/zh-CN/dialog#xiao-xi-que-ren
+      this.$dialog.confirm({
+        title: '系统提示',
+        message: '再多玩一会嘛'
+      })
+        .then(() => {
+          // 确认退出
+          this.$store.commit('mSetTokenInfo', {})
+          this.$store.commit('mUserInfo', {})
+          this.$router.push('/login')
+        })
+        .catch(() => {
+          // 取消退出
+        })
     }
   }
 }
