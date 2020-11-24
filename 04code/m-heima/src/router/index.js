@@ -40,6 +40,11 @@ const routes = [
     ]
   },
   {
+    path: '/setting/profile',
+    name: 'settingProfile',
+    component: () => import('../views/setting/profile.vue')
+  },
+  {
     path: '/search',
     name: 'search',
     component: () => import('../views/search/search.vue')

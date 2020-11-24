@@ -54,6 +54,22 @@ export const getInfo = () => {
   })
 }
 
+/**
+ * 编辑用户信息
+ * data: {
+ *  name,
+ *  gender,
+ *  birthday: 生日，格式'2018-12-20'
+ * }
+ */
+export const updateUserInfo = (data) => {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/profile',
+    data
+  })
+}
+
 // 前端要开始工作了,跳过
 // 1. 接口文档
 // 2. 设计稿，原型
