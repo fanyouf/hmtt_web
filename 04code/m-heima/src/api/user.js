@@ -44,6 +44,16 @@ export const followed = userId => {
   })
 }
 
+/**
+ * 获取用户自已的信息
+ */
+export const getInfo = () => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user'
+  })
+}
+
 // 前端要开始工作了,跳过
 // 1. 接口文档
 // 2. 设计稿，原型

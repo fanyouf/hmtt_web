@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- logo导航 -->
-    <van-nav-bar fixed>
+    <van-nav-bar fixed v-show="cIsVisiable">
       <!-- 注意插槽的使用 -->
       <div slot="left" class="logo"></div>
       <template #right>
@@ -38,6 +38,10 @@ export default {
     }
   },
   computed: {
+    cIsVisiable () {
+      // 只有在个人中心页才不可见
+      return this.$route.path !== '/setting'
+    },
     ...mapGetters(['isLogin'])
   }
 }

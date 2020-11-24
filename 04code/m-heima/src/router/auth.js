@@ -6,7 +6,7 @@ import store from '@/store/index.js'
 const pageList = ['/setting', '/profile']
 
 router.beforeEach(function (to, from, next) {
-  console.log('这里发生了路由跳转', to, from)
+  // console.log('这里发生了路由跳转', to, from)
   // 没有登陆
   if (!store.state.tokenInfo.token) {
     // if (!store.getters || !store.getters.isLogin) {
@@ -22,7 +22,13 @@ router.beforeEach(function (to, from, next) {
       next()
     }
   } else {
-    next()
+    // 已经登陆，就不能访问login,
+    if (to.path === '/login') {
+      // console.log('已经登陆，就不能访问login,回去主页')
+      next('/')
+    } else {
+      next()
+    }
   }
   // if (没有登陆 并且 访问敏感页面) {
   //   回去登陆
