@@ -52,7 +52,11 @@
       round
       position="bottom"
       :style="{ height: '85%' }">
-        <comment-reply :comment="currentComment" :articleId="articleId"></comment-reply>
+        <comment-reply
+        v-if="isReplyShow"
+        @close-reply="isReplyShow=false"
+        :comment="currentComment"
+        :articleId="articleId"></comment-reply>
     </van-popup>
   </div>
 </template>

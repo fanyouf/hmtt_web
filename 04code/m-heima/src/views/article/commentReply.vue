@@ -2,7 +2,7 @@
 <div class="article-comments">
     <!-- 1. 导航栏 -->
     <van-nav-bar :title="comment.reply_count+'条回复'">
-      <van-icon slot="left" name="cross" />
+      <van-icon slot="left" name="cross" @click="$emit('close-reply')" />
     </van-nav-bar>
     <!-- /导航栏 -->
 
