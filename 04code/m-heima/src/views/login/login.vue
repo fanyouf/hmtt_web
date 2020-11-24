@@ -88,8 +88,9 @@ export default {
         // 3. 给出成功的提示， 它会把前面的loading替换掉
         this.$toast.success('登陆成功')
         // alert('登陆成功，准备跳转')
-        // 4. 跳转到主页
-        this.$router.push('/')
+        // 4. 跳转到目标页
+        const url = this.$route.query.backto || '/'
+        this.$router.push(url)
       } catch (err) {
         console.log(err)
         this.$toast.fail('登陆失败')
