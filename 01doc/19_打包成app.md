@@ -8,7 +8,7 @@
 
 - 原生的app。手机有两大操作系统：苹果，安卓。 ios,安卓程序员 用各自的编程语言写的代码，只能在某一个平台上运行。分安卓版本和ios版本。
   - 优点：用户体验好 ；可以调用系统API（拍照，读内存...）。
-  - 缺点：费钱。
+  - 缺点：费钱。(大公司)
 - 纯h5网站。就是一个移动站（https://m.jd.com/）
   - 优点：省钱。就是网页。
   - 缺点：不能调用系统API；没有统一的入口，用户不知道从哪里进来，都要通过浏览器才能访问；
@@ -28,6 +28,14 @@
 
 - 单独做网站
 - 做好网站之后，嵌入到原生的app，或者某个混合开发的app中。
+
+
+
+**端**
+
+小程序 --（微信小程序，百度小程序，支付宝小程序，头条小程序...., 抖音小程序..）
+
+
 
 ## 混合开发app
 
@@ -68,66 +76,7 @@
 
 
 
-### 示例
-
-![image-20200619103948780](asset/image-20200619103948780.png)
-
-hbuilder 是一个编辑器，它其中集成对mui这个框架的支持
-
-mui:是一个开发框架，用来做app的，
-
-
-
-```
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title></title>
-    <script src="js/mui.min.js"></script>
-    <link href="css/mui.min.css" rel="stylesheet"/>
-    <script type="text/javascript" charset="utf-8">
-      	mui.init();
-    </script>
-</head>
-<body>
-	<header class="mui-bar mui-bar-nav">
-		<h1 class="mui-title">标题</h1>
-	</header>
-	<div class="mui-content">
-		<ul class="mui-table-view">
-		    <li class="mui-table-view-cell">Item 1</li>
-		    <li class="mui-table-view-cell">Item 2</li>
-		    <li class="mui-table-view-cell">Item 3</li>
-		</ul>
-	</div>
-	<nav class="mui-bar mui-bar-tab">
-		<a class="mui-tab-item mui-active">
-			<span class="mui-icon mui-icon-home"></span>
-			<span class="mui-tab-label">首页</span>
-		</a>
-		<a class="mui-tab-item">
-			<span class="mui-icon mui-icon-phone"></span>
-			<span class="mui-tab-label">电话</span>
-		</a>
-		<a class="mui-tab-item">
-			<span class="mui-icon mui-icon-email"></span>
-			<span class="mui-tab-label">邮件</span>
-		</a>
-		<a class="mui-tab-item">
-			<span class="mui-icon mui-icon-gear"></span>
-			<span class="mui-tab-label">设置</span>
-		</a>
-	</nav>
-	
-</body>
-</html>
-```
-
-
-
-### 演示它的原生能力
+### 示例-演示原生开发能力
 
 把下面的代码写在index.html中
 
@@ -261,15 +210,7 @@ mui:是一个开发框架，用来做app的，
 
 ![image-20200619110039430](asset/image-20200619110039430.png)
 
-### 5+项目的使用和测试
-
-我们的界面搭建完毕, 接下来我们要尝试去调用摄像头 以及电话，很显然，这属于原生的能力。那么，现在我们的代码中有原生的能力了吗？
-
-答案是：有。
-
 我们创建的项目是 5+ Runtime,  这个项目本身就自带原生能力的， 我们的项目中多了一个文件 **`manifest.json`**   [说明地址](https://ask.dcloud.net.cn/article/94),该文件是一个w3c的webapp配置文件。
-
-
 
 HbuilderX 给我们的页面中注入了个全局对象 **`plus`**, 这个plus就是我们的原生能力
 
@@ -282,21 +223,6 @@ document.addEventListener('plusready', function(){
 ```
 
 上述代码在浏览器中是不会执行的，它必须要在真机或者手机模拟器中使用。
-
-
-
-### 真机测试
-
-整体思路是：通过数据线把手机与电脑连接，并在手机上**开启开发者模式**，开放权限，以方便hbuilder识别手机。
-
-步骤：
-
-1. 开启手机的开发者模式。 一般是在 设置  -> 关于 --> 手机版本号上连续点击多次。
-2. 启动手动上的usb调试，开放安装，访问等权限。
-3. 用数据线连接到电脑，并从充电模式切换文件传输模式。
-4. 在hbuilder中，运行->运行到手机或者模拟器，检查是否能识别到手机。
-
-[HBuilder/HBuilderX真机运行、手机运行、真机联调常见问题](http://ask.dcloud.net.cn/article/97)
 
 
 
@@ -376,15 +302,15 @@ document.addEventListener('plusready', function(){
 
 ### 步骤
 
-- 在hbuilder中创建一个新的空的5+app项目，配置好相关的图标，得到manifest.json和
+- 1. 在hbuilder中创建一个新的空的5+app项目，配置好相关的图标，得到**manifest.json和**
 
-  unpackage
+  **unpackage**
 
-- 把manifest.json和unpackage复制到vue项目中的public目录下
+- 2. 把manifest.json和unpackage复制到vue项目中的public目录下
 
-- 在vue项目中，npm run build，打包
+- 3. 在vue项目中，npm run build，打包
 
-- 在生成的dist目录中，就已经具备了5+app项目的所有资料。此时，再用hbuilder来打包dist目录
+- 4. 在生成的dist目录中，就已经具备了5+app项目的所有资料。此时，再用hbuilder来打包dist目录(hbuilder 打开文件夹，云打包)
 
 #### 向h5项目中添加manifest.json
 

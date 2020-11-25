@@ -117,6 +117,14 @@ export default {
         this.$toast.fail('操作失败')
       }
     }
+  },
+  watch: {
+    '$route.params.id': {
+      handler (newVal, oldVal) {
+        console.log(newVal, oldVal)
+      },
+      immediate: true
+    }
   }
 }
 </script>
