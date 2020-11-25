@@ -70,6 +70,7 @@ export default {
     }
   },
   created () {
+    console.log('文章详情组件被创建.................')
     this.articleId = this.$route.params.id
     this.loadDetail()
   },

@@ -1,5 +1,16 @@
 <template>
-  <div class="scroll-wrapper">
+  <div class="scroll-wrapper" ref="refScroll" @scroll="hScroll">
+
+<!--
+  为了达到从文章详情页回到列表时，能还原它的滚动条的位置：
+  1. 在组件内监听scroll，实时记录这个位置
+  2. 再次回到本组件（从文章详情页回来），去恢复滚动条的位置
+
+  如果这个组件被缓存了，则它会多个两个特殊的钩子函数
+   activated() {}    激活
+   deactivated () {} 失活
+-->
+
     <!-- <h2>{{channel.name}} - {{channel.id}}</h2> -->
     <!-- @load="onLoad"： load事件的回调是onLoad函数 -->
     <!-- van-list自带上拉加载更多 的效果
@@ -32,7 +43,8 @@
             -->
             <van-grid
             :column-num="article.cover.images.length"
-            v-if="article.cover.images.length">
+            v-if="article.cover.images.length"
+            :border="false">
               <van-grid-item
                 v-for="(url, idx) in article.cover.images"
                 :key="idx">
@@ -45,7 +57,8 @@
               <span>{{article.aut_name}}</span>
               <span>{{article.comm_count}}评论</span>
               <span>{{article.pubdate | relativeTime}}</span>
-              <span @click="hCloseBtn(article)" class="close" v-if="$store.state.tokenInfo.token">
+              <!-- @click.stop：不会冒泡 -->
+              <span @click.stop="hCloseBtn(article)" class="close" v-if="$store.state.tokenInfo.token">
                 <van-icon name="cross"></van-icon>
               </span>
             </div>
@@ -92,6 +105,15 @@ export default {
       this.list.splice(idx, 1)
     })
   },
+  activated () {
+    // console.log('激活.......')
+    if (this.scrollTop) {
+      this.$refs.refScroll.scrollTop = this.scrollTop
+    }
+  },
+  deactivated () {
+    // console.log('失活.......')
+  },
   methods: {
     // 用户点击了关闭按钮
     hCloseBtn (article) {
@@ -134,6 +156,20 @@ export default {
 
       // 4). 提示
       this.$toast(`更新${arr.length}条数据`)
+    },
+    updateScrollTop () {
+      console.log('滚动条.....', this.$refs.refScroll.scrollTop)
+      // 记录位置
+      this.scrollTop = this.$refs.refScroll.scrollTop
+    },
+    hScroll () {
+      // 防抖: 开一个定时器，在指定时间内如果再次调用，就清空定时器
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(() => {
+        this.updateScrollTop()
+      }, 50)
     }
   }
 }

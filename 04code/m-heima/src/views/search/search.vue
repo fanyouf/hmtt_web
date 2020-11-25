@@ -48,7 +48,7 @@
       :title="item"
       @click="$router.push('/searchResult?keyword=' + item)"
       >
-        <van-icon name="close" @click="hDelHistory(idx)"></van-icon>
+        <van-icon name="close" @click.stop="hDelHistory(idx)"></van-icon>
       </van-cell>
     </van-cell-group>
   </div>

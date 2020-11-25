@@ -20,11 +20,19 @@ const routes = [
       {
         path: '', // 默认要装入的组件
         name: 'home',
+        meta: {
+          title: '主页',
+          isKeepAlive: true
+        },
         component: () => import('../views/home/home.vue')
       },
       {
         path: '/question',
         name: 'question',
+        meta: {
+          title: '问答',
+          abc: 1
+        },
         component: () => import('../views/question/question.vue')
       },
       {

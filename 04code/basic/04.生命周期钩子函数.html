@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <div v-for="item in n">
+            {{message}}
+        </div>
+        <hr>
+        <com1 v-if="n"></com1>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        Vue.component('com1', {
+          template: `
+            <div> 子组件</div>
+          `,
+          created () {
+            this.timer = setInterval(() => {
+              console.log('子组件', Date.now())
+            },1000)
+          },
+          beforeDestroy: function () {
+              console.group('------beforeDestroy 销毁前状态------');
+              console.dir(document.getElementById('app').innerHTML); //
+              console.log('数据项', this.message); //  
+              console.groupEnd('------beforeDestroy 销毁前状态------');
+              this.message="我就要死了"
+          },
+          destroyed: function () {
+            clearInterval(this.timer)
+            console.group('------销毁完成状态------');
+              console.log('视图：', document.getElementById('app').innerHTML); //
+              console.log('数据项', this.message); //
+              console.groupEnd('------销毁完成状态------');
+              this.message="我已经死了"
+          }
+        })
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                message: 'vue生命周期',
+                n: 3
+            },
+            beforeCreate: function () {
+                console.group('------beforeCreate创建前状态------');
+                console.log('视图：', document.getElementById('app').innerHTML); // 仍是模板
+                console.log('数据项', this.message); //  不可访问
+                console.groupEnd('------beforeCreate创建前状态------');
+            },
+            created: function () {
+                console.group('------created创建完毕状态------');
+                console.log('视图：', document.getElementById('app').innerHTML); // 仍是模板
+                console.log('数据项', this.message); //  可以访问
+                console.groupEnd('------created创建完毕状态------');
+            },
+            beforeMount: function () {
+                console.group('------beforeMount挂载前状态------');
+                console.log('视图：', document.getElementById('app').innerHTML); //已被初始化
+                console.log('数据项', this.message); // 可以访问 
+                console.groupEnd('------beforeMount挂载前状态------');
+            },
+            mounted: function () {
+                console.group('------mounted 挂载结束状态------');
+                console.log('视图：', document.getElementById('app').innerHTML); // 可以去访问dom结构了
+                console.log('数据项', this.message); //  
+                console.groupEnd('------mounted 挂载结束状态------');
+    
+            },
+            beforeUpdate: function () {
+                console.group('------beforeUpdate 更新前状态------');
+                console.dir('视图'); //
+                console.dir(document.getElementById('app').innerHTML); //
+                console.log('数据项：', this.message); //  
+                console.groupEnd('------beforeUpdate 更新前状态------');
+                // this.message = "hahahha"
+            },
+            updated: function () {
+                console.group('------updated 更新完成状态------');
+                console.dir(document.getElementById('app').innerHTML); //
+                console.log('数据项：', this.message); //  
+                console.groupEnd('------更新完成状态------');
+            },
+            beforeDestroy: function () {
+                console.group('------beforeDestroy 销毁前状态------');
+                console.dir(document.getElementById('app').innerHTML); //
+                console.log('数据项', this.message); //  
+                console.groupEnd('------beforeDestroy 销毁前状态------');
+                this.message="我就要死了"
+            },
+            destroyed: function () {
+                console.group('------销毁完成状态------');
+                console.log('视图：', document.getElementById('app').innerHTML); //
+                console.log('数据项', this.message); //
+                console.groupEnd('------销毁完成状态------');
+                this.message="我已经死了"
+            }
+        })
+    </script>
+</body>
+</html>

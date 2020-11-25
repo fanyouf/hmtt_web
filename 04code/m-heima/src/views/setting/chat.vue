@@ -102,10 +102,13 @@ export default {
       this.scrollToBottom()
     },
     scrollToBottom () {
-      // this.$nextTick(() => {
-      const dom = document.querySelector('.chat-list')
-      dom.scrollTop = dom.scrollHeight
-      // })
+      // setTimeout(() => {
+      //   })
+      this.$nextTick(() => {
+        // nextTick 源码中也会用到setTimeout
+        const dom = document.querySelector('.chat-list')
+        dom.scrollTop = dom.scrollHeight
+      })
     }
   },
   destroyed () {
