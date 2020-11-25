@@ -3,7 +3,8 @@ import App from './App.vue'
 // import router from './router'
 import router from './router/auth.js'
 import store from './store'
-import Vant, { Lazyload } from 'vant'
+import './plugin/vant.js'
+// import Vant, { Lazyload } from 'vant'
 // import { Lazyload } from 'vant'
 import 'vant/lib/index.css'
 // 公共样式
@@ -13,8 +14,8 @@ import 'amfe-flexible'
 
 import { relativeTime } from '@/utils/datetime.js'
 
-Vue.use(Vant)
-Vue.use(Lazyload)
+// Vue.use(Vant)
+// Vue.use(Lazyload)
 // 注册全局过滤器
 Vue.filter('relativeTime', relativeTime)
 
