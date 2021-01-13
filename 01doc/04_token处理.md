@@ -41,7 +41,6 @@ token就是你家小区的门禁卡。
 /**
  * 获取用户个人资料
  */
-
 export const getProfile = () => {
   return request({
     method: 'GET',
@@ -57,11 +56,11 @@ export const getProfile = () => {
 ```javascript
 import {getProfile } from '@/api/user'
 
- async hLogin () {
-      // 尝试去调用一下获取用户的个人资料
-      getProfile()
-     ....
- }
+async hLogin () {
+  // 尝试去调用一下获取用户的个人资料
+  getProfile()
+  // ....
+}
 ```
 
 ### 测试
@@ -249,7 +248,7 @@ store/index.js
 state: {
     // 保存token信息
     tokenInfo: {},
-+    userInfo: {}
++   userInfo: {}
   },
   // 定义mutation来修改数据
   mutations: {

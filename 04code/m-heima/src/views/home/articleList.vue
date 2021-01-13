@@ -66,15 +66,25 @@
         </van-cell>
       </van-list>
     </van-pull-refresh>
+
+    <!-- 更多操作-弹层 -->
+    <van-popup v-model="isShowMoreAction" :style="{ width: '80%' }">
+      <more-action
+      ref="refMoreAction"
+      @report="hReport"
+      @uninterested="hUninterested"></more-action>
+    </van-popup>
   </div>
 </template>
-
 <script>
-import eventBus from '@/utils/eventBus.js'
-import { getArticles } from '@/api/article.js'
+import MoreAction from './moreAction.vue'
+import { getArticles, dislike, report } from '@/api/article.js'
 // 1. 上拉加载更多（放在底部，类似于分页）
 // 2. 下拉刷新（获取最新内容，放在头部）
 export default {
+  components: {
+    MoreAction
+  },
   props: {
     channel: {
       type: Object
@@ -82,28 +92,13 @@ export default {
   },
   data () {
     return {
+      isShowMoreAction: false, // 是否显示弹层组件
       list: [],
       timestamp: Date.now(),
       refreshing: false, // 是否正在下拉刷新
       loading: false, // 是否正在加载
       finished: false // 是否完成全部的加载
     }
-  },
-  created () {
-    // 如果收到这个事件，就会执行后面的回调函数，并接收参数articleId
-    eventBus.$on('delete-article', (articleId) => {
-      console.log('收到delete-article事件', articleId)
-      // 在当前的list中去删除这个articleId的文章
-      // 1. 找这个文章在list中的下标
-      // findIndex:如果找到就返回下标，如果找不到，就返回-1
-      const idx = this.list.findIndex(article => article.art_id.toString() === articleId)
-      if (idx === -1) {
-        // 找不到
-        return
-      }
-      // 2. 删除它
-      this.list.splice(idx, 1)
-    })
   },
   activated () {
     // console.log('激活.......')
@@ -115,11 +110,53 @@ export default {
     // console.log('失活.......')
   },
   methods: {
+    // 在当前的list中去删除这个articleId的文章
+    removeArticle (articleId) {
+      // 1. 找这个文章在list中的下标
+      // findIndex:如果找到就返回下标，如果找不到，就返回-1
+      const idx = this.list.findIndex(article => article.art_id.toString() === articleId)
+      if (idx === -1) {
+        // 找不到
+        return
+      }
+      // 2. 删除它
+      this.list.splice(idx, 1)
+    },
+    // 用户点击了不感兴趣
+    async hUninterested () {
+      try {
+        // 1. 调用接口，传文章编号
+        const res = await dislike(this.articleId)
+        console.log(res)
+        // 2. 关闭弹层
+        this.isShowMoreAction = false
+        // 3. 通知所有的文章列表去删除这个文章
+        this.removeArticle(this.articleId)
+        this.$toast.success('操作成功')
+      } catch (err) {
+        this.$toast.fail('操作失败')
+      }
+    },
+    // 用户举报文章
+    async hReport (typeId) {
+      try {
+        // 1. 调用接口，传文章编号
+        const res = await report(this.articleId, typeId)
+        console.log(res)
+        // 2. 关闭弹层
+        this.isShowMoreAction = false
+        // 3. 文章列表去删除这个文章
+        this.removeArticle(this.articleId)
+
+        this.$toast.success('举报成功')
+      } catch (err) {
+        this.$toast.fail('举报失败')
+      }
+    },
     // 用户点击了关闭按钮
     hCloseBtn (article) {
-      console.log(article.art_id)
-      // article_id是经过了大数处理之后的对象，需要用toString()来还原
-      this.$emit('close-btn-click', article.art_id.toString())
+      this.isShowMoreAction = true
+      this.articleId = article.art_id.toString()
     },
     async onLoad () {
       // 1) 发ajax取数据

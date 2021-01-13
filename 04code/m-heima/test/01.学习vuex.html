@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <head>
+    <style>
+      #app {
+        width: 300px;
+        margin: 20px auto;
+        border:1px solid #ccc;
+        padding:4px;
+      }
+      .box{
+        margin: 1em;
+        padding: 1em;
+        border: 1px solid #ccc;
+      }
+      </style>
+  </head>
+</head>
+<body>
+  <div id="app">
+    <p>根组件</p>
+    <input v-model="$store.state.num">
+    <com-b></com-b>
+    <com-d></com-d>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuex@3.6.0/dist/vuex.js"></script>
+  <script>
+
+    Vue.component('com-a',{
+      template: `
+      <div class="box">
+        <p>子组件A</p>
+        <button @click="hSetNum10">修改数据 公共数据num+1</button>
+        <button @click="hSetNum10">修改数据+10</button>
+        <button @click="hSetNumN">修改数据+N</button>
+      </div>
+      `,
+      methods: {
+        hSetNum10 () {
+          this.$store.commit("add10")
+        },
+        hSetNumN () {
+          this.$store.commit("addN", 21)
+        }
+      }
+    })
+    Vue.component('com-b',{
+      template: `
+      <div class="box">
+        <p>子组件B -{{countPlusLocalState}}</p>
+        引用公共数据num:{{num2}}
+      </div>
+      `,
+      data () {
+        return {
+          a: 100
+        }
+      },
+      computed: {
+        // ...Vuex.mapState(['num'])
+        // ...Vuex.mapState([{'num': 'num2'}])
+        ...Vuex.mapState({
+          'num2': 'num',
+          // 箭头函数可使代码更简练
+          count: state => state.num,
+
+          // 为了能够使用 `this` 获取局部状态，必须使用常规函数
+          countPlusLocalState (state) {
+            return state.num + this.a
+          }
+        })
+      }
+    })
+
+    Vue.component('com-d',{
+      template: `
+      <div class="box">
+        <p>子组件D</p>
+        <com-a></com-a>
+      </div>
+      `
+    })
+    Vue.use(Vuex)
+
+    const store = new Vuex.Store({
+      state: {
+        num: 100
+      },
+      mutations: {
+        add10 (state) {
+          this.state.num += 10
+        },
+        addN (state, n) {
+          this.state.num += n
+        }
+      }
+    })
+    new Vue({
+      el: "#app",
+      store
+    })
+  </script>
+</body>
+</html>
