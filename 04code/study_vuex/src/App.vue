@@ -13,11 +13,19 @@
 <script>
 import ComA from './components/ComA.vue'
 import ComD from './components/ComD.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'App',
   components: {
     ComA, ComD
+  },
+  methods: {
+    // 把this.$store.dspatch('getBooks')  <====> this.getBooks()
+    ...mapActions(['getBooks'])
+  },
+  created () {
+    // this.$store.dispatch('getBooks')
+    this.getBooks({name: 'js'})
   },
   // 把getters映射成组件的计算属性
   computed: {

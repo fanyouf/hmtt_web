@@ -402,3 +402,94 @@ export default {
 </script>
 ```
 
+
+
+## 用actions来发请求获取数据并设置到state中
+
+actions：
+
+作用： 做异步操作
+
+调用格式：
+
+- this.$store.dispatch
+- mapActions成为组件的methods
+
+格式：
+
+```
+state: {
+    num: 100,
+    books: [
+      {name: 'js技术内幕(1)', price: 100}, 
+      {name: 'js技术内幕(2)', price: 80}, 
+      {name: 'js技术内幕(3)', price: 50}
+    ]
+  },
+mutations: {
+    // 每一项都是一个函数
+    // 参数：你可以定义两个参数：
+      // 第一个参数是必须的，表示当前的state，
+      // 第二个参数是可选的，表示载荷(在执行函数时要传入的数据)
+    // addBook (state, bookName) {
+    //   console.log(state, bookName)
+    //   state.books.push(bookName)
+    // },
+    addBook (state, {name, price}) {
+      // console.log(state, bookObj)
+      state.books.push({name, price})
+      // state.books.push(bookObj)
+    }
+},    
+actions: {
+    // getBooks (context) {
+    //   发ajax请求.then(res => {
+    //     // 调用 mutations
+    //     context.commit()
+    //   })
+    // }
+    getBooks (context, params) {
+      console.log('getbooks的查询参数是', params)
+      axios({
+        url: 'https://www.fastmock.site/mock/37d3b9f13a48d528a9339fbed1b81bd5/book/api/books',
+        method: 'GET'
+      }).then(res => {
+        console.log(res)
+        context.commit({
+          type:'addBook',
+          name: res.data.data[0].bookname,
+          price: res.data.data[0].price
+        })
+        // console.log(context)
+      })
+    }
+  },
+```
+
+过程：
+
+- ajax获取回来数据  ---》 调用mutations  ---》修改数据
+
+使用
+
+```
+import { mapGetters, mapActions } from 'vuex'
+export default {
+  name: 'App',
+  methods: {
+    // 把this.$store.dspatch('getBooks')  <====> this.getBooks()
+    ...mapActions(['getBooks'])
+  },
+  created () {
+    // this.$store.dispatch('getBooks')
+    this.getBooks({name: 'js'})
+  },
+  // 把getters映射成组件的计算属性
+  computed: {
+    ...mapGetters(['numberOf60']),
+    // 换个名字
+    ...mapGetters({num: 'numberOfBooks'})
+  }
+}
+```
+

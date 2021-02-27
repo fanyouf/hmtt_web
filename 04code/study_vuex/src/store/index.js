@@ -7,7 +7,7 @@ console.log(Vuex)
 // 类似有：Vue.use(vueRouter)
 // Vue.use(对象)， 对象中会有一个install方法
 Vue.use(Vuex)
-
+import axios from 'axios'
 // export default: es6的默认导出。
 // 这个被导出的对象在main.js中使用.
 
@@ -57,7 +57,30 @@ export default new Vuex.Store({
     }
   },
 
+  // 发ajax请求，从后端获取数据，再来去修改state中的数据
   actions: {
+    // getBooks (context) {
+    //   发ajax请求.then(res => {
+    //     // 调用 mutations
+    //     context.commit()
+    //   })
+    // }
+    getBooks (context, params) {
+      console.log('getbooks的查询参数是', params)
+      axios({
+        url: 'https://www.fastmock.site/mock/37d3b9f13a48d528a9339fbed1b81bd5/book/api/books',
+        method: 'GET'
+      }).then(res => {
+        console.log(res)
+        context.commit({
+          type:'addBook',
+          name: res.data.data[0].bookname,
+          price: res.data.data[0].price
+
+        })
+        // console.log(context)
+      })
+    }
   },
   modules: {
   }
