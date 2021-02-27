@@ -16,7 +16,22 @@ export default new Vuex.Store({
   // state: 用来保存所有的公共数据
   state: {
     num: 100,
-    books: [{name: 'js技术内幕', price: 100}]
+    books: [
+      {name: 'js技术内幕(1)', price: 100}, 
+      {name: 'js技术内幕(2)', price: 80}, 
+      {name: 'js技术内幕(3)', price: 50}
+    ]
+  },
+    // computed
+  // getters的作用是：在state的基础上派生出新的数据项--类似于computed
+  getters: {
+    numberOfBooks (state) {
+      return state.books.length
+    },
+    // 统计价格>60元的书的数量
+    numberOf60 (state) {
+      return state.books.filter(item=>item.price>60).length
+    }
   },
   // mutations(变化，异动): 用来提供修改数据的方法。 
   // 数据不能在组件内部直接修改，必须在组件内调用mutations来修改
@@ -41,6 +56,7 @@ export default new Vuex.Store({
       state.num +=10
     }
   },
+
   actions: {
   },
   modules: {

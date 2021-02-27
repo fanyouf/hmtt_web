@@ -335,3 +335,70 @@ methods: {
   },
 ```
 
+
+
+## getters的使用
+
+1. 作用：在state中的数据的基础上，进一步对数据进行加工得到新数据
+2. 步骤：
+   1. 定义
+   2. 使用
+      1. $store.getters.xxxxx
+      2. mapGetters
+
+```
+state: {
+    num: 100,
+    books: [
+      {name: 'js技术内幕(1)', price: 100}, 
+      {name: 'js技术内幕(2)', price: 80}, 
+      {name: 'js技术内幕(3)', price: 50}
+    ]
+  },
+    // computed
+  // getters的作用是：在state的基础上派生出新的数据项--类似于computed
+  getters: {
+    numberOfBooks (state) {
+      return state.books.length
+    },
+    // 统计价格>60元的书的数量
+    numberOf60 (state) {
+      return state.books.filter(item=>item.price>60).length
+    }
+  },
+```
+
+---
+
+```
+<template>
+  <div id="app">
+    <p>一共有{{$store.state.books.length}}本书</p>
+    <p>一共有{{$store.getters.numberOfBooks}}本书</p>
+    <p>一共有{{$store.getters.numberOf60}}本书>60元</p>
+     <p>一共有{{num}}本书</p>
+    <p>一共有{{numberOf60}}本书>60元</p>
+    <com-a></com-a>
+    <com-d></com-d>
+  </div>
+</template>
+
+<script>
+import ComA from './components/ComA.vue'
+import ComD from './components/ComD.vue'
+import { mapGetters } from 'vuex'
+export default {
+  name: 'App',
+  components: {
+    ComA, ComD
+  },
+  // 把getters映射成组件的计算属性
+  computed: {
+    ...mapGetters(['numberOf60']),
+    // 换个名字
+    ...mapGetters({num: 'numberOfBooks'})
+  }
+}
+</script>
+```
+
