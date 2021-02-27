@@ -16,7 +16,7 @@ export default new Vuex.Store({
   // state: 用来保存所有的公共数据
   state: {
     num: 100,
-    books: ['js技术内幕','js手册']
+    books: [{name: 'js技术内幕', price: 100}]
   },
   // mutations(变化，异动): 用来提供修改数据的方法。 
   // 数据不能在组件内部直接修改，必须在组件内调用mutations来修改
@@ -25,9 +25,17 @@ export default new Vuex.Store({
     // 参数：你可以定义两个参数：
       // 第一个参数是必须的，表示当前的state，
       // 第二个参数是可选的，表示载荷(在执行函数时要传入的数据)
-    addBook (state, bookName) {
-      console.log(state, bookName)
-      state.books.push(bookName)
+    // addBook (state, bookName) {
+    //   console.log(state, bookName)
+    //   state.books.push(bookName)
+    // },
+    addBook (state, {name, price}) {
+      // console.log(state, bookObj)
+      state.books.push({name, price})
+      // state.books.push(bookObj)
+    },
+    addN(state, n) {
+      state.num += n
     },
     add10 (state) {
       state.num +=10

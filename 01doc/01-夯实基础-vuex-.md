@@ -248,3 +248,90 @@ mutations: {
 [vuex] unknown mutation type: addBook123
 ```
 
+
+
+## $store.commit的格式
+
+两种格式：
+
+```javascript
+1. 简单格式
+this.$store.commit('mutations的名字', 要传的数据)
+- (1) 无传递的数据
+- (2) 传递的数据比较简单
+2. 复杂格式
+this.$store.commit({
+  type: 'mutations的名字',
+  属性名1：值1
+  属性名2：值2
+  ....
+})
+```
+
+
+
+示例：
+
+定义mutations
+
+```
+addBook (state, {name, price}) {
+      // console.log(state, bookObj)
+      state.books.push({name, price})
+      // state.books.push(bookObj)
+    }
+```
+
+调用：
+
+```
+this.$store.commit({
+       type: 'addBook',
+       name: '精通js',
+       price: 80
+})
+```
+
+
+
+## mutations映射成methods来使用
+
+思路：通过mapMutations这个函数把Vuex中的mutations映射（转化成）本组件内的methods
+
+步骤：
+
+- 导入辅助函数 import { mapMutations } from 'vuex'
+
+- 映射
+
+  ```
+  methods: {
+      ...mapMutations(['addN']),
+      hAdd10 (){
+        this.$store.commit('add10')
+      }
+    },
+  ```
+
+  上面的代码中，其实相当于methods中有了两个函数：hAdd10, addN
+
+- 使用：
+
+  直接用: this. addN()
+
+
+
+## mutations映射时，取别名
+
+```
+methods: {
+    ...mapMutations(['addN']),
+    // {'新名字': '在vuex中的mutations的名字'}
+    ...mapMutations({'tianjia10': 'add10'}),
+    hAdd10 (){
+      // this.$store.commit('add10')
+      this.tianjia10()
+    }
+  },
+```
+
