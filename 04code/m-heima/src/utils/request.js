@@ -26,6 +26,7 @@ const instance1 = axios.create({
 // 另一台可以使用的测试服务器
 const changeApiServer = (config) => {
   config.baseURL = 'http://toutiao-app.itheima.net'
+  // config.baseURL = 'http://toutiao-app.itheima.net'
   // 删除url的app
   config.url = config.url.replace('/app', '')
   return config

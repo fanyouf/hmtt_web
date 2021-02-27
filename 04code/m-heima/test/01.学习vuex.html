@@ -8,13 +8,13 @@
     <style>
       #app {
         width: 300px;
-        margin: 20px auto;
+        margin: 10px auto;
         border:1px solid #ccc;
         padding:4px;
       }
       .box{
-        margin: 1em;
-        padding: 1em;
+        margin: .2em;
+        padding: .2em;
         border: 1px solid #ccc;
       }
       </style>
@@ -23,44 +23,47 @@
 <body>
   <div id="app">
     <p>根组件</p>
-    <input v-model="$store.state.num">
-    <com-b></com-b>
+    <com-a></com-a>
     <com-d></com-d>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vuex@3.6.0/dist/vuex.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
   <script>
+    const { mapMutations } = Vuex.createNamespacedHelpers('book')
 
     Vue.component('com-a',{
       template: `
       <div class="box">
-        <p>子组件A</p>
-        <button @click="hSetNum10">修改数据 公共数据num+1</button>
-        <button @click="hSetNum10">修改数据+10</button>
-        <button @click="hSetNumN">修改数据+N</button>
+        <p>组件A</p>
+        <com-b></com-b>
+        <com-c></com-c>
+      </div>
+      `
+    })
+
+    Vue.component('com-b',{
+      template: `
+      <div class="box">
+        <p>组件B</p>
+        数据:{{$store.state.num}}
+        <button @click="hSetNum10">数据+10</button>
       </div>
       `,
       methods: {
         hSetNum10 () {
           this.$store.commit("add10")
-        },
-        hSetNumN () {
-          this.$store.commit("addN", 21)
         }
       }
     })
-    Vue.component('com-b',{
+    Vue.component('com-c',{
       template: `
       <div class="box">
-        <p>子组件B -{{countPlusLocalState}}</p>
-        引用公共数据num:{{num2}}
+        <p>组件C</p>
+        数据:{{num2}}
       </div>
       `,
-      data () {
-        return {
-          a: 100
-        }
-      },
       computed: {
         // ...Vuex.mapState(['num'])
         // ...Vuex.mapState([{'num': 'num2'}])
@@ -78,12 +81,25 @@
     })
 
     Vue.component('com-d',{
+      created () {
+        console.dir(this.$store)
+        this.$store.dispatch('book/getBooks', {a:1})
+      },
       template: `
       <div class="box">
-        <p>子组件D</p>
-        <com-a></com-a>
+        <p>组件D</p>
+        数据:{{$store.state.num}}
+        书本:{{$store.state.book.list}}
+        <p><button @click="hAddBook">添加书本</button></p>
       </div>
-      `
+      `,
+      methods: {
+        hAddBook () {
+          // this.$store.commit('addBook', {name: 'test', price: 100})
+          this.addBook({name: 'test', price: 100})
+        },
+        ...mapMutations(['addBook'])
+      }
     })
     Vue.use(Vuex)
 
@@ -97,6 +113,34 @@
         },
         addN (state, n) {
           this.state.num += n
+        }
+      },
+      modules: {
+        book: {
+          namespaced: true,
+          state: {
+            list: [ {name: '老人与海', price: 89 }]
+          },
+
+          mutations: {
+            setBook(state, payload) {
+              state.list = payload
+            },
+            addBook(state, {name, price}) {
+              state.list.push({name, price})
+            }
+          },
+          actions: {
+            getBooks(context, abc) {
+              console.log(abc)
+              axios({
+                methods: 'get',
+                url:'https://www.fastmock.site/mock/37d3b9f13a48d528a9339fbed1b81bd5/book/api/books'
+              }).then(res => {
+                context.commit('setBook', res.data.data)
+              })
+            }
+          }
         }
       }
     })
