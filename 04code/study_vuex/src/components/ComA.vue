@@ -1,7 +1,7 @@
 <template>
   <div>
     A组件
-    {{$store.state.books}} --{{c1}}
+    {{$store.state.modBook.books}} --{{c1}}
     <hr>
     <button @click="hAddNewBook">添加一本书</button>
     {{books}}
@@ -38,11 +38,12 @@ export default {
       // this.$store.commit: 提交
       // this.$store.commit('addBook', '一本新书') 我们通知vuex，我这里提交了一个 变化
       //                   变化的名字是addBook，同时要附加 "一本新书" 这个数据
-      this.$store.commit({
-        type: 'addBook',
-        name: '精通js',
-        price: 80
-      })
+      // this.$store.commit({
+      //   type: 'addBook',
+      //   name: '精通js',
+      //   price: 80
+      // })
+      this.$store.commit('addBook', { name: '精通js', price: 80})
     }
   },
   computed: {

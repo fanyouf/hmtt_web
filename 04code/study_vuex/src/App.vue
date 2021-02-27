@@ -1,10 +1,13 @@
 <template>
   <div id="app">
-    <p>一共有{{$store.state.books.length}}本书</p>
-    <p>一共有{{$store.getters.numberOfBooks}}本书</p>
+    <button @click="hAdd">books模块中的add</button>
+    <button @click="hAdd1">address模块中的add</button>
+    <p>{{$store.state.modBook.books}}</p>
+    <p>一共有{{$store.state.modBook.books.length}}本书</p>
+    <!-- <p>一共有{{$store.getters.numberOfBooks}}本书</p>
     <p>一共有{{$store.getters.numberOf60}}本书>60元</p>
      <p>一共有{{num}}本书</p>
-    <p>一共有{{numberOf60}}本书>60元</p>
+    <p>一共有{{numberOf60}}本书>60元</p> -->
     <com-a></com-a>
     <com-d></com-d>
   </div>
@@ -20,6 +23,12 @@ export default {
     ComA, ComD
   },
   methods: {
+    hAdd1 () {
+      this.$store.commit('modAddress/add')
+    },
+    hAdd () {
+      this.$store.commit('modBook/add')
+    },
     // 把this.$store.dspatch('getBooks')  <====> this.getBooks()
     ...mapActions(['getBooks'])
   },

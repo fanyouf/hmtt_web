@@ -493,3 +493,109 @@ export default {
 }
 ```
 
+
+
+## 用modules来拆分复杂的业务
+
+
+
+moduels的作用：拆分模板，把复杂的场景按模块来拆开
+
+格式：
+
+```
+// 1. 导入vue
+import Vue from 'vue'
+// 2. 导入 vuex --- 学习的重点
+import Vuex from 'vuex'
+console.log(Vuex)
+// Vue.use 框架中提供的api，用来以vue插件的方式来使用Vuex
+// 类似有：Vue.use(vueRouter)
+// Vue.use(对象)， 对象中会有一个install方法
+Vue.use(Vuex)
+import axios from 'axios'
+// export default: es6的默认导出。
+// 这个被导出的对象在main.js中使用.
+
+// new Vuex.Store: 实例化一个对象，构造器是Vuex.Store
+export default new Vuex.Store({
+  // state: 用来保存所有的公共数据
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {
+  	模块名1： {
+  		  state: {},
+  			getters: {},
+  			mutations: {},
+  			actions: {},
+  	}，
+    模块名2： {
+  		  state: {},
+  			getters: {},
+  			mutations: {},
+  			actions: {},
+  	}  
+  }
+})
+
+```
+
+
+
+用法：
+
+- 访问模块中的数据，要加上模块名
+
+  ```
+  {{$store.state.模块名.数据项名}}
+  ```
+
+- 访问模块中的mutations:  不需要额外去补充模块名（理解为：模块中mutations会自动合并到主模块中，所以，可以直接访问）
+
+  ```
+  $store.commit('mutations名')
+  ```
+
+  
+
+## 用namespaced规范modules内容的操作
+
+
+
+不写namespaced：true, 访问模块中的mutations:  不需要额外去补充模块名（理解为：模块中mutations会自动合并到主模块中，所以，可以直接访问）
+
+
+
+加了namspaced：true之后，访问模块中的mutations就要额外补充模块名：
+
+`this.$store.commit('模块名/mutations名')`
+
+```
+modBook: {
+      // 这个为true，则在使用mutations时，就必须要加上模块名
+      namespaced: true, 
+      state: {
+        books: [
+          {name: 'js技术内幕(1)', price: 100}, 
+          {name: 'js技术内幕(2)', price: 80}, 
+          {name: 'js技术内幕(3)', price: 50}
+        ],
+      },
+      mutations: {
+        add (state) {
+          console.log("modBook add", state)
+        },
+        addBook (state, {name, price}) {
+          // console.log(state, bookObj)
+          state.books.push({name, price})
+          // state.books.push(bookObj)
+        },
+      }
+    },
+```
+
+
+
+结论： 在使用modules时，建议都给加上namespaced!

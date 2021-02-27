@@ -15,12 +15,7 @@ import axios from 'axios'
 export default new Vuex.Store({
   // state: 用来保存所有的公共数据
   state: {
-    num: 100,
-    books: [
-      {name: 'js技术内幕(1)', price: 100}, 
-      {name: 'js技术内幕(2)', price: 80}, 
-      {name: 'js技术内幕(3)', price: 50}
-    ]
+    num: 100
   },
     // computed
   // getters的作用是：在state的基础上派生出新的数据项--类似于computed
@@ -44,11 +39,7 @@ export default new Vuex.Store({
     //   console.log(state, bookName)
     //   state.books.push(bookName)
     // },
-    addBook (state, {name, price}) {
-      // console.log(state, bookObj)
-      state.books.push({name, price})
-      // state.books.push(bookObj)
-    },
+    
     addN(state, n) {
       state.num += n
     },
@@ -83,5 +74,38 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    modBook: {
+      // 这个为true，则在使用mutations时，就必须要加上模块名
+      namespaced: true, 
+      state: {
+        books: [
+          {name: 'js技术内幕(1)', price: 100}, 
+          {name: 'js技术内幕(2)', price: 80}, 
+          {name: 'js技术内幕(3)', price: 50}
+        ],
+      },
+      mutations: {
+        add (state) {
+          console.log("modBook add", state)
+        },
+        addBook (state, {name, price}) {
+          // console.log(state, bookObj)
+          state.books.push({name, price})
+          // state.books.push(bookObj)
+        },
+      }
+    },
+    modAddress: {
+      namespaced: true, 
+      state: { list: [] },
+      mutations: {
+        add (state) {
+          console.log("address add", state)
+        }
+      },
+      getters: {},
+      actions: {},
+      // modules
+    }
   }
 })
