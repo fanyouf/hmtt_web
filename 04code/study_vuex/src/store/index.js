@@ -18,7 +18,17 @@ export default new Vuex.Store({
     num: 100,
     books: ['js技术内幕','js手册']
   },
+  // mutations(变化，异动): 用来提供修改数据的方法。 
+  // 数据不能在组件内部直接修改，必须在组件内调用mutations来修改
   mutations: {
+    // 每一项都是一个函数
+    // 参数：你可以定义两个参数：
+      // 第一个参数是必须的，表示当前的state，
+      // 第二个参数是可选的，表示载荷(在执行函数时要传入的数据)
+    addBook (state, bookName) {
+      console.log(state, bookName)
+      state.books.push(bookName)
+    },
     add10 (state) {
       state.num +=10
     }

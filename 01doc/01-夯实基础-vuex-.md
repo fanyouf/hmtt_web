@@ -117,3 +117,134 @@ $store是固定写法：表示这里上面定义的new Vuex.Store()对象
   }
 ```
 
+
+
+## 用mapState来使用公共数据
+
+用mapState把公共数据（vuex.store） 映射 到本组件内部的**计算属性**中
+
+```
+<template>
+  <div>
+    A组件
+    {{$store.state.books}} --{{c1}}
+    <hr>
+    {{books}}
+    <com-b/>
+    <com-c></com-c>
+  </div>
+</template>
+<script>
+// 引入组件
+import ComB from './ComB.vue'
+import ComC from './ComC.vue'
+// 用mapState把公共数据（vuex.store） 映射 到本组件内部的计算属性中
+
+// 步骤
+// 1. 导入辅助函数mapState，它是在vuex中定义的一个工具函数。
+//  es6 按需导入 import { mapState } from 'vuex' 
+import { mapState } from 'vuex'
+
+// 2. mapState(['books'])
+// const res = mapState(['books'])
+// res的结果是一个对象： { books: function() {}}
+// console.log('mapState', res)
+
+export default {
+  components: {
+    ComB, ComC
+  },
+  computed: {
+    c1 () {
+      return 'c1'
+    },
+    // books: function() {}
+    // ..res： 把res这个对象合并到computed对象中
+    // ...res
+    ...mapState(['books'])
+  },
+  created () {
+    console.log(this.$store.state.books)
+  }
+}
+</script>
+<style scoped>
+div {
+  padding:5px;
+  border:1px solid #ccc;
+  margin:3px;
+}
+</style>
+```
+
+## 在mapState映射时，取别名
+
+```
+{
+  computed: {
+      ...mapState({'新名字'： vuex.store.state中的名字})
+  }
+}
+```
+
+
+
+```
+{{新名字}}
+```
+
+> 取别名的时候是要把[]改成{}
+>
+> mapState（）中的参数支持两种写法： [] ， ｛｝
+
+
+
+## 在组件内部通过mutations来修改公共数据
+
+步骤：
+
+1. 在vuex中定义mutations
+2. 在组件内部通过this.$store.commit来调用mutations
+
+
+
+```
+// state: 用来保存所有的公共数据
+  state: {
+    num: 100,
+    books: ['js技术内幕','js手册']
+  },
+mutations: {
+    // 每一项都是一个函数
+    // 参数：你可以定义两个参数：
+      // 第一个参数是必须的，表示当前的state，
+      // 第二个参数是可选的，表示载荷(在执行函数时要传入的数据)
+    addBook (state, bookName) {
+      console.log(state, bookName)
+      state.books.push(bookName)
+    },
+    add10 (state) {
+      state.num +=10
+    }
+  },
+```
+
+
+
+在组件内使用
+
+```
+// 在组件内部要去调用mutations
+      // 格式是： this.$store.commit('mutations的名字',要传递的数据)
+      // this.$store.commit: 提交
+      // this.$store.commit('addBook', '一本新书') 我们通知vuex，我这里提交了一个 变化
+      //                   变化的名字是addBook，同时要附加 "一本新书" 这个数据
+      this.$store.commit('addBook', '一本新书')
+```
+
+如果commit时的mutations名字与定义时不一样，则会报错：
+
+```
+[vuex] unknown mutation type: addBook123
+```
+
